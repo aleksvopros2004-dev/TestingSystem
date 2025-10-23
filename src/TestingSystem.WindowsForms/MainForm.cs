@@ -9,6 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using TestingSystem.Core.Models;
+using TestingSystem.Services.Interfaces;
 
 namespace TestingSystem.WindowsForms
 {
@@ -40,6 +41,23 @@ namespace TestingSystem.WindowsForms
                 Font = new Font("Arial", 12, FontStyle.Bold)
             };
 
+
+
+            // Панель управления для администратора
+            /*if (CurrentUser?.Role == UserRole.Admin)
+            {*/
+                var btnManageTests = new Button
+                {
+                    Text = "Управление тестами",
+                    Location = new Point(20, 70),
+                    Size = new Size(150, 40),
+                    Font = new Font("Arial", 10, FontStyle.Bold)
+                };
+                btnManageTests.Click += BtnManageTests_Click;
+
+                this.Controls.Add(btnManageTests);
+            /*}*/
+
             // Кнопка выхода
             var btnLogout = new Button
             {
@@ -55,6 +73,17 @@ namespace TestingSystem.WindowsForms
             };
 
             this.Controls.AddRange(new Control[] { lblWelcome, btnLogout });
+        }
+
+        private void BtnManageTests_Click(object? sender, EventArgs e)
+        {
+            if (CurrentUser == null) return;
+
+            var testService = Program.ServiceProvider.GetRequiredService<ITestService>();
+            var questionService = Program.ServiceProvider.GetRequiredService<IQuestionService>();
+
+            var testManagementForm = new TestManagementForm(testService, questionService, CurrentUser);
+            testManagementForm.ShowDialog();
         }
     }
 }

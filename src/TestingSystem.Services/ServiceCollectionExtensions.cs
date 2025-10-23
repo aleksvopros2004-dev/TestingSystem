@@ -20,9 +20,14 @@ namespace TestingSystem.Services
 
             // Repositories
             services.AddScoped<IUserRepository, UserRepository>();
+            services.AddScoped<ITestRepository, TestRepository>();
+            services.AddScoped<IQuestionRepository, QuestionRepository>();
+            services.AddScoped<IAnswerOptionRepository, AnswerOptionRepository>();
 
             // Services
             services.AddScoped<IAuthService, AuthService>();
+            services.AddScoped<ITestService, TestService>();
+            services.AddScoped<IQuestionService, QuestionService>();
 
             return services;
         }

@@ -20,4 +20,25 @@ CREATE TABLE IF NOT EXISTS tests (
     answer_options_random BOOLEAN DEFAULT FALSE
 );
 
--- Остальные таблицы будут добавлены позже
+-- Таблица вопросов
+CREATE TABLE IF NOT EXISTS questions (
+    id SERIAL PRIMARY KEY,
+    test_id INTEGER NOT NULL REFERENCES tests(id) ON DELETE CASCADE,
+    question_text TEXT NOT NULL,
+    question_type VARCHAR(50) NOT NULL CHECK (question_type IN ('SingleChoice', 'MultipleChoice', 'TextAnswer')),
+    order_index INTEGER
+);
+
+-- Таблица вариантов ответов
+CREATE TABLE IF NOT EXISTS answer_options (
+    id SERIAL PRIMARY KEY,
+    question_id INTEGER NOT NULL REFERENCES questions(id) ON DELETE CASCADE,
+    option_text TEXT NOT NULL,
+    is_correct BOOLEAN DEFAULT FALSE
+);
+
+-- Индексы для улучшения производительности
+CREATE INDEX IF NOT EXISTS idx_tests_author_id ON tests(author_id);
+CREATE INDEX IF NOT EXISTS idx_tests_is_active ON tests(is_active);
+CREATE INDEX IF NOT EXISTS idx_questions_test_id ON questions(test_id);
+CREATE INDEX IF NOT EXISTS idx_answer_options_question_id ON answer_options(question_id);

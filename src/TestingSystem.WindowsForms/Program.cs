@@ -29,10 +29,11 @@ namespace TestingSystem.WindowsForms
             {
                 MessageBox.Show($"Ошибка инициализации БД: {ex.Message}", "Ошибка",
                 MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return; 
+                return;
             }
 
             Application.Run(ServiceProvider.GetRequiredService<LoginForm>());
+
         }
 
         private static async Task CreateDefaultAdminUserAsync(IServiceProvider serviceProvider)
@@ -76,6 +77,11 @@ namespace TestingSystem.WindowsForms
 
                     services.AddTransient<LoginForm>();
                     services.AddTransient<MainForm>();
+                    services.AddTransient<TestManagementForm>();
+                    services.AddTransient<EditTestForm>();
+                    services.AddTransient<QuestionManagementForm>();
+                    //services.AddTransient<CreateQuestionForm>(); // Нужно создать
+                    //services.AddTransient<EditQuestionForm>(); // Нужно создать
                 });
         }
     }
