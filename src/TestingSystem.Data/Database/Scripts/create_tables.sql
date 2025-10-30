@@ -4,7 +4,7 @@ CREATE TABLE IF NOT EXISTS users (
     login VARCHAR(100) NOT NULL UNIQUE,
     password_hash VARCHAR(255) NOT NULL,
     full_name VARCHAR(255) NOT NULL,
-    role VARCHAR(20) NOT NULL CHECK (role IN ('Admin', 'User'))
+    role VARCHAR(50) NOT NULL CHECK (role IN ('Admin', 'User'))
 );
 
 -- Таблица тестов
@@ -42,3 +42,26 @@ CREATE INDEX IF NOT EXISTS idx_tests_author_id ON tests(author_id);
 CREATE INDEX IF NOT EXISTS idx_tests_is_active ON tests(is_active);
 CREATE INDEX IF NOT EXISTS idx_questions_test_id ON questions(test_id);
 CREATE INDEX IF NOT EXISTS idx_answer_options_question_id ON answer_options(question_id);
+
+
+-- Вопросы для теста
+INSERT INTO questions (test_id, question_text, question_type, order_index) VALUES
+(14, 'Что такое CLR в .NET?', 'SingleChoice', 1),
+(14, 'Какие модификаторы доступа вы знаете в C#?', 'MultipleChoice', 2),
+(14, 'Опишите преимущества использования Generic в C#', 'TextAnswer', 3);
+
+--Варианты ответов для первого вопроса
+INSERT INTO answer_options (question_id, option_text, is_correct) VALUES
+(34, 'Common Language Runtime - среда выполнения', true),
+(34, 'Compiler Language Resource - ресурс компилятора', false),
+(34, 'Core Library Reference - ссылка на основную библиотеку', false);
+
+-- Варианты ответов для второго вопроса
+INSERT INTO answer_options (question_id, option_text, is_correct) VALUES
+(35, 'public', true),
+(35, 'private', true),
+(35, 'protected', true),
+(35, 'internal', true),
+(35, 'global', false);
+
+

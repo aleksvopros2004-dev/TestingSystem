@@ -41,25 +41,42 @@ namespace TestingSystem.WindowsForms
             var userRepository = serviceProvider.GetRequiredService<IUserRepository>();
             var authService = serviceProvider.GetRequiredService<IAuthService>();
 
-           
+            // Проверяем, есть ли уже администратор
             var admin = await userRepository.GetByLoginAsync("admin");
-
-            try
+            if (admin == null)
             {
                 var newAdmin = new User
                 {
                     Login = "admin",
                     FullName = "Администратор системы",
                     Role = UserRole.Admin
-                   
                 };
 
-                var result = await authService.RegisterAsync(newAdmin, "admin123");
+                await authService.RegisterAsync(newAdmin, "admin123");
+
+                // Добавляем тестовые данные
+                await SeedTestDataAsync(serviceProvider);
+            }
+        }
+
+        private static async Task SeedTestDataAsync(IServiceProvider serviceProvider)
+        {
+            try
+            {
+                var testService = serviceProvider.GetRequiredService<ITestService>();
+                var questionService = serviceProvider.GetRequiredService<IQuestionService>();
+
+                // Проверяем, есть ли уже тесты
+                var tests = await testService.GetActiveTestsAsync();
+                if (!tests.Any())
+                {
+                    // Можно добавить создание тестовых тестов здесь
+                    Console.WriteLine("Тестовые данные не найдены. Можно добавить начальные тесты.");
+                }
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Исключение при создании администратора: {ex.Message}", "Ошибка",
-                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Console.WriteLine($"Ошибка при создании тестовых данных: {ex.Message}");
             }
         }
 
@@ -80,8 +97,8 @@ namespace TestingSystem.WindowsForms
                     services.AddTransient<TestManagementForm>();
                     services.AddTransient<EditTestForm>();
                     services.AddTransient<QuestionManagementForm>();
-                    //services.AddTransient<CreateQuestionForm>(); // Нужно создать
-                    //services.AddTransient<EditQuestionForm>(); // Нужно создать
+                    services.AddTransient<CreateQuestionForm>(); 
+                    services.AddTransient<EditQuestionForm>(); 
                 });
         }
     }

@@ -183,12 +183,26 @@ namespace TestingSystem.WindowsForms
             }
         }
 
-        private void OpenMainForm()
+        /*private void OpenMainForm()
         {
             var mainForm = Program.ServiceProvider.GetRequiredService<MainForm>();
             mainForm.CurrentUser = CurrentUser;
             mainForm.Show();
             this.Hide();
+        }*/
+
+        private void OpenMainForm()
+        {
+            if (CurrentUser == null) return;
+
+            // Создаем MainForm и передаем пользователя в конструктор
+            var mainForm = new MainForm(CurrentUser);
+
+            Console.WriteLine($"Opening MainForm for user: {CurrentUser.FullName}, Role: {CurrentUser.Role}");
+
+            mainForm.Show();
+            this.Hide();
         }
+
     }
 }

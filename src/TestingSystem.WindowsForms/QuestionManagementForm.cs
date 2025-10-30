@@ -42,7 +42,7 @@ namespace TestingSystem.WindowsForms
             var btnAddQuestion = new ToolStripButton("Добавить вопрос");
             var btnRefresh = new ToolStripButton("Обновить");
 
-            /*btnAddQuestion.Click += BtnAddQuestion_Click;*/
+            btnAddQuestion.Click += BtnAddQuestion_Click;
             btnRefresh.Click += async (s, e) => await LoadQuestionsAsync();
 
             toolStrip.Items.AddRange(new ToolStripItem[] { btnAddQuestion, btnRefresh });
@@ -63,7 +63,7 @@ namespace TestingSystem.WindowsForms
             listView.Columns.Add("Тип", 100);
             listView.Columns.Add("Вариантов", 80);
 
-            /*listView.MouseDoubleClick += ListView_MouseDoubleClick;*/
+            listView.MouseDoubleClick += ListView_MouseDoubleClick;
 
             // Кнопки управления
             var btnEdit = new Button { Text = "Редактировать", Location = new Point(630, 40), Size = new Size(120, 30) };
@@ -71,7 +71,7 @@ namespace TestingSystem.WindowsForms
             var btnMoveUp = new Button { Text = "Вверх", Location = new Point(630, 120), Size = new Size(120, 30) };
             var btnMoveDown = new Button { Text = "Вниз", Location = new Point(630, 160), Size = new Size(120, 30) };
 
-            /*btnEdit.Click += BtnEdit_Click;*/
+            btnEdit.Click += BtnEdit_Click;
             btnDelete.Click += BtnDelete_Click;
             btnMoveUp.Click += BtnMoveUp_Click;
             btnMoveDown.Click += BtnMoveDown_Click;
@@ -138,7 +138,7 @@ namespace TestingSystem.WindowsForms
             };
         }
 
-       /* private void BtnAddQuestion_Click(object? sender, EventArgs e)
+        private void BtnAddQuestion_Click(object? sender, EventArgs e)
         {
             var form = new CreateQuestionForm(_questionService, _test);
             form.QuestionCreated += async (s, e) => await LoadQuestionsAsync();
@@ -148,9 +148,9 @@ namespace TestingSystem.WindowsForms
         private void ListView_MouseDoubleClick(object? sender, MouseEventArgs e)
         {
             BtnEdit_Click(sender, e);
-        }*/
+        }
 
-        /*private void BtnEdit_Click(object? sender, EventArgs e)
+        private void BtnEdit_Click(object? sender, EventArgs e)
         {
             var listView = this.Controls.Find("listQuestions", true).FirstOrDefault() as ListView;
             if (listView?.SelectedItems.Count == 0) return;
@@ -162,7 +162,7 @@ namespace TestingSystem.WindowsForms
             var form = new EditQuestionForm(_questionService, question);
             form.QuestionUpdated += async (s, e) => await LoadQuestionsAsync();
             form.ShowDialog();
-        }*/
+        }
 
         private async void BtnDelete_Click(object? sender, EventArgs e)
         {

@@ -15,48 +15,58 @@ namespace TestingSystem.WindowsForms
 {
     public partial class MainForm : Form
     {
-        public User? CurrentUser { get; set; }
-        public MainForm()
+        public User CurrentUser { get; }
+
+        // Конструктор с обязательным параметром пользователя
+        public MainForm(User user)
         {
+            CurrentUser = user ?? throw new ArgumentNullException(nameof(user));
             InitializeComponent();
             SetupForm();
+
+            Console.WriteLine($"MainForm created for user: {CurrentUser.FullName}, Role: {CurrentUser.Role}");
         }
+
         private void InitializeComponent()
         {
-            this.Text = "Система тестирования";
+            this.SuspendLayout();
+
+            this.Text = "Система тестирования - Главная";
             this.Size = new Size(800, 600);
             this.StartPosition = FormStartPosition.CenterScreen;
+            this.BackColor = Color.White;
+
+            this.ResumeLayout(false);
         }
 
         private void SetupForm()
         {
+            this.Controls.Clear();
+
             // Приветствие
             var lblWelcome = new Label
             {
-                Text = CurrentUser != null
-                    ? $"Добро пожаловать, {CurrentUser.FullName} ({CurrentUser.Role})!"
-                    : "Добро пожаловать в систему тестирования!",
+                Text = $"Добро пожаловать, {CurrentUser.FullName} ({CurrentUser.Role})!",
                 Location = new Point(20, 20),
                 Size = new Size(400, 30),
                 Font = new Font("Arial", 12, FontStyle.Bold)
             };
+            this.Controls.Add(lblWelcome);
 
-
-
-            // Панель управления для администратора
-            /*if (CurrentUser?.Role == UserRole.Admin)
-            {*/
+            // ПРОВЕРКА АДМИНА
+            if (CurrentUser.Role == UserRole.Admin)
+            {
                 var btnManageTests = new Button
                 {
                     Text = "Управление тестами",
                     Location = new Point(20, 70),
                     Size = new Size(150, 40),
-                    Font = new Font("Arial", 10, FontStyle.Bold)
+                    Font = new Font("Arial", 10, FontStyle.Bold),
+                    BackColor = Color.LightBlue
                 };
                 btnManageTests.Click += BtnManageTests_Click;
-
                 this.Controls.Add(btnManageTests);
-            /*}*/
+            }
 
             // Кнопка выхода
             var btnLogout = new Button
@@ -67,16 +77,16 @@ namespace TestingSystem.WindowsForms
             };
             btnLogout.Click += (s, e) =>
             {
-                var loginForm = Program.ServiceProvider.GetRequiredService<LoginForm>();
+                var loginForm = new LoginForm(Program.ServiceProvider.GetRequiredService<IAuthService>());
                 loginForm.Show();
                 this.Close();
             };
-
-            this.Controls.AddRange(new Control[] { lblWelcome, btnLogout });
+            this.Controls.Add(btnLogout);
         }
 
         private void BtnManageTests_Click(object? sender, EventArgs e)
         {
+            /*MessageBox.Show("Открывается управление тестами!", "Админ функция");*/
             if (CurrentUser == null) return;
 
             var testService = Program.ServiceProvider.GetRequiredService<ITestService>();
