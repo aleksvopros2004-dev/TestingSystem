@@ -36,6 +36,11 @@ namespace TestingSystem.WindowsForms
 
         }
 
+        private static string HashPassword(string password)
+        {
+            return BCrypt.Net.BCrypt.HashPassword(password);
+        }
+
         private static async Task CreateDefaultAdminUserAsync(IServiceProvider serviceProvider)
         {
             var userRepository = serviceProvider.GetRequiredService<IUserRepository>();
@@ -45,17 +50,46 @@ namespace TestingSystem.WindowsForms
             var admin = await userRepository.GetByLoginAsync("admin");
             if (admin == null)
             {
-                var newAdmin = new User
+                // Создаем временного администратора для вызова метода
+                var tempAdmin = new User
                 {
-                    Login = "admin",
-                    FullName = "Администратор системы",
-                    Role = UserRole.Admin
+                    Login = "temp_admin",
+                    FullName = "Временный администратор",
+                    Role = UserRole.Admin,
+                    PasswordHash = HashPassword("temp123"),
+                    IsActive = true,
+                    CreatedDate = DateTime.UtcNow
                 };
 
-                await authService.RegisterAsync(newAdmin, "admin123");
+                // Создаем временного пользователя в базе
+                var tempId = await userRepository.CreateAsync(tempAdmin);
 
-                // Добавляем тестовые данные
-                await SeedTestDataAsync(serviceProvider);
+                // Получаем его обратно с ID
+                var createdTempAdmin = await userRepository.GetByIdAsync(tempId);
+
+                if (createdTempAdmin != null)
+                {
+                    // Создаем основного администратора
+                    var result = await authService.RegisterAdminAsync(
+                        adminUser: createdTempAdmin,
+                        password: "admin123",
+                        login: "admin",
+                        fullName: "Администратор системы",
+                        role: UserRole.Admin
+                    );
+
+                    if (result.Success)
+                    {
+                        Console.WriteLine("Администратор успешно создан");
+                        // Удаляем временного администратора
+                        await userRepository.DeleteAsync(tempId);
+                        await SeedTestDataAsync(serviceProvider);
+                    }
+                    else
+                    {
+                        Console.WriteLine($"Ошибка при создании администратора: {result.Message}");
+                    }
+                }
             }
         }
 
@@ -94,6 +128,9 @@ namespace TestingSystem.WindowsForms
 
                     services.AddTransient<LoginForm>();
                     services.AddTransient<MainForm>();
+                    services.AddTransient<RegisterForm>(); // Добавляем форму регистрации
+                    services.AddTransient<UserManagementForm>(); // Добавляем форму управления пользователями
+                    services.AddTransient<CreateUserForm>(); // Добавляем форму создания пользователя
                     services.AddTransient<TestManagementForm>();
                     services.AddTransient<EditTestForm>();
                     services.AddTransient<QuestionManagementForm>();
