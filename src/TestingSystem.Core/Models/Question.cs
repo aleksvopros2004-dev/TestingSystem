@@ -1,20 +1,22 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ComponentModel.DataAnnotations.Schema;
 
-namespace TestingSystem.Core.Models
+namespace TestingSystem.Core.Models;
+
+public class Question
 {
-    public class Question
-    {
-        public int Id { get; set; }
-        public int TestId { get; set; }
-        public string QuestionText { get; set; } = string.Empty;
-        public string QuestionType { get; set; } = string.Empty; // "SingleChoice", "MultipleChoice", "TextAnswer"
-        public int? OrderIndex { get; set; }
+    public int Id { get; set; }
 
-        public List<AnswerOption> AnswerOptions { get; set; } = new();
-        public Test? Test { get; set; }
-    }
+    [Column("test_id")]
+    public int TestId { get; set; }
+
+    [Column("question_text")]
+    public string QuestionText { get; set; } = string.Empty;
+
+    [Column("question_type")]
+    public string QuestionType { get; set; } = string.Empty;
+
+    [Column("order_index")]
+    public int OrderIndex { get; set; }
+
+    public List<AnswerOption> AnswerOptions { get; set; } = new();
 }

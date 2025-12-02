@@ -8,6 +8,7 @@ public partial class CreateQuestionForm : Form
     private readonly IQuestionService _questionService;
     private readonly Test _test;
     private List<AnswerOption> _answerOptions = new();
+    private Panel? _answersPanel;
 
     public event EventHandler? QuestionCreated;
 
@@ -25,90 +26,100 @@ public partial class CreateQuestionForm : Form
         this.StartPosition = FormStartPosition.CenterParent;
         this.FormBorderStyle = FormBorderStyle.FixedDialog;
         this.MaximizeBox = false;
-
         CreateControls();
     }
 
     private void CreateControls()
     {
+        // Заголовок
+        var lblTitle = new Label
+        {
+            Text = $"Добавление вопроса к тесту: {_test.Title}",
+            Location = new Point(20, 20),
+            Size = new Size(560, 25),
+            Font = new Font("Arial", 12, FontStyle.Bold),
+            TextAlign = ContentAlignment.MiddleCenter
+        };
+
         // Тип вопроса
-        var lblQuestionType = new Label
+        var lblType = new Label
         {
             Text = "Тип вопроса:",
-            Location = new Point(20, 20),
-            Size = new Size(100, 20)
-        };
-
-        var cmbQuestionType = new ComboBox
-        {
-            Location = new Point(130, 20),
-            Size = new Size(200, 20),
-            DropDownStyle = ComboBoxStyle.DropDownList,
-            Name = "cmbQuestionType"
-        };
-        cmbQuestionType.Items.AddRange(new object[] { "SingleChoice", "MultipleChoice", "TextAnswer" });
-        cmbQuestionType.SelectedIndex = 0;
-        cmbQuestionType.SelectedIndexChanged += CmbQuestionType_SelectedIndexChanged;
-
-        // Текст вопроса
-        var lblQuestionText = new Label
-        {
-            Text = "Текст вопроса:",
             Location = new Point(20, 60),
-            Size = new Size(100, 20)
+            Size = new Size(100, 25)
         };
 
-        var txtQuestionText = new TextBox
+        var cmbType = new ComboBox
         {
             Location = new Point(130, 60),
-            Size = new Size(430, 60),
+            Size = new Size(200, 25),
+            DropDownStyle = ComboBoxStyle.DropDownList,
+            Name = "cmbType"
+        };
+        cmbType.Items.AddRange(new[] { "Один вариант", "Несколько вариантов", "Текстовый ответ" });
+        cmbType.SelectedIndex = 0;
+        cmbType.SelectedIndexChanged += (s, e) => UpdateAnswerPanel();
+
+        // Текст вопроса
+        var lblText = new Label
+        {
+            Text = "Текст вопроса:",
+            Location = new Point(20, 100),
+            Size = new Size(100, 25)
+        };
+
+        var txtQuestion = new TextBox
+        {
+            Location = new Point(130, 100),
+            Size = new Size(420, 80),
             Multiline = true,
             ScrollBars = ScrollBars.Vertical,
-            Name = "txtQuestionText"
+            Name = "txtQuestion"
         };
 
         // Панель для вариантов ответов
-        var pnlAnswers = new Panel
+        _answersPanel = new Panel
         {
-            Location = new Point(20, 140),
-            Size = new Size(540, 200),
+            Location = new Point(20, 200),
+            Size = new Size(530, 150),
             BorderStyle = BorderStyle.FixedSingle,
+            AutoScroll = true,
             Name = "pnlAnswers"
         };
 
-        // Кнопки для управления вариантами ответов
+        // Кнопка добавления варианта
         var btnAddOption = new Button
         {
             Text = "Добавить вариант",
-            Location = new Point(20, 350),
-            Size = new Size(120, 30),
+            Location = new Point(20, 360),
+            Size = new Size(150, 30),
             Name = "btnAddOption"
         };
-        btnAddOption.Click += BtnAddOption_Click;
+        btnAddOption.Click += (s, e) => AddAnswerOption();
 
         // Кнопки сохранения/отмены
         var btnSave = new Button
         {
             Text = "Сохранить",
-            Location = new Point(350, 400),
-            Size = new Size(100, 30),
+            Location = new Point(350, 360),
+            Size = new Size(100, 35),
             Name = "btnSave"
         };
-        btnSave.Click += BtnSave_Click;
+        btnSave.Click += async (s, e) => await SaveQuestion();
 
         var btnCancel = new Button
         {
             Text = "Отмена",
-            Location = new Point(460, 400),
-            Size = new Size(100, 30)
+            Location = new Point(460, 360),
+            Size = new Size(100, 35)
         };
         btnCancel.Click += (s, e) => this.Close();
 
         // Сообщение
         var lblMessage = new Label
         {
-            Location = new Point(20, 440),
-            Size = new Size(540, 20),
+            Location = new Point(20, 410),
+            Size = new Size(540, 40),
             TextAlign = ContentAlignment.MiddleCenter,
             Name = "lblMessage",
             ForeColor = Color.Red
@@ -116,154 +127,292 @@ public partial class CreateQuestionForm : Form
 
         this.Controls.AddRange(new Control[]
         {
-            lblQuestionType, cmbQuestionType,
-            lblQuestionText, txtQuestionText,
-            pnlAnswers,
+            lblTitle,
+            lblType, cmbType,
+            lblText, txtQuestion,
+            _answersPanel,
             btnAddOption,
             btnSave, btnCancel,
             lblMessage
         });
 
-        UpdateAnswersPanel();
+        // Добавляем начальные варианты
+        AddAnswerOption();
+        AddAnswerOption();
     }
 
-    private void CmbQuestionType_SelectedIndexChanged(object? sender, EventArgs e)
+    private void AddAnswerOption()
     {
-        var cmbQuestionType = this.Controls.Find("cmbQuestionType", true).FirstOrDefault() as ComboBox;
-        var btnAddOption = this.Controls.Find("btnAddOption", true).FirstOrDefault() as Button;
+        if (_answersPanel == null) return;
 
-        if (cmbQuestionType?.SelectedItem?.ToString() == "TextAnswer")
+        var index = _answerOptions.Count;
+        var yPos = 10 + (index * 35);
+
+        // Получаем тип вопроса
+        var cmbType = this.Controls.Find("cmbType", true).FirstOrDefault() as ComboBox;
+        var questionType = cmbType?.SelectedIndex ?? 0;
+
+        // Элемент для отметки правильности
+        Control correctControl;
+        if (questionType == 0) // Один вариант
         {
-            if (btnAddOption != null) btnAddOption.Enabled = false;
-            _answerOptions.Clear();
+            correctControl = new RadioButton
+            {
+                Location = new Point(10, yPos),
+                Size = new Size(20, 20),
+                Tag = index,
+                Name = $"rdoCorrect_{index}"
+            };
         }
-        else
+        else if (questionType == 1) // Несколько вариантов
         {
-            if (btnAddOption != null) btnAddOption.Enabled = true;
+            correctControl = new CheckBox
+            {
+                Location = new Point(10, yPos),
+                Size = new Size(20, 20),
+                Tag = index,
+                Name = $"chkCorrect_{index}"
+            };
+        }
+        else // Текстовый ответ
+        {
+            return; // Для текстового ответа варианты не нужны
         }
 
-        UpdateAnswersPanel();
-    }
+        // Поле для текста варианта
+        var txtOption = new TextBox
+        {
+            Location = new Point(40, yPos),
+            Size = new Size(400, 25),
+            Text = $"Вариант {index + 1}",
+            Tag = index,
+            Name = $"txtOption_{index}"
+        };
 
-    private void BtnAddOption_Click(object? sender, EventArgs e)
-    {
+        // Кнопка удаления
+        var btnDelete = new Button
+        {
+            Text = "×",
+            Location = new Point(450, yPos),
+            Size = new Size(30, 25),
+            ForeColor = Color.Red,
+            Font = new Font("Arial", 10, FontStyle.Bold),
+            Tag = index,
+            Name = $"btnDelete_{index}"
+        };
+        btnDelete.Click += (s, e) =>
+        {
+            if (btnDelete.Tag is int idx)
+            {
+                // Удаляем контролы
+                _answersPanel.Controls.RemoveByKey($"rdoCorrect_{idx}");
+                _answersPanel.Controls.RemoveByKey($"chkCorrect_{idx}");
+                _answersPanel.Controls.RemoveByKey($"txtOption_{idx}");
+                _answersPanel.Controls.RemoveByKey($"btnDelete_{idx}");
+
+                // Удаляем из списка
+                _answerOptions.RemoveAll(o => true); // Упрощенно - пересоздадим весь список позже
+
+                // Пересоздаем варианты
+                RecreateAnswerOptions();
+            }
+        };
+
+        _answersPanel.Controls.Add(correctControl);
+        _answersPanel.Controls.Add(txtOption);
+        _answersPanel.Controls.Add(btnDelete);
+
+        // Сохраняем вариант
         _answerOptions.Add(new AnswerOption
         {
-            OptionText = $"Вариант {_answerOptions.Count + 1}",
+            OptionText = $"Вариант {index + 1}",
             IsCorrect = false
         });
-        UpdateAnswersPanel();
     }
 
-    private void UpdateAnswersPanel()
+    private void UpdateAnswerPanel()
     {
-        var pnlAnswers = this.Controls.Find("pnlAnswers", true).FirstOrDefault() as Panel;
-        var cmbQuestionType = this.Controls.Find("cmbQuestionType", true).FirstOrDefault() as ComboBox;
+        var cmbType = this.Controls.Find("cmbType", true).FirstOrDefault() as ComboBox;
+        var questionType = cmbType?.SelectedIndex ?? 0;
 
-        if (pnlAnswers == null) return;
-
-        pnlAnswers.Controls.Clear();
-
-        if (cmbQuestionType?.SelectedItem?.ToString() == "TextAnswer")
+        // Показываем/скрываем панель с вариантами
+        if (_answersPanel != null)
         {
-            var lblInfo = new Label
-            {
-                Text = "Для текстового ответа варианты не требуются",
-                Location = new Point(10, 10),
-                Size = new Size(300, 20),
-                ForeColor = Color.Gray
-            };
-            pnlAnswers.Controls.Add(lblInfo);
-            return;
+            _answersPanel.Visible = questionType != 2; // 2 = текстовый ответ
         }
 
+        // Обновляем кнопку добавления
+        var btnAddOption = this.Controls.Find("btnAddOption", true).FirstOrDefault() as Button;
+        if (btnAddOption != null)
+        {
+            btnAddOption.Enabled = questionType != 2;
+        }
+
+        // Пересоздаем варианты для нового типа
+        RecreateAnswerOptions();
+    }
+
+    private void RecreateAnswerOptions()
+    {
+        if (_answersPanel == null) return;
+
+        // Очищаем панель
+        _answersPanel.Controls.Clear();
+
+        // Пересоздаем все варианты
         for (int i = 0; i < _answerOptions.Count; i++)
         {
-            var option = _answerOptions[i];
+            var yPos = 10 + (i * 35);
+            var cmbType = this.Controls.Find("cmbType", true).FirstOrDefault() as ComboBox;
+            var questionType = cmbType?.SelectedIndex ?? 0;
 
-            // CheckBox для правильного ответа
-            var chkCorrect = new CheckBox
+            Control correctControl;
+            if (questionType == 0) // Один вариант
             {
-                Location = new Point(10, 10 + i * 30),
-                Size = new Size(20, 20),
-                Checked = option.IsCorrect,
-                Tag = i
-            };
-            chkCorrect.CheckedChanged += (s, e) =>
-            {
-                if (chkCorrect.Tag is int index && index < _answerOptions.Count)
+                correctControl = new RadioButton
                 {
-                    _answerOptions[index].IsCorrect = chkCorrect.Checked;
-                }
-            };
+                    Location = new Point(10, yPos),
+                    Size = new Size(20, 20),
+                    Tag = i,
+                    Name = $"rdoCorrect_{i}"
+                };
+            }
+            else // Несколько вариантов
+            {
+                correctControl = new CheckBox
+                {
+                    Location = new Point(10, yPos),
+                    Size = new Size(20, 20),
+                    Tag = i,
+                    Name = $"chkCorrect_{i}"
+                };
+            }
 
-            // Поле для текста варианта
             var txtOption = new TextBox
             {
-                Location = new Point(40, 10 + i * 30),
-                Size = new Size(400, 20),
-                Text = option.OptionText,
-                Tag = i
-            };
-            txtOption.TextChanged += (s, e) =>
-            {
-                if (txtOption.Tag is int index && index < _answerOptions.Count)
-                {
-                    _answerOptions[index].OptionText = txtOption.Text;
-                }
+                Location = new Point(40, yPos),
+                Size = new Size(400, 25),
+                Text = _answerOptions[i].OptionText,
+                Tag = i,
+                Name = $"txtOption_{i}"
             };
 
-            // Кнопка удаления
             var btnDelete = new Button
             {
                 Text = "×",
-                Location = new Point(450, 10 + i * 30),
-                Size = new Size(25, 20),
+                Location = new Point(450, yPos),
+                Size = new Size(30, 25),
                 ForeColor = Color.Red,
                 Font = new Font("Arial", 10, FontStyle.Bold),
-                Tag = i
+                Tag = i,
+                Name = $"btnDelete_{i}"
             };
             btnDelete.Click += (s, e) =>
             {
-                if (btnDelete.Tag is int index && index < _answerOptions.Count)
+                if (btnDelete.Tag is int idx && idx < _answerOptions.Count)
                 {
-                    _answerOptions.RemoveAt(index);
-                    UpdateAnswersPanel();
+                    _answerOptions.RemoveAt(idx);
+                    RecreateAnswerOptions();
                 }
             };
 
-            pnlAnswers.Controls.AddRange(new Control[] { chkCorrect, txtOption, btnDelete });
+            _answersPanel.Controls.Add(correctControl);
+            _answersPanel.Controls.Add(txtOption);
+            _answersPanel.Controls.Add(btnDelete);
         }
     }
 
-    private async void BtnSave_Click(object? sender, EventArgs e)
+    private async Task SaveQuestion()
     {
-        var cmbQuestionType = this.Controls.Find("cmbQuestionType", true).FirstOrDefault() as ComboBox;
-        var txtQuestionText = this.Controls.Find("txtQuestionText", true).FirstOrDefault() as TextBox;
+        var txtQuestion = this.Controls.Find("txtQuestion", true).FirstOrDefault() as TextBox;
+        var cmbType = this.Controls.Find("cmbType", true).FirstOrDefault() as ComboBox;
         var lblMessage = this.Controls.Find("lblMessage", true).FirstOrDefault() as Label;
         var btnSave = this.Controls.Find("btnSave", true).FirstOrDefault() as Button;
 
-        if (cmbQuestionType == null || txtQuestionText == null || lblMessage == null || btnSave == null) return;
+        if (txtQuestion == null || cmbType == null || lblMessage == null || btnSave == null)
+            return;
 
         // Валидация
-        if (string.IsNullOrWhiteSpace(txtQuestionText.Text))
+        if (string.IsNullOrWhiteSpace(txtQuestion.Text))
         {
             lblMessage.Text = "Введите текст вопроса";
             return;
         }
 
-        var questionType = cmbQuestionType.SelectedItem?.ToString();
-        if (questionType != "TextAnswer" && _answerOptions.Count == 0)
+        // Определяем тип вопроса
+        string questionType = cmbType.SelectedIndex switch
         {
-            lblMessage.Text = "Добавьте хотя бы один вариант ответа";
-            return;
+            0 => "SingleChoice",
+            1 => "MultipleChoice",
+            2 => "TextAnswer",
+            _ => "SingleChoice"
+        };
+
+        // Собираем варианты ответов
+        var answerOptions = new List<AnswerOption>();
+        if (questionType != "TextAnswer" && _answersPanel != null)
+        {
+            // Собираем данные из контролов
+            for (int i = 0; i < _answerOptions.Count; i++)
+            {
+                var txtOption = _answersPanel.Controls.Find($"txtOption_{i}", true).FirstOrDefault() as TextBox;
+                if (txtOption != null && !string.IsNullOrWhiteSpace(txtOption.Text))
+                {
+                    bool isCorrect = false;
+
+                    if (questionType == "SingleChoice")
+                    {
+                        var rdo = _answersPanel.Controls.Find($"rdoCorrect_{i}", true).FirstOrDefault() as RadioButton;
+                        isCorrect = rdo?.Checked ?? false;
+                    }
+                    else if (questionType == "MultipleChoice")
+                    {
+                        var chk = _answersPanel.Controls.Find($"chkCorrect_{i}", true).FirstOrDefault() as CheckBox;
+                        isCorrect = chk?.Checked ?? false;
+                    }
+
+                    answerOptions.Add(new AnswerOption
+                    {
+                        OptionText = txtOption.Text.Trim(),
+                        IsCorrect = isCorrect
+                    });
+                }
+            }
+
+            if (answerOptions.Count == 0)
+            {
+                lblMessage.Text = "Добавьте хотя бы один вариант ответа";
+                return;
+            }
+
+            // Проверяем правильные ответы
+            var correctCount = answerOptions.Count(o => o.IsCorrect);
+            if (correctCount == 0)
+            {
+                lblMessage.Text = "Укажите хотя бы один правильный вариант";
+                return;
+            }
+
+            if (questionType == "SingleChoice" && correctCount > 1)
+            {
+                lblMessage.Text = "Для вопроса с одним вариантом можно выбрать только один правильный ответ";
+                return;
+            }
         }
 
-        if (questionType != "TextAnswer" && !_answerOptions.Any(o => o.IsCorrect))
+        // Определяем порядковый номер
+        var questions = await _questionService.GetQuestionsByTestAsync(_test.Id);
+        var orderIndex = questions.Any() ? questions.Max(q => q.OrderIndex) + 1 : 1;
+
+        // Создаем вопрос
+        var question = new Question
         {
-            lblMessage.Text = "Укажите хотя бы один правильный вариант";
-            return;
-        }
+            TestId = _test.Id,
+            QuestionText = txtQuestion.Text.Trim(),
+            QuestionType = questionType,
+            OrderIndex = orderIndex,
+            AnswerOptions = answerOptions
+        };
 
         // Блокируем кнопку
         btnSave.Enabled = false;
@@ -272,34 +421,14 @@ public partial class CreateQuestionForm : Form
 
         try
         {
-            // Создаем вопрос
-            var question = new Question
-            {
-                TestId = _test.Id,
-                QuestionText = txtQuestionText.Text.Trim(),
-                QuestionType = questionType!,
-                OrderIndex = await GetNextOrderIndex(),
-                AnswerOptions = questionType == "TextAnswer" ? new List<AnswerOption>() : _answerOptions
-            };
-
             var (success, message, questionId) = await _questionService.CreateQuestionAsync(question);
 
             if (success)
             {
-                // Добавляем варианты ответов
-                if (questionType != "TextAnswer")
-                {
-                    foreach (var option in _answerOptions)
-                    {
-                        option.QuestionId = questionId;
-                        await _questionService.AddAnswerOptionAsync(option);
-                    }
-                }
-
-                lblMessage.Text = "Вопрос успешно создан!";
+                lblMessage.Text = $"Вопрос успешно создан (ID: {questionId})!";
                 lblMessage.ForeColor = Color.Green;
 
-                await Task.Delay(1000);
+                await Task.Delay(1500);
                 QuestionCreated?.Invoke(this, EventArgs.Empty);
                 this.Close();
             }
@@ -307,22 +436,14 @@ public partial class CreateQuestionForm : Form
             {
                 lblMessage.Text = message;
                 lblMessage.ForeColor = Color.Red;
+                btnSave.Enabled = true;
             }
         }
         catch (Exception ex)
         {
             lblMessage.Text = $"Ошибка: {ex.Message}";
             lblMessage.ForeColor = Color.Red;
-        }
-        finally
-        {
             btnSave.Enabled = true;
         }
-    }
-
-    private async Task<int> GetNextOrderIndex()
-    {
-        var questions = await _questionService.GetQuestionsByTestAsync(_test.Id);
-        return questions.Any() ? questions.Max(q => q.OrderIndex ?? 0) + 1 : 1;
     }
 }

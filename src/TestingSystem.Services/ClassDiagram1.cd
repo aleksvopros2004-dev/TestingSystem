@@ -1,0 +1,53 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1" MembersFormat="NameAndType">
+  <Class Name="TestingSystem.Services.Services.AuthService" BaseTypeListCollapsed="true">
+    <Position X="5" Y="0.5" Width="4" />
+    <TypeIdentifier>
+      <HashCode>AgCAAAAgAAAEQAAAAAgCAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Services\AuthService.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="TestingSystem.Services.Services.QuestionService" BaseTypeListCollapsed="true">
+    <Position X="9.5" Y="0.5" Width="4" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAgAAAAAAAAAgAABIAAAAKAAEAAAIAAAAAAAAAA=</HashCode>
+      <FileName>Services\QuestionService.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="TestingSystem.Services.Services.TestService" BaseTypeListCollapsed="true">
+    <Position X="5" Y="3.5" Width="4.25" />
+    <TypeIdentifier>
+      <HashCode>CgAAAAAAAAAACBAAAAAAABAAACAAIAAAIAAAEAAEAAA=</HashCode>
+      <FileName>Services\TestService.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="System.Object">
+    <Position X="10.25" Y="4" Width="2.5" />
+    <TypeIdentifier />
+  </Class>
+  <Interface Name="TestingSystem.Services.Interfaces.IAuthService">
+    <Position X="0.5" Y="0.5" Width="4" />
+    <TypeIdentifier>
+      <HashCode>AgCAAAAAAAAEQAAAAAgCAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Interfaces\IAuthService.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="TestingSystem.Services.Interfaces.IQuestionService">
+    <Position X="0.5" Y="5.25" Width="4" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAgAAAAAAAAAgAABIAAAAIAAEAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Interfaces\IQuestionService.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="TestingSystem.Services.Interfaces.ITestService">
+    <Position X="0.5" Y="2.75" Width="4.25" />
+    <TypeIdentifier>
+      <HashCode>CgAAAAAAAAAACBAAAAAAABAAAAAAIAAAAAAAEAAAAAA=</HashCode>
+      <FileName>Interfaces\ITestService.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

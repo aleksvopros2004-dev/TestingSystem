@@ -128,14 +128,14 @@ namespace TestingSystem.WindowsForms
 
                     services.AddTransient<LoginForm>();
                     services.AddTransient<MainForm>();
-                    services.AddTransient<RegisterForm>(); // Добавляем форму регистрации
-                    services.AddTransient<UserManagementForm>(); // Добавляем форму управления пользователями
-                    services.AddTransient<CreateUserForm>(); // Добавляем форму создания пользователя
+                    services.AddTransient<RegisterForm>(); 
+                    services.AddTransient<UserManagementForm>();
+                    services.AddTransient<CreateUserForm>();
                     services.AddTransient<TestManagementForm>();
                     services.AddTransient<EditTestForm>();
-                    services.AddTransient<QuestionManagementForm>();
                     services.AddTransient<CreateQuestionForm>(); 
-                    services.AddTransient<EditQuestionForm>(); 
+                    services.AddTransient<EditQuestionForm>();
+                    services.AddTransient<QuestionManagementForm>();
                 });
         }
     }

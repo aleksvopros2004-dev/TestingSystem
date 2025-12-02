@@ -20,13 +20,18 @@ public partial class CreateUserForm : Form
 
     private void InitializeComponent()
     {
-        this.Text = "Создание нового пользователя";
-        this.Size = new Size(450, 350);
-        this.StartPosition = FormStartPosition.CenterParent;
-        this.FormBorderStyle = FormBorderStyle.FixedDialog;
-        this.MaximizeBox = false;
-
-        CreateControls();
+        SuspendLayout();
+        // 
+        // CreateUserForm
+        // 
+        ClientSize = new Size(434, 311);
+        FormBorderStyle = FormBorderStyle.FixedDialog;
+        MaximizeBox = false;
+        Name = "CreateUserForm";
+        StartPosition = FormStartPosition.CenterParent;
+        Text = "Создание нового пользователя";
+        Load += CreateUserForm_Load;
+        ResumeLayout(false);
     }
 
     private void CreateControls()
@@ -233,5 +238,10 @@ public partial class CreateUserForm : Form
         {
             btnCreate.Enabled = true;
         }
+    }
+
+    private void CreateUserForm_Load(object sender, EventArgs e)
+    {
+
     }
 }
