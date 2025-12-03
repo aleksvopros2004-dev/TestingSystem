@@ -1,5 +1,4 @@
-﻿// TestingSystem.WindowsForms/CreateUserForm.cs
-using TestingSystem.Core.Models;
+﻿using TestingSystem.Core.Models;
 using TestingSystem.Services.Interfaces;
 
 namespace TestingSystem.WindowsForms;
@@ -20,18 +19,13 @@ public partial class CreateUserForm : Form
 
     private void InitializeComponent()
     {
-        SuspendLayout();
-        // 
-        // CreateUserForm
-        // 
-        ClientSize = new Size(434, 311);
-        FormBorderStyle = FormBorderStyle.FixedDialog;
-        MaximizeBox = false;
-        Name = "CreateUserForm";
-        StartPosition = FormStartPosition.CenterParent;
-        Text = "Создание нового пользователя";
-        Load += CreateUserForm_Load;
-        ResumeLayout(false);
+        this.Text = "Создание нового пользователя";
+        this.Size = new Size(450, 350);
+        this.StartPosition = FormStartPosition.CenterParent;
+        this.FormBorderStyle = FormBorderStyle.FixedDialog;
+        this.MaximizeBox = false;
+
+        CreateControls();
     }
 
     private void CreateControls()

@@ -104,7 +104,6 @@ namespace TestingSystem.WindowsForms
                 var tests = await testService.GetActiveTestsAsync();
                 if (!tests.Any())
                 {
-                    // Можно добавить создание тестовых тестов здесь
                     Console.WriteLine("Тестовые данные не найдены. Можно добавить начальные тесты.");
                 }
             }
