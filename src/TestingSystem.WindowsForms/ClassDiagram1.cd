@@ -1,0 +1,111 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="TestingSystem.WindowsForms.ChangePasswordForm">
+    <Position X="0.5" Y="2" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAACAAAAAAAACAAAAiACAAAIAAAAAEAAAAAAA=</HashCode>
+      <FileName>ChangePasswordForm.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TestingSystem.WindowsForms.CreateQuestionForm">
+    <Position X="2.75" Y="0.75" Width="3" />
+    <TypeIdentifier>
+      <HashCode>EgAwAAAAACAAAQAAAQCAAAACACAAAAAABAAAAAAkAAA=</HashCode>
+      <FileName>CreateQuestionForm.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TestingSystem.WindowsForms.CreateTestForm">
+    <Position X="6.25" Y="1.5" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAACAAAAAAAECAIAACACAAAAAAQAAABAAAgAA=</HashCode>
+      <FileName>CreateTestForm.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TestingSystem.WindowsForms.CreateUserForm">
+    <Position X="8.5" Y="1" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAACAAAAgAAACAAAAiBCAAAAAAQAAAAAAAAAA=</HashCode>
+      <FileName>CreateUserForm.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TestingSystem.WindowsForms.EditQuestionForm">
+    <Position X="13.5" Y="1.25" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AgAwAAAAACAAAQBAAACAAAACACAIAAAAAAAAQAAEAAA=</HashCode>
+      <FileName>EditQuestionForm.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TestingSystem.WindowsForms.EditTestForm">
+    <Position X="0.75" Y="6.5" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAgQAAAAACAAABAAAACAAAACACAAAAAABAAABAAAgAA=</HashCode>
+      <FileName>EditTestForm.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TestingSystem.WindowsForms.EditUserForm">
+    <Position X="5.25" Y="6" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAQAAAgAKAAAAAAQACAAAACACAAAIAAAAAAAAAAAAA=</HashCode>
+      <FileName>EditUserForm.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TestingSystem.WindowsForms.LoginForm">
+    <Position X="11" Y="0.75" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAgAAAQAAKAAAAAAAACAAAAiQCAAAAACAAAAAAAACAA=</HashCode>
+      <FileName>LoginForm.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TestingSystem.WindowsForms.MainForm">
+    <Position X="14" Y="7.25" Width="2" />
+    <TypeIdentifier>
+      <HashCode>EAAAAAAEAKAAAAAAAACAAAACAAAAAAAAAAAAAAACAAA=</HashCode>
+      <FileName>MainForm.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TestingSystem.WindowsForms.Program">
+    <Position X="16" Y="0.5" Width="2.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAIAAAAAEAAAACAAAAAAAAAAAAAAAAQAABAABAAA=</HashCode>
+      <FileName>Program.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TestingSystem.WindowsForms.QuestionManagementForm">
+    <Position X="7.75" Y="5.5" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AACAAAEECCAAAAEAAACIAAADCDAAAAAABAAAAAAEAAA=</HashCode>
+      <FileName>QuestionManagementForm.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TestingSystem.WindowsForms.RegisterForm">
+    <Position X="3" Y="7.25" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAACAAAAAAAACAAAAiACAAAAEAAAAAAAAACAA=</HashCode>
+      <FileName>RegisterForm.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TestingSystem.WindowsForms.TestManagementForm">
+    <Position X="10.75" Y="5.75" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>ACAAAAEEACAAAAEAAECAAQADACAAAAAABAAAAAAEiAA=</HashCode>
+      <FileName>TestManagementForm.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TestingSystem.WindowsForms.UserManagementForm">
+    <Position X="16.5" Y="3.25" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>AmAAAAkgACEAAAgAAACAAAAiACAAAIAAAAAAAAAAAAA=</HashCode>
+      <FileName>UserManagementForm.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="System.Windows.Forms.Form" Collapsed="true">
+    <Position X="0.75" Y="0.75" Width="1.5" />
+    <NestedTypes>
+      <Class Name="System.Windows.Forms.Form.ControlCollection" Collapsed="true">
+        <TypeIdentifier />
+      </Class>
+    </NestedTypes>
+    <TypeIdentifier />
+  </Class>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

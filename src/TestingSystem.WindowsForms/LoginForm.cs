@@ -28,22 +28,38 @@ namespace TestingSystem.WindowsForms
         {
             // Основные настройки формы
             this.Text = "Система тестирования - Вход";
-            this.Size = new Size(400, 300);
+            this.Size = new Size(400, 350);
             this.StartPosition = FormStartPosition.CenterScreen;
             this.FormBorderStyle = FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;
 
-            // Создание элементов управления
             CreateControls();
+            SetupControls();
         }
 
         private void CreateControls()
         {
+            this.Text = "Система тестирования - Вход";
+            this.Size = new Size(400, 350); // Увеличили высоту для кнопки регистрации
+            this.StartPosition = FormStartPosition.CenterScreen;
+            this.FormBorderStyle = FormBorderStyle.FixedDialog;
+            this.MaximizeBox = false;
+
+            // Заголовок
+            var lblTitle = new Label
+            {
+                Text = "Вход в систему тестирования",
+                Location = new Point(20, 20),
+                Size = new Size(360, 25),
+                Font = new Font("Arial", 12, FontStyle.Bold),
+                TextAlign = ContentAlignment.MiddleCenter
+            };
+
             // Лейбл логина
             var lblLogin = new Label
             {
                 Text = "Логин:",
-                Location = new Point(50, 50),
+                Location = new Point(50, 70),
                 Size = new Size(100, 20),
                 TextAlign = ContentAlignment.MiddleLeft
             };
@@ -51,7 +67,7 @@ namespace TestingSystem.WindowsForms
             // Поле ввода логина
             var txtLogin = new TextBox
             {
-                Location = new Point(150, 50),
+                Location = new Point(150, 70),
                 Size = new Size(200, 20),
                 Name = "txtLogin"
             };
@@ -60,7 +76,7 @@ namespace TestingSystem.WindowsForms
             var lblPassword = new Label
             {
                 Text = "Пароль:",
-                Location = new Point(50, 90),
+                Location = new Point(50, 100),
                 Size = new Size(100, 20),
                 TextAlign = ContentAlignment.MiddleLeft
             };
@@ -68,11 +84,21 @@ namespace TestingSystem.WindowsForms
             // Поле ввода пароля
             var txtPassword = new TextBox
             {
-                Location = new Point(150, 90),
+                Location = new Point(150, 100),
                 Size = new Size(200, 20),
                 PasswordChar = '*',
                 Name = "txtPassword"
             };
+
+            // Кнопка регистрации
+            var btnRegister = new Button
+            {
+                Text = "Регистрация",
+                Location = new Point(50, 140),
+                Size = new Size(90, 30),
+                Name = "btnRegister"
+            };
+            btnRegister.Click += BtnRegister_Click;
 
             // Кнопка входа
             var btnLogin = new Button
@@ -93,6 +119,7 @@ namespace TestingSystem.WindowsForms
             };
             btnExit.Click += (s, e) => Application.Exit();
 
+
             // Лейбл сообщений
             var lblMessage = new Label
             {
@@ -103,15 +130,45 @@ namespace TestingSystem.WindowsForms
                 TextAlign = ContentAlignment.MiddleCenter
             };
 
+            // Информация о тестовом пользователе
+            var lblTestInfo = new Label
+            {
+                Text = "Тестовый аккаунт: admin / admin123",
+                Location = new Point(50, 240),
+                Size = new Size(300, 20),
+                Font = new Font("Arial", 8),
+                ForeColor = Color.Gray,
+                TextAlign = ContentAlignment.MiddleCenter
+            };
+
             // Добавление элементов на форму
             this.Controls.AddRange(new Control[]
             {
-            lblLogin, txtLogin,
-            lblPassword, txtPassword,
-            btnLogin, btnExit,
-            lblMessage
+                lblTitle,
+                lblLogin, txtLogin,
+                lblPassword, txtPassword,
+                btnRegister, btnLogin, btnExit,
+                lblMessage,
+                lblTestInfo
             });
         }
+
+        private void BtnRegister_Click(object? sender, EventArgs e)
+        {
+            var registerForm = Program.ServiceProvider.GetRequiredService<RegisterForm>();
+            registerForm.UserRegistered += (s, e) =>
+            {
+                var lblMessage = this.Controls.Find("lblMessage", true).FirstOrDefault() as Label;
+                if (lblMessage != null)
+                {
+                    lblMessage.Text = "Регистрация успешна! Теперь вы можете войти.";
+                    lblMessage.ForeColor = Color.Green;
+                }
+            };
+            registerForm.ShowDialog();
+        }
+
+
 
         private void SetupControls()
         {
@@ -185,10 +242,20 @@ namespace TestingSystem.WindowsForms
 
         private void OpenMainForm()
         {
-            var mainForm = Program.ServiceProvider.GetRequiredService<MainForm>();
-            mainForm.CurrentUser = CurrentUser;
+            if (CurrentUser == null) return;
+
+            // Создаем MainForm и передаем пользователя в конструктор
+            var mainForm = new MainForm(CurrentUser);
+
+            Console.WriteLine($"Opening MainForm for user: {CurrentUser.FullName}, Role: {CurrentUser.Role}");
+
             mainForm.Show();
             this.Hide();
+        }
+
+        private void LoginForm_Load(object sender, EventArgs e)
+        {
+
         }
     }
 }

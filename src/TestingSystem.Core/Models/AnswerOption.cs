@@ -1,18 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿namespace TestingSystem.Core.Models;
 
-namespace TestingSystem.Core.Models
+public class AnswerOption
 {
-    public class AnswerOption
-    {
-        public int Id { get; set; }
-        public int QuestionId { get; set; }
-        public string OptionText { get; set; } = string.Empty;
-        public bool IsCorrect { get; set; }
-
-        public Question? Question { get; set; }
-    }
+    public int Id { get; set; }
+    public int QuestionId { get; set; }
+    public Question? Question { get; set; } // Убрали JsonIgnore
+    public string OptionText { get; set; } = string.Empty;
+    public bool IsCorrect { get; set; }
 }

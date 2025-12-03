@@ -36,30 +36,80 @@ namespace TestingSystem.WindowsForms
 
         }
 
+        private static string HashPassword(string password)
+        {
+            return BCrypt.Net.BCrypt.HashPassword(password);
+        }
+
         private static async Task CreateDefaultAdminUserAsync(IServiceProvider serviceProvider)
         {
             var userRepository = serviceProvider.GetRequiredService<IUserRepository>();
             var authService = serviceProvider.GetRequiredService<IAuthService>();
 
-           
+            // Проверяем, есть ли уже администратор
             var admin = await userRepository.GetByLoginAsync("admin");
-
-            try
+            if (admin == null)
             {
-                var newAdmin = new User
+                // Создаем временного администратора для вызова метода
+                var tempAdmin = new User
                 {
-                    Login = "admin",
-                    FullName = "Администратор системы",
-                    Role = UserRole.Admin
-                   
+                    Login = "temp_admin",
+                    FullName = "Временный администратор",
+                    Role = UserRole.Admin,
+                    PasswordHash = HashPassword("temp123"),
+                    IsActive = true,
+                    CreatedDate = DateTime.UtcNow
                 };
 
-                var result = await authService.RegisterAsync(newAdmin, "admin123");
+                // Создаем временного пользователя в базе
+                var tempId = await userRepository.CreateAsync(tempAdmin);
+
+                // Получаем его обратно с ID
+                var createdTempAdmin = await userRepository.GetByIdAsync(tempId);
+
+                if (createdTempAdmin != null)
+                {
+                    // Создаем основного администратора
+                    var result = await authService.RegisterAdminAsync(
+                        adminUser: createdTempAdmin,
+                        password: "admin123",
+                        login: "admin",
+                        fullName: "Администратор системы",
+                        role: UserRole.Admin
+                    );
+
+                    if (result.Success)
+                    {
+                        Console.WriteLine("Администратор успешно создан");
+                        // Удаляем временного администратора
+                        await userRepository.DeleteAsync(tempId);
+                        await SeedTestDataAsync(serviceProvider);
+                    }
+                    else
+                    {
+                        Console.WriteLine($"Ошибка при создании администратора: {result.Message}");
+                    }
+                }
+            }
+        }
+
+        private static async Task SeedTestDataAsync(IServiceProvider serviceProvider)
+        {
+            try
+            {
+                var testService = serviceProvider.GetRequiredService<ITestService>();
+                var questionService = serviceProvider.GetRequiredService<IQuestionService>();
+
+                // Проверяем, есть ли уже тесты
+                var tests = await testService.GetActiveTestsAsync();
+                if (!tests.Any())
+                {
+                    Console.WriteLine("Тестовые данные не найдены. Можно добавить начальные тесты.");
+                }
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Исключение при создании администратора: {ex.Message}", "Ошибка",
-                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Console.WriteLine($"Ошибка при создании тестовых данных: {ex.Message}");
             }
         }
 
@@ -77,11 +127,14 @@ namespace TestingSystem.WindowsForms
 
                     services.AddTransient<LoginForm>();
                     services.AddTransient<MainForm>();
+                    services.AddTransient<RegisterForm>(); 
+                    services.AddTransient<UserManagementForm>();
+                    services.AddTransient<CreateUserForm>();
                     services.AddTransient<TestManagementForm>();
                     services.AddTransient<EditTestForm>();
+                    services.AddTransient<CreateQuestionForm>(); 
+                    services.AddTransient<EditQuestionForm>();
                     services.AddTransient<QuestionManagementForm>();
-                    //services.AddTransient<CreateQuestionForm>(); // Нужно создать
-                    //services.AddTransient<EditQuestionForm>(); // Нужно создать
                 });
         }
     }

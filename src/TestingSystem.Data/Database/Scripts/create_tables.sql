@@ -4,7 +4,9 @@ CREATE TABLE IF NOT EXISTS users (
     login VARCHAR(100) NOT NULL UNIQUE,
     password_hash VARCHAR(255) NOT NULL,
     full_name VARCHAR(255) NOT NULL,
-    role VARCHAR(20) NOT NULL CHECK (role IN ('Admin', 'User'))
+    role VARCHAR(50) NOT NULL CHECK (role IN ('Admin', 'User')),
+    created_date TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    is_active BOOLEAN DEFAULT TRUE
 );
 
 -- Таблица тестов
@@ -26,7 +28,7 @@ CREATE TABLE IF NOT EXISTS questions (
     test_id INTEGER NOT NULL REFERENCES tests(id) ON DELETE CASCADE,
     question_text TEXT NOT NULL,
     question_type VARCHAR(50) NOT NULL CHECK (question_type IN ('SingleChoice', 'MultipleChoice', 'TextAnswer')),
-    order_index INTEGER
+    order_index INTEGER NOT NULL DEFAULT 0
 );
 
 -- Таблица вариантов ответов
@@ -42,3 +44,4 @@ CREATE INDEX IF NOT EXISTS idx_tests_author_id ON tests(author_id);
 CREATE INDEX IF NOT EXISTS idx_tests_is_active ON tests(is_active);
 CREATE INDEX IF NOT EXISTS idx_questions_test_id ON questions(test_id);
 CREATE INDEX IF NOT EXISTS idx_answer_options_question_id ON answer_options(question_id);
+CREATE INDEX IF NOT EXISTS idx_questions_order_index ON questions(order_index);
