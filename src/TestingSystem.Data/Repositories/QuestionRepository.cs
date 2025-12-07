@@ -18,7 +18,18 @@ public class QuestionRepository : IQuestionRepository
     {
         using var connection = _context.CreateConnection();
 
-        const string questionSql = "SELECT * FROM questions WHERE id = @Id";
+        const string questionSql = @"
+        SELECT 
+            id,
+            test_id as TestId,
+            question_text as QuestionText,
+            question_type as QuestionType,
+            order_index as OrderIndex,
+            image_data as ImageData,
+            image_content_type as ImageContentType
+        FROM questions 
+        WHERE id = @Id";
+
         var question = await connection.QueryFirstOrDefaultAsync<Question>(questionSql, new { Id = id });
 
         if (question == null) return null;
@@ -33,49 +44,38 @@ public class QuestionRepository : IQuestionRepository
 
     public async Task<IEnumerable<Question>> GetByTestIdAsync(int testId)
     {
-        Console.WriteLine($"GetByTestIdAsync called for testId: {testId}");
-
         using var connection = _context.CreateConnection();
 
         const string questionsSql = @"
-        SELECT 
-            id, 
-            test_id as TestId, 
-            question_text as QuestionText, 
-            question_type as QuestionType, 
-            order_index as OrderIndex
-        FROM questions 
-        WHERE test_id = @TestId 
+        SELECT
+            id,
+            test_id as TestId,
+            question_text as QuestionText,
+            question_type as QuestionType,
+            order_index as OrderIndex,
+            image_data as ImageData,
+            image_content_type as ImageContentType
+        FROM questions
+        WHERE test_id = @TestId
         ORDER BY order_index, id";
-
-        Console.WriteLine($"Executing SQL: {questionsSql}");
-        Console.WriteLine($"With parameter: TestId = {testId}");
 
         var questions = await connection.QueryAsync<Question>(questionsSql, new { TestId = testId });
         var questionList = questions.ToList();
-
-        Console.WriteLine($"Found {questionList.Count} questions");
-
-        foreach (var question in questionList)
-        {
-            Console.WriteLine($"Question ID: {question.Id}, Text: '{question.QuestionText}', Type: '{question.QuestionType}', Order: {question.OrderIndex}");
-        }
 
         // Для каждого вопроса получаем варианты ответов
         foreach (var question in questionList)
         {
             const string optionsSql = @"
-            SELECT 
-                id, 
-                question_id as QuestionId, 
-                option_text as OptionText, 
+            SELECT
+                id,
+                question_id as QuestionId,
+                option_text as OptionText,
                 is_correct as IsCorrect
-            FROM answer_options 
+            FROM answer_options
             WHERE question_id = @QuestionId";
 
             var options = await connection.QueryAsync<AnswerOption>(optionsSql, new { QuestionId = question.Id });
             question.AnswerOptions = options.ToList();
-            Console.WriteLine($"Question {question.Id} has {question.AnswerOptions.Count} answer options");
         }
 
         return questionList;
@@ -86,17 +86,18 @@ public class QuestionRepository : IQuestionRepository
         using var connection = _context.CreateConnection();
 
         const string sql = @"
-        INSERT INTO questions (test_id, question_text, question_type, order_index)
-        VALUES (@TestId, @QuestionText, @QuestionType, @OrderIndex)
+        INSERT INTO questions (test_id, question_text, question_type, order_index, image_data, image_content_type)
+        VALUES (@TestId, @QuestionText, @QuestionType, @OrderIndex, @ImageData, @ImageContentType)
         RETURNING id";
 
-        // Убираем оператор ??, так как OrderIndex уже int, а не int?
         var questionId = await connection.ExecuteScalarAsync<int>(sql, new
         {
             question.TestId,
             question.QuestionText,
             question.QuestionType,
-            OrderIndex = question.OrderIndex // просто используем значение
+            OrderIndex = question.OrderIndex,
+            question.ImageData,
+            question.ImageContentType
         });
 
         // Сохраняем варианты ответов
@@ -124,12 +125,13 @@ public class QuestionRepository : IQuestionRepository
     {
         using var connection = _context.CreateConnection();
 
-        // ОБНОВЛЯЕМ ВСЕ поля, включая order_index
         const string sql = @"
         UPDATE questions
         SET question_text = @QuestionText,
             question_type = @QuestionType,
-            order_index = @OrderIndex
+            order_index = @OrderIndex,
+            image_data = @ImageData,
+            image_content_type = @ImageContentType
         WHERE id = @Id";
 
         var affectedRows = await connection.ExecuteAsync(sql, new
@@ -137,13 +139,16 @@ public class QuestionRepository : IQuestionRepository
             question.Id,
             question.QuestionText,
             question.QuestionType,
-            OrderIndex = question.OrderIndex // ВАЖНО: обновляем порядковый номер
+            OrderIndex = question.OrderIndex,
+            question.ImageData,
+            question.ImageContentType
         });
 
-        // Удаляем старые варианты ответов и добавляем новые
+        // Удаляем старые варианты ответов
         const string deleteSql = "DELETE FROM answer_options WHERE question_id = @QuestionId";
         await connection.ExecuteAsync(deleteSql, new { QuestionId = question.Id });
 
+        // Добавляем новые варианты ответов
         if (question.AnswerOptions != null && question.AnswerOptions.Any())
         {
             foreach (var option in question.AnswerOptions)
