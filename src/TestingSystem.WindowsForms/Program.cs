@@ -1,39 +1,43 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using System.Net;
 using TestingSystem.Core.Models;
 using TestingSystem.Data.Database;
 using TestingSystem.Data.Repositories;
 using TestingSystem.Services;
 using TestingSystem.Services.Interfaces;
 using TestingSystem.WindowsForms;
+
 namespace TestingSystem.WindowsForms
 {
     internal static class Program
     {
         [STAThread]
-        static async Task Main()
+        static void Main() 
         {
             ApplicationConfiguration.Initialize();
 
+            // Синхронная инициализация
             var host = CreateHostBuilder().Build();
             ServiceProvider = host.Services;
 
+            // Синхронно инициализируем БД
             try
             {
                 var dbContext = ServiceProvider.GetRequiredService<IDatabaseContext>();
-                await dbContext.InitializeDatabaseAsync();
-                await CreateDefaultAdminUserAsync(ServiceProvider);
+                var initTask = dbContext.InitializeDatabaseAsync();
+                initTask.GetAwaiter().GetResult(); // Синхронное ожидание
+
+                var createUserTask = CreateDefaultAdminUserAsync(ServiceProvider);
+                createUserTask.GetAwaiter().GetResult();
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
                 MessageBox.Show($"Ошибка инициализации БД: {ex.Message}", "Ошибка",
-                MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
 
             Application.Run(ServiceProvider.GetRequiredService<LoginForm>());
-
         }
 
         private static string HashPassword(string password)
@@ -120,14 +124,13 @@ namespace TestingSystem.WindowsForms
             return Host.CreateDefaultBuilder()
                 .ConfigureServices((context, services) =>
                 {
-
-                    var connecrionString = "Host = localhost; Database = postgres; Username = postgres; Password = postgres";
-
-                    services.AddTestingSystemServices(connecrionString);
-
+                    var connectionString = "Host=localhost; Database=postgres; Username=postgres; Password=postgres";
+                    services.AddTestingSystemServices(connectionString);
+                    
+                    // Регистрируем формы как Transient
                     services.AddTransient<LoginForm>();
                     services.AddTransient<MainForm>();
-                    services.AddTransient<RegisterForm>(); 
+                    services.AddTransient<RegisterForm>();
                     services.AddTransient<UserManagementForm>();
                     services.AddTransient<CreateUserForm>();
                     services.AddTransient<TestManagementForm>();
@@ -135,6 +138,8 @@ namespace TestingSystem.WindowsForms
                     services.AddTransient<CreateQuestionForm>(); 
                     services.AddTransient<EditQuestionForm>();
                     services.AddTransient<QuestionManagementForm>();
+                    services.AddTransient<ChangePasswordForm>();
+                    services.AddTransient<EditUserForm>();
                 });
         }
     }

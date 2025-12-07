@@ -28,7 +28,9 @@ CREATE TABLE IF NOT EXISTS questions (
     test_id INTEGER NOT NULL REFERENCES tests(id) ON DELETE CASCADE,
     question_text TEXT NOT NULL,
     question_type VARCHAR(50) NOT NULL CHECK (question_type IN ('SingleChoice', 'MultipleChoice', 'TextAnswer')),
-    order_index INTEGER NOT NULL DEFAULT 0
+    order_index INTEGER NOT NULL DEFAULT 0,
+    image_data BYTEA NULL,                -- Новое поле для хранения изображения
+    image_content_type VARCHAR(50) NULL   -- Новое поле для типа контента (image/jpeg, image/png и т.д.)
 );
 
 -- Таблица вариантов ответов

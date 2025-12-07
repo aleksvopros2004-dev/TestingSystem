@@ -143,7 +143,7 @@ public class TestService : ITestService
 
             // Устанавливаем порядковый номер
             var questionsCount = await _questionRepository.GetQuestionsCountAsync(question.TestId);
-            question.OrderIndex = questionsCount + 1; // просто присваиваем int
+            question.OrderIndex = questionsCount + 1; 
 
             await _questionRepository.CreateAsync(question);
             return (true, "Вопрос успешно добавлен");

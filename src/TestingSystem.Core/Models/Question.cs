@@ -18,5 +18,11 @@ public class Question
     [Column("order_index")]
     public int OrderIndex { get; set; }
 
+    [Column("image_data")]
+    public byte[]? ImageData { get; set; }
+
+    [Column("image_content_type")]
+    public string? ImageContentType { get; set; }
+
     public List<AnswerOption> AnswerOptions { get; set; } = new();
 }
