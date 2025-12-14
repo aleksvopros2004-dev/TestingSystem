@@ -9,23 +9,73 @@ namespace TestingSystem.WindowsForms
         private readonly IQuestionService _questionService;
         private readonly IImageService _imageService;
         private readonly Question _question;
-        private List<AnswerOption> _answerOptions = new();
+		private readonly User _currentUser;
+		private List<AnswerOption> _answerOptions = new();
         private byte[]? _selectedImageData;
         private string? _selectedImageContentType;
 
         public event EventHandler? QuestionUpdated;
 
-        public EditQuestionForm(IQuestionService questionService, IImageService imageService, Question question)
+        public EditQuestionForm(IQuestionService questionService, IImageService imageService, Question question, User currentUser)
         {
             _questionService = questionService;
             _imageService = imageService;
             _question = question;
+            _currentUser = currentUser;
             _answerOptions = question.AnswerOptions?.ToList() ?? new List<AnswerOption>();
             _selectedImageData = question.ImageData;
             _selectedImageContentType = question.ImageContentType;
 
             InitializeComponent();
             LoadQuestionData();
+
+            if (_currentUser.Role == UserRole.User) 
+            {
+                this.Text = "Просмотр вопроса";
+                SetupReadOnlyMode();
+            }
+            else
+            {
+                this.Text = "Редактирование вопроса";
+            }
+        }
+
+        private void SetupReadOnlyMode()
+        {
+            txtQuestion.ReadOnly = true;
+            txtQuestion.BackColor = SystemColors.Control;
+            btnLoadImage.Visible = false;
+            btnRemoveImage.Visible = false;
+            btnSave.Visible = false;
+            btnCancel.Text = "Закрыть";
+            btnAddOption.Visible = false;
+
+            foreach (Control control in pnlAnswers.Controls)
+            {
+                if (control is TextBox textBox)
+                {
+                    textBox.ReadOnly = true;
+                    textBox.BackColor = SystemColors.Control;
+                }
+                else if (control is RadioButton radioButton)
+                {
+                    radioButton.Enabled = false;
+                }
+				else if (control is CheckBox checkBox)
+				{
+					checkBox.Enabled = false;
+				}
+				else if (control is Button button && button.Text == "*")
+				{
+					button.Enabled = false;
+				}
+			}
+
+            if (_question.QuestionType == "TextAnswer")
+            {
+                pnlAnswers.Visible = false;
+                lblAnswers.Visible = false;
+            }
         }
 
         private void LoadQuestionData()
@@ -57,80 +107,137 @@ namespace TestingSystem.WindowsForms
             }
         }
 
-        private void LoadAnswerOptions()
+		private void LoadAnswerOptions()
+		{
+			pnlAnswers.Controls.Clear();
+
+			// Проверяем, есть ли варианты ответов
+			if (_answerOptions == null || !_answerOptions.Any())
+			{
+				// Если вариантов нет, показываем сообщение
+				var lblNoOptions = new Label
+				{
+					Text = "Нет вариантов ответов",
+					Location = new Point(10, 10),
+					ForeColor = Color.Gray
+				};
+				pnlAnswers.Controls.Add(lblNoOptions);
+				return;
+			}
+
+			for (int i = 0; i < _answerOptions.Count; i++)
+			{
+				var option = _answerOptions[i];
+				var yPos = 10 + (i * 35);
+
+				// CheckBox/Radiobutton для отметки правильности
+				Control correctControl;
+				if (_question.QuestionType == "SingleChoice")
+				{
+					correctControl = new RadioButton
+					{
+						Location = new Point(10, yPos),
+						Size = new Size(20, 20),
+						Checked = option.IsCorrect,
+						Tag = i,
+						Name = $"rdoCorrect_{i}",
+						Enabled = false // Всегда отключаем для пользователей
+					};
+				}
+				else if (_question.QuestionType == "MultipleChoice")
+				{
+					correctControl = new CheckBox
+					{
+						Location = new Point(10, yPos),
+						Size = new Size(20, 20),
+						Checked = option.IsCorrect,
+						Tag = i,
+						Name = $"chkCorrect_{i}",
+						Enabled = false // Всегда отключаем для пользователей
+					};
+				}
+				else
+				{
+					// Для других типов вопросов не создаем контролы
+					continue;
+				}
+
+				// Текст варианта
+				var txtOption = new TextBox
+				{
+					Location = new Point(40, yPos),
+					Size = new Size(550, 25),
+					Text = option.OptionText,
+					Tag = i,
+					Name = $"txtOption_{i}",
+					ReadOnly = true, // Всегда только чтение для пользователей
+					BackColor = SystemColors.Control
+				};
+
+				// Добавляем иконку правильности для наглядности
+				if (option.IsCorrect)
+				{
+					var lblCorrect = new Label
+					{
+						Text = "✓",
+						Location = new Point(595, yPos),
+						Size = new Size(20, 20),
+						ForeColor = Color.Green,
+						Font = new Font("Arial", 12, FontStyle.Bold),
+						TextAlign = ContentAlignment.MiddleCenter
+					};
+					pnlAnswers.Controls.Add(lblCorrect);
+				}
+
+				// Кнопка удаления показываем только админам
+				if (_currentUser.Role == UserRole.Admin)
+				{
+					var btnDelete = new Button
+					{
+						Text = "×",
+						Location = new Point(600, yPos),
+						Size = new Size(30, 25),
+						ForeColor = Color.Red,
+						Font = new Font("Arial", 10, FontStyle.Bold),
+						Tag = i,
+						Name = $"btnDelete_{i}"
+					};
+
+					btnDelete.Click += (s, e) =>
+					{
+						if (btnDelete.Tag is int idx && idx < _answerOptions.Count)
+						{
+							_answerOptions.RemoveAt(idx);
+							LoadAnswerOptions();
+						}
+					};
+
+					pnlAnswers.Controls.Add(btnDelete);
+				}
+
+				pnlAnswers.Controls.Add(correctControl);
+				pnlAnswers.Controls.Add(txtOption);
+			}
+
+			// Делаем панель видимой, если есть варианты
+			if (_answerOptions.Any())
+			{
+				pnlAnswers.Visible = true;
+				lblAnswers.Visible = true;
+			}
+		}
+
+		private void AddAnswerOption()
         {
-            pnlAnswers.Controls.Clear();
+			if (_currentUser.Role != UserRole.Admin)
+			{
+				MessageBox.Show("Только администраторы могут создавать тесты", "Ограничение",
+					MessageBoxButtons.OK,
+					MessageBoxIcon.Information);
+				return;
+			}
 
-            for (int i = 0; i < _answerOptions.Count; i++)
-            {
-                var option = _answerOptions[i];
-                var yPos = 10 + (i * 35);
-
-                // CheckBox/Radiobutton для отметки правильности
-                Control correctControl;
-                if (_question.QuestionType == "SingleChoice")
-                {
-                    correctControl = new RadioButton
-                    {
-                        Location = new Point(10, yPos),
-                        Size = new Size(20, 20),
-                        Checked = option.IsCorrect,
-                        Tag = i,
-                        Name = $"rdoCorrect_{i}"
-                    };
-                }
-                else
-                {
-                    correctControl = new CheckBox
-                    {
-                        Location = new Point(10, yPos),
-                        Size = new Size(20, 20),
-                        Checked = option.IsCorrect,
-                        Tag = i,
-                        Name = $"chkCorrect_{i}"
-                    };
-                }
-
-                // Текст варианта
-                var txtOption = new TextBox
-                {
-                    Location = new Point(40, yPos),
-                    Size = new Size(550, 25),
-                    Text = option.OptionText,
-                    Tag = i,
-                    Name = $"txtOption_{i}"
-                };
-
-                // Кнопка удаления
-                var btnDelete = new Button
-                {
-                    Text = "×",
-                    Location = new Point(600, yPos),
-                    Size = new Size(30, 25),
-                    ForeColor = Color.Red,
-                    Font = new Font("Arial", 10, FontStyle.Bold),
-                    Tag = i,
-                    Name = $"btnDelete_{i}"
-                };
-
-                btnDelete.Click += (s, e) =>
-                {
-                    if (btnDelete.Tag is int idx && idx < _answerOptions.Count)
-                    {
-                        _answerOptions.RemoveAt(idx);
-                        LoadAnswerOptions();
-                    }
-                };
-
-                pnlAnswers.Controls.Add(correctControl);
-                pnlAnswers.Controls.Add(txtOption);
-                pnlAnswers.Controls.Add(btnDelete);
-            }
-        }
-
-        private void AddAnswerOption()
-        {
-            if (_answerOptions.Count >= 10)
+			if (_answerOptions.Count >= 10)
             {
                 MessageBox.Show("Максимальное количество вариантов ответов - 10", "Ограничение",
                     MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -149,7 +256,15 @@ namespace TestingSystem.WindowsForms
 
         private void BtnLoadImage_Click(object? sender, EventArgs e)
         {
-            using var openFileDialog = new OpenFileDialog
+			if (_currentUser.Role != UserRole.Admin)
+			{
+				MessageBox.Show("Только администраторы могут создавать тесты", "Ограничение",
+					MessageBoxButtons.OK,
+					MessageBoxIcon.Information);
+				return;
+			}
+
+			using var openFileDialog = new OpenFileDialog
             {
                 Filter = "Image Files|*.jpg;*.jpeg;*.png;*.gif;*.bmp",
                 Title = "Выберите изображение",
@@ -164,7 +279,15 @@ namespace TestingSystem.WindowsForms
 
         private void BtnRemoveImage_Click(object? sender, EventArgs e)
         {
-            _selectedImageData = null;
+			if (_currentUser.Role != UserRole.Admin)
+			{
+				MessageBox.Show("Только администраторы могут создавать тесты", "Ограничение",
+					MessageBoxButtons.OK,
+					MessageBoxIcon.Information);
+				return;
+			}
+
+			_selectedImageData = null;
             _selectedImageContentType = null;
             pictureBox.Image = null;
             pictureBox.Visible = false;
@@ -227,8 +350,16 @@ namespace TestingSystem.WindowsForms
 
         private async void BtnSave_Click(object? sender, EventArgs e)
         {
-            // Валидация
-            if (string.IsNullOrWhiteSpace(txtQuestion.Text))
+			if (_currentUser.Role != UserRole.Admin)
+			{
+				MessageBox.Show("Только администраторы могут создавать тесты", "Ограничение",
+					MessageBoxButtons.OK,
+					MessageBoxIcon.Information);
+				return;
+			}
+
+			// Валидация
+			if (string.IsNullOrWhiteSpace(txtQuestion.Text))
             {
                 lblMessage.Text = "Введите текст вопроса";
                 return;

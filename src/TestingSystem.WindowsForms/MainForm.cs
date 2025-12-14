@@ -20,18 +20,19 @@ namespace TestingSystem.WindowsForms
         private void SetupForm()
         {
             lblWelcome.Text = $"Добро пожаловать, {CurrentUser.FullName} ({CurrentUser.Role})!";
-
-            if (CurrentUser?.Role == UserRole.Admin)
-            {
-                btnManageTests.Visible = true;
-                btnManageUsers.Visible = true;
-            }
+			
+            btnManageTests.Visible = true;
+            btnManageUsers.Visible = CurrentUser.Role == UserRole.Admin;
+			if (CurrentUser?.Role == UserRole.User)
+			{
+                btnManageTests.Text = "Просмотр тестов";
+			}
             else
             {
-                btnManageTests.Visible = false;
-                btnManageUsers.Visible = false;
-            }
-        }
+				btnManageTests.Text = "Управление тестами";
+			}
+
+		}
 
         private void BtnManageTests_Click(object? sender, EventArgs e)
         {
