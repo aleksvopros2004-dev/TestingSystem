@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using System.Security.Cryptography;
 using TestingSystem.Core.Models;
 using TestingSystem.Services.Interfaces;
 
@@ -17,7 +18,19 @@ public partial class TestManagementForm : Form
         _questionService = questionService;
         _currentUser = currentUser;
         InitializeComponent();
-        LoadTestsAsync();
+
+        if (_currentUser.Role == UserRole.User)
+        {
+            this.Text = "Просмотр тестов";
+            btnCreateTestTool.Text = "Просмотр (только чтение)";
+            btnCreateTestTool.Enabled = false;
+        }
+        else
+        {
+            this.Text = "Управление тестами";
+        }
+
+            LoadTestsAsync();
     }
 
     private async Task LoadTestsAsync()
@@ -25,7 +38,14 @@ public partial class TestManagementForm : Form
         try
         {
             listViewTests.Items.Clear();
-            _tests = (await _testService.GetTestsByAuthorAsync(_currentUser.Id)).ToList();
+            if (_currentUser.Role == UserRole.User)
+            {
+				_tests = (await _testService.GetActiveTestsAsync()).ToList();
+			}
+            else
+            {
+				_tests = (await _testService.GetTestsByAuthorAsync(_currentUser.Id)).ToList();
+			}
 
             foreach (var test in _tests)
             {
@@ -55,6 +75,13 @@ public partial class TestManagementForm : Form
 
     private void BtnCreateTest_Click(object? sender, EventArgs e)
     {
+        if (_currentUser.Role != UserRole.Admin)
+        {
+            MessageBox.Show("Только администраторы могут создавать тесты", "Ограничение",
+                MessageBoxButtons.OK,
+                MessageBoxIcon.Information);
+            return;
+        }
         var form = new CreateTestForm(_testService, _currentUser);
         form.TestCreated += async (s, args) => await LoadTestsAsync();
         form.ShowDialog();
@@ -69,7 +96,15 @@ public partial class TestManagementForm : Form
             return;
         }
 
-        var testId = (int)listViewTests.SelectedItems[0].Tag;
+		if (_currentUser.Role != UserRole.Admin)
+		{
+			MessageBox.Show("Только администраторы могут редактировать тесты", "Ограничение",
+				MessageBoxButtons.OK,
+				MessageBoxIcon.Information);
+			return;
+		}
+
+		var testId = (int)listViewTests.SelectedItems[0].Tag;
         var test = _tests.FirstOrDefault(t => t.Id == testId);
         if (test == null) return;
 
@@ -87,7 +122,15 @@ public partial class TestManagementForm : Form
             return;
         }
 
-        var testId = (int)listViewTests.SelectedItems[0].Tag;
+		if (_currentUser.Role != UserRole.Admin)
+		{
+			MessageBox.Show("Только администраторы могут создавать тесты", "Ограничение",
+				MessageBoxButtons.OK,
+				MessageBoxIcon.Information);
+			return;
+		}
+
+		var testId = (int)listViewTests.SelectedItems[0].Tag;
         var test = _tests.FirstOrDefault(t => t.Id == testId);
         if (test == null) return;
 
@@ -112,7 +155,15 @@ public partial class TestManagementForm : Form
             return;
         }
 
-        var testId = (int)listViewTests.SelectedItems[0].Tag;
+		if (_currentUser.Role != UserRole.Admin)
+		{
+			MessageBox.Show("Только администраторы могут изменять статус тестов", "Ограничение",
+				MessageBoxButtons.OK,
+				MessageBoxIcon.Information);
+			return;
+		}
+
+		var testId = (int)listViewTests.SelectedItems[0].Tag;
         var test = _tests.FirstOrDefault(t => t.Id == testId);
         if (test == null) return;
 
@@ -138,7 +189,7 @@ public partial class TestManagementForm : Form
 
         // Получаем сервис изображений
         var imageService = Program.ServiceProvider.GetRequiredService<IImageService>();
-        var form = new QuestionManagementForm(_questionService, imageService, test);
+        var form = new QuestionManagementForm(_questionService, imageService, test, _currentUser);
         form.ShowDialog();
     }
 
@@ -146,4 +197,23 @@ public partial class TestManagementForm : Form
     {
         LoadTestsAsync();
     }
+
+	protected override void OnLoad(EventArgs e)
+	{
+		base.OnLoad(e);
+
+        if (_currentUser.Role == UserRole.User)
+        {
+            btnEdit.Visible = false;
+            btnDelete.Visible = false;
+            btnToggleActive.Visible = false;
+            btnManageQuestions.Text = "Просмотр вопросов";
+            btnManageQuestions.Location = new System.Drawing.Point(730, 40);
+            btnRefreshTool.Visible = true;
+        }
+        else
+        {
+            btnManageQuestions.Text = "Управление вопросами";
+        }
+	}
 }

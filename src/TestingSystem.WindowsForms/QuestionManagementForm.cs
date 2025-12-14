@@ -8,15 +8,28 @@ namespace TestingSystem.WindowsForms
         private readonly IQuestionService _questionService;
         private readonly IImageService _imageService;
         private readonly Test _test;
+        private readonly User _currentUser;
         private List<Question> _questions = new();
 
-        public QuestionManagementForm(IQuestionService questionService, IImageService imageService, Test test)
+        public QuestionManagementForm(IQuestionService questionService, IImageService imageService, Test test, User currentUser)
         {
             _questionService = questionService;
             _imageService = imageService;
             _test = test;
+            _currentUser = currentUser;
             InitializeComponent();
-            LoadQuestionsAsync();
+
+            if (_currentUser.Role == UserRole.User)
+            {
+                this.Text = $"Просмотр вопросов теста: {test.Title}";
+                btnAddQuestionTool.Text = "Просмотр (только чтение)";
+                btnAddQuestionTool.Enabled = false;
+            }
+            else
+            {
+                this.Text = $"Управление вопросами теста: {test.Title}";
+            }
+                LoadQuestionsAsync();
         }
 
         private async Task LoadQuestionsAsync()
@@ -105,8 +118,16 @@ namespace TestingSystem.WindowsForms
             if (txtDebug != null)
                 txtDebug.AppendText("Открытие формы создания вопроса...\r\n");
 
-            // Использовать _imageService
-            var form = new CreateQuestionForm(_questionService, _imageService, _test);
+			if (_currentUser.Role != UserRole.Admin)
+			{
+				MessageBox.Show("Только администраторы могут создавать тесты", "Ограничение",
+					MessageBoxButtons.OK,
+					MessageBoxIcon.Information);
+				return;
+			}
+
+			// Использовать _imageService
+			var form = new CreateQuestionForm(_questionService, _imageService, _test);
 
             form.QuestionCreated += async (s, args) =>
             {
@@ -129,7 +150,7 @@ namespace TestingSystem.WindowsForms
                 return;
             }
 
-            var questionId = (int)listViewQuestions!.SelectedItems[0].Tag;
+			var questionId = (int)listViewQuestions!.SelectedItems[0].Tag;
 
             if (txtDebug != null)
                 txtDebug.AppendText($"Попытка редактирования вопроса ID: {questionId}\r\n");
@@ -154,7 +175,7 @@ namespace TestingSystem.WindowsForms
 
             try
             {
-                var form = new EditQuestionForm(_questionService, _imageService, question);
+                var form = new EditQuestionForm(_questionService, _imageService, question, _currentUser);
                 form.QuestionUpdated += async (s, args) =>
                 {
                     if (txtDebug != null)
@@ -181,7 +202,15 @@ namespace TestingSystem.WindowsForms
                 return;
             }
 
-            var questionId = (int)listViewQuestions!.SelectedItems[0].Tag;
+			if (_currentUser.Role != UserRole.Admin)
+			{
+				MessageBox.Show("Только администраторы могут создавать тесты", "Ограничение",
+					MessageBoxButtons.OK,
+					MessageBoxIcon.Information);
+				return;
+			}
+
+			var questionId = (int)listViewQuestions!.SelectedItems[0].Tag;
             var question = _questions.FirstOrDefault(q => q.Id == questionId);
 
             var result = MessageBox.Show($"Вы уверены, что хотите удалить вопрос?\nID: {questionId}\nТекст: {question?.QuestionText ?? "(без текста)"}",
@@ -290,17 +319,49 @@ namespace TestingSystem.WindowsForms
 
         private async void BtnMoveUp_Click(object? sender, EventArgs e)
         {
-            await MoveQuestion(-1);
+			if (_currentUser.Role != UserRole.Admin)
+			{
+				MessageBox.Show("Только администраторы могут создавать тесты", "Ограничение",
+					MessageBoxButtons.OK,
+					MessageBoxIcon.Information);
+				return;
+			}
+			await MoveQuestion(-1);
         }
 
         private async void BtnMoveDown_Click(object? sender, EventArgs e)
         {
-            await MoveQuestion(1);
+			if (_currentUser.Role != UserRole.Admin)
+			{
+				MessageBox.Show("Только администраторы могут создавать тесты", "Ограничение",
+					MessageBoxButtons.OK,
+					MessageBoxIcon.Information);
+				return;
+			}
+			await MoveQuestion(1);
         }
 
         private void BtnRefresh_Click(object? sender, EventArgs e)
         {
             LoadQuestionsAsync();
         }
+
+		protected override void OnLoad(EventArgs e)
+		{
+			base.OnLoad(e);
+            if (_currentUser.Role == UserRole.User)
+            {
+                btnEdit.Text = "Просмотреть";
+                btnDelete.Visible = false;
+                btnMoveUp.Visible = false;
+                btnMoveDown.Visible = false;
+
+                txtDebug.Visible = false;
+                columnHeader1.Text = "№";
+				columnHeader5.Text = "Порядок в тесте";
+                columnHeader2.Width = 500;
+
+			}
+		}
     }
 }
