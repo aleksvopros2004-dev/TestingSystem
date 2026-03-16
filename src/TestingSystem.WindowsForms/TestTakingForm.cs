@@ -107,7 +107,6 @@ namespace TestingSystem.WindowsForms
 
             if (question.QuestionType == "TextAnswer")
             {
-                // Текстовый ответ
                 var txtAnswer = new TextBox
                 {
                     Location = new Point(10, yPos),
@@ -117,7 +116,6 @@ namespace TestingSystem.WindowsForms
                     Tag = question.Id
                 };
 
-                // Если уже был ответ на этот вопрос, восстанавливаем его
                 if (_userAnswers.ContainsKey(question.Id))
                 {
                     txtAnswer.Text = _userAnswers[question.Id]?.ToString() ?? "";
@@ -134,7 +132,6 @@ namespace TestingSystem.WindowsForms
             {
                 var options = question.AnswerOptions?.ToList() ?? new List<AnswerOption>();
 
-                // Перемешиваем варианты ответов, если нужно
                 if (_test.AnswerOptionsRandom)
                 {
                     var rnd = new Random();
@@ -145,7 +142,6 @@ namespace TestingSystem.WindowsForms
                 {
                     if (question.QuestionType == "SingleChoice")
                     {
-                        // Один вариант ответа (RadioButton)
                         var rdoOption = new RadioButton
                         {
                             Text = option.OptionText,
@@ -155,7 +151,6 @@ namespace TestingSystem.WindowsForms
                             Name = $"rdo_{option.Id}"
                         };
 
-                        // Если уже был ответ на этот вопрос, восстанавливаем выбор
                         if (_userAnswers.ContainsKey(question.Id) &&
                             _userAnswers[question.Id]?.ToString() == option.Id.ToString())
                         {
@@ -175,7 +170,6 @@ namespace TestingSystem.WindowsForms
                     }
                     else if (question.QuestionType == "MultipleChoice")
                     {
-                        // Несколько вариантов ответа (CheckBox)
                         var chkOption = new CheckBox
                         {
                             Text = option.OptionText,
@@ -185,7 +179,6 @@ namespace TestingSystem.WindowsForms
                             Name = $"chk_{option.Id}"
                         };
 
-                        // Если уже был ответ на этот вопрос, восстанавливаем выбор
                         if (_userAnswers.ContainsKey(question.Id))
                         {
                             var selectedIds = _userAnswers[question.Id] as List<int>;
@@ -244,7 +237,6 @@ namespace TestingSystem.WindowsForms
             }
             else
             {
-                // Это был последний вопрос - показываем результаты
                 FinishTest();
             }
         }
@@ -263,7 +255,6 @@ namespace TestingSystem.WindowsForms
         {
             _testStopwatch.Stop();
 
-            // Подсчитываем правильные ответы
             CalculateResults();
 
             // Показываем результаты
@@ -283,22 +274,28 @@ namespace TestingSystem.WindowsForms
             foreach (var question in _questions)
             {
                 if (!_userAnswers.ContainsKey(question.Id))
+                {
+                    Console.WriteLine($"Вопрос {question.Id} пропущен");
                     continue;
+                }
 
                 if (question.QuestionType == "SingleChoice")
                 {
-                    // Для одного варианта - сравниваем ID выбранного варианта с правильным
                     var selectedOptionId = _userAnswers[question.Id] as int?;
                     var correctOption = question.AnswerOptions?.FirstOrDefault(o => o.IsCorrect);
 
                     if (correctOption != null && selectedOptionId == correctOption.Id)
                     {
                         _correctAnswers++;
+                        Console.WriteLine($"Вопрос {question.Id} (SingleChoice) - правильно");
+                    }
+                    else
+                    {
+                        Console.WriteLine($"Вопрос {question.Id} (SingleChoice) - неправильно");
                     }
                 }
                 else if (question.QuestionType == "MultipleChoice")
                 {
-                    // Для нескольких вариантов - сравниваем множества
                     var selectedIds = _userAnswers[question.Id] as List<int> ?? new List<int>();
                     var correctIds = question.AnswerOptions?
                         .Where(o => o.IsCorrect)
@@ -311,21 +308,30 @@ namespace TestingSystem.WindowsForms
                     if (selectedSorted.SequenceEqual(correctIds))
                     {
                         _correctAnswers++;
+                        Console.WriteLine($"Вопрос {question.Id} (MultipleChoice) - правильно");
+                    }
+                    else
+                    {
+                        Console.WriteLine($"Вопрос {question.Id} (MultipleChoice) - неправильно");
                     }
                 }
                 else if (question.QuestionType == "TextAnswer")
                 {
-                    // Для текстового ответа - сравниваем с правильным (простейший вариант)
                     var userText = _userAnswers[question.Id]?.ToString() ?? "";
-                    var correctOption = question.AnswerOptions?.FirstOrDefault(o => o.IsCorrect);
 
-                    if (correctOption != null &&
-                        userText.Trim().Equals(correctOption.OptionText.Trim(), StringComparison.OrdinalIgnoreCase))
+                    if (!string.IsNullOrWhiteSpace(userText))
                     {
                         _correctAnswers++;
+                        Console.WriteLine($"Вопрос {question.Id} (TextAnswer) - засчитан (текст введен)");
+                    }
+                    else
+                    {
+                        Console.WriteLine($"Вопрос {question.Id} (TextAnswer) - пустой ответ");
                     }
                 }
             }
+
+            Console.WriteLine($"Всего правильных ответов: {_correctAnswers} из {_questions.Count}");
         }
 
         private void BtnCancel_Click(object? sender, EventArgs e)
