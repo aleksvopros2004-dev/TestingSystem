@@ -14,6 +14,8 @@ namespace TestingSystem.WindowsForms
         private Dictionary<int, object> _userAnswers = new Dictionary<int, object>();
         private Stopwatch _testStopwatch;
         private int _correctAnswers = 0;
+        private int _totalPoints = 0;
+        private int _earnedPoints = 0;
 
         public TestTakingForm(IQuestionService questionService, Test test, User currentUser)
         {
@@ -83,13 +85,10 @@ namespace TestingSystem.WindowsForms
 
             var question = _questions[_currentQuestionIndex];
 
-            // Очищаем панель с вариантами ответов
             pnlAnswers.Controls.Clear();
 
-            // Отображаем текст вопроса
             lblQuestionText.Text = question.QuestionText;
 
-            // Отображаем изображение, если есть
             if (question.ImageData != null && question.ImageData.Length > 0)
             {
                 try
@@ -108,7 +107,6 @@ namespace TestingSystem.WindowsForms
                 pictureBoxQuestion.Visible = false;
             }
 
-            // Создаем контролы для ответов в зависимости от типа вопроса
             int yPos = 10;
 
             if (question.QuestionType == "TextAnswer")
@@ -263,11 +261,10 @@ namespace TestingSystem.WindowsForms
 
             CalculateResults();
 
-            // Показываем результаты
             var timeSpan = _testStopwatch.Elapsed;
             var timeString = $"Время: {timeSpan.Minutes} мин {timeSpan.Seconds} сек";
 
-            var resultForm = new TestResultForm(_test.Title, _questions.Count, _correctAnswers, timeString);
+            var resultForm = new TestResultForm(_test.Title, _questions.Count, _earnedPoints, _totalPoints, timeString);
             resultForm.ShowDialog();
 
             this.Close();
@@ -275,10 +272,13 @@ namespace TestingSystem.WindowsForms
 
         private void CalculateResults()
         {
-            _correctAnswers = 0;
+            int totalPoints = 0;
+            int earnedPoints = 0;
 
             foreach (var question in _questions)
             {
+                totalPoints += question.Points;
+
                 if (!_userAnswers.ContainsKey(question.Id))
                 {
                     Console.WriteLine($"Вопрос {question.Id} пропущен");
@@ -287,13 +287,14 @@ namespace TestingSystem.WindowsForms
 
                 if (question.QuestionType == "SingleChoice")
                 {
+                    // Для одного варианта - сравниваем ID выбранного варианта с правильным
                     var selectedOptionId = _userAnswers[question.Id] as int?;
                     var correctOption = question.AnswerOptions?.FirstOrDefault(o => o.IsCorrect);
 
                     if (correctOption != null && selectedOptionId == correctOption.Id)
                     {
-                        _correctAnswers++;
-                        Console.WriteLine($"Вопрос {question.Id} (SingleChoice) - правильно");
+                        earnedPoints += question.Points;
+                        Console.WriteLine($"Вопрос {question.Id} (SingleChoice) - правильно, +{question.Points} баллов");
                     }
                     else
                     {
@@ -302,6 +303,7 @@ namespace TestingSystem.WindowsForms
                 }
                 else if (question.QuestionType == "MultipleChoice")
                 {
+                    // Для нескольких вариантов - сравниваем множества
                     var selectedIds = _userAnswers[question.Id] as List<int> ?? new List<int>();
                     var correctIds = question.AnswerOptions?
                         .Where(o => o.IsCorrect)
@@ -313,8 +315,8 @@ namespace TestingSystem.WindowsForms
 
                     if (selectedSorted.SequenceEqual(correctIds))
                     {
-                        _correctAnswers++;
-                        Console.WriteLine($"Вопрос {question.Id} (MultipleChoice) - правильно");
+                        earnedPoints += question.Points;
+                        Console.WriteLine($"Вопрос {question.Id} (MultipleChoice) - правильно, +{question.Points} баллов");
                     }
                     else
                     {
@@ -323,21 +325,25 @@ namespace TestingSystem.WindowsForms
                 }
                 else if (question.QuestionType == "TextAnswer")
                 {
+                    // Для текстового ответа - всегда даем максимум баллов, если ответ не пустой
                     var userText = _userAnswers[question.Id]?.ToString() ?? "";
 
                     if (!string.IsNullOrWhiteSpace(userText))
                     {
-                        _correctAnswers++;
-                        Console.WriteLine($"Вопрос {question.Id} (TextAnswer) - засчитан (текст введен)");
+                        earnedPoints += question.Points; 
+                        Console.WriteLine($"Вопрос {question.Id} (TextAnswer) - засчитан, +{question.Points} баллов");
                     }
                     else
                     {
-                        Console.WriteLine($"Вопрос {question.Id} (TextAnswer) - пустой ответ");
+                        Console.WriteLine($"Вопрос {question.Id} (TextAnswer) - пустой ответ, 0 баллов");
                     }
                 }
             }
 
-            Console.WriteLine($"Всего правильных ответов: {_correctAnswers} из {_questions.Count}");
+            _earnedPoints = earnedPoints;
+            _totalPoints = totalPoints;
+
+            Console.WriteLine($"Всего набрано баллов: {earnedPoints} из {totalPoints}");
         }
 
         private void BtnCancel_Click(object? sender, EventArgs e)

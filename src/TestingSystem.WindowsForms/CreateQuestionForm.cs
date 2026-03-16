@@ -1,4 +1,4 @@
-﻿using System.Windows.Forms;
+﻿using System.Diagnostics;
 using TestingSystem.Core.Models;
 using TestingSystem.Services.Interfaces;
 
@@ -25,19 +25,31 @@ namespace TestingSystem.WindowsForms
 
             lblTitle.Text = $"Добавление вопроса к тесту: {test?.Title ?? "Неизвестный тест"}";
 
+            numPoints.Value = 1;
+
             AddInitialAnswerOptions();
         }
 
         private void AddInitialAnswerOptions()
         {
-            // Добавляем начальные варианты ответов
-            AddAnswerOption();
-            AddAnswerOption();
-            UpdateOptionsCounter();
+            // Добавляем начальные варианты ответов только если это не текстовый вопрос
+            var questionType = cmbType.SelectedIndex;
+            if (questionType != 2) 
+            {
+                AddAnswerOption();
+                AddAnswerOption();
+                UpdateOptionsCounter();
+            }
+            else
+            {
+                lblOptionsCounter.Visible = false;
+            }
         }
 
         private void AddAnswerOption()
         {
+            SaveCurrentAnswerOptions();
+
             if (_answerOptions.Count >= 10)
             {
                 MessageBox.Show("Максимальное количество вариантов ответов - 10", "Ограничение",
@@ -56,6 +68,40 @@ namespace TestingSystem.WindowsForms
             UpdateOptionsCounter();
         }
 
+        /// <summary>
+        /// Сохраняет текущие изменения из текстовых полей в _answerOptions
+        /// </summary>
+        private void SaveCurrentAnswerOptions()
+        {
+            var questionType = cmbType.SelectedIndex;
+
+            if (questionType == 2 || pnlAnswers.Controls.Count == 0)
+                return;
+
+            for (int i = 0; i < _answerOptions.Count; i++)
+            {
+                var txtOption = pnlAnswers.Controls.Find($"txtOption_{i}", true).FirstOrDefault() as TextBox;
+                if (txtOption != null)
+                {
+                    _answerOptions[i].OptionText = txtOption.Text;
+
+                    // Сохраняем состояние правильности
+                    if (questionType == 0) 
+                    {
+                        var rdo = pnlAnswers.Controls.Find($"rdoCorrect_{i}", true).FirstOrDefault() as RadioButton;
+                        if (rdo != null)
+                            _answerOptions[i].IsCorrect = rdo.Checked;
+                    }
+                    else if (questionType == 1) 
+                    {
+                        var chk = pnlAnswers.Controls.Find($"chkCorrect_{i}", true).FirstOrDefault() as CheckBox;
+                        if (chk != null)
+                            _answerOptions[i].IsCorrect = chk.Checked;
+                    }
+                }
+            }
+        }
+
         private void LoadAnswerOptions()
         {
             pnlAnswers.Controls.Clear();
@@ -65,10 +111,8 @@ namespace TestingSystem.WindowsForms
                 var option = _answerOptions[i];
                 var yPos = 10 + (i * 35);
 
-                // Получаем тип вопроса
                 var questionType = cmbType.SelectedIndex;
 
-                // Если текстовый ответ, не показываем варианты
                 if (questionType == 2)
                 {
                     pnlAnswers.Visible = false;
@@ -77,9 +121,8 @@ namespace TestingSystem.WindowsForms
 
                 pnlAnswers.Visible = true;
 
-                // CheckBox/Radiobutton для отметки правильности
                 Control correctControl;
-                if (questionType == 0) // Один вариант
+                if (questionType == 0) 
                 {
                     correctControl = new RadioButton
                     {
@@ -90,7 +133,7 @@ namespace TestingSystem.WindowsForms
                         Name = $"rdoCorrect_{i}"
                     };
                 }
-                else // Несколько вариантов
+                else 
                 {
                     correctControl = new CheckBox
                     {
@@ -102,21 +145,19 @@ namespace TestingSystem.WindowsForms
                     };
                 }
 
-                // Текст варианта
                 var txtOption = new TextBox
                 {
                     Location = new Point(40, yPos),
-                    Size = new Size(550, 25),
-                    Text = option.OptionText,
+                    Size = new Size(520, 25),
+                    Text = option.OptionText, 
                     Tag = i,
                     Name = $"txtOption_{i}"
                 };
 
-                // Кнопка удаления
                 var btnDelete = new Button
                 {
                     Text = "×",
-                    Location = new Point(600, yPos),
+                    Location = new Point(570, yPos),
                     Size = new Size(30, 25),
                     ForeColor = Color.Red,
                     Font = new Font("Arial", 10, FontStyle.Bold),
@@ -126,6 +167,8 @@ namespace TestingSystem.WindowsForms
 
                 btnDelete.Click += (s, e) =>
                 {
+                    SaveCurrentAnswerOptions();
+
                     if (btnDelete.Tag is int idx && idx < _answerOptions.Count)
                     {
                         _answerOptions.RemoveAt(idx);
@@ -144,7 +187,6 @@ namespace TestingSystem.WindowsForms
         {
             lblOptionsCounter.Text = $"Вариантов: {_answerOptions.Count}/10";
 
-            // Меняем цвет при приближении к лимиту
             if (_answerOptions.Count >= 8)
             {
                 lblOptionsCounter.ForeColor = Color.Orange;
@@ -162,9 +204,25 @@ namespace TestingSystem.WindowsForms
         private void UpdateAnswerPanel()
         {
             var questionType = cmbType.SelectedIndex;
-            pnlAnswers.Visible = questionType != 2;
-            btnAddOption.Enabled = questionType != 2;
-            LoadAnswerOptions();
+
+            if (questionType == 2) 
+            {
+                pnlAnswers.Visible = false;
+                btnAddOption.Enabled = false;
+                btnAddOption.Visible = false;
+                lblOptionsCounter.Visible = false; 
+                lblPoints.Visible = true; 
+            }
+            else
+            {
+                pnlAnswers.Visible = true;
+                btnAddOption.Enabled = true;
+                btnAddOption.Visible = true;
+                lblOptionsCounter.Visible = true; 
+                lblPoints.Visible = true;
+
+                LoadAnswerOptions();
+            }
         }
 
         private void BtnLoadImage_Click(object? sender, EventArgs e)
@@ -204,7 +262,6 @@ namespace TestingSystem.WindowsForms
                 }
 
                 _selectedImageData = _imageService.LoadImageFromFile(filePath);
-
                 if (_selectedImageData == null)
                 {
                     MessageBox.Show("Не удалось загрузить изображение", "Ошибка",
@@ -222,7 +279,6 @@ namespace TestingSystem.WindowsForms
 
                 _selectedImageContentType = _imageService.GetImageContentTypeFromExtension(filePath);
                 ShowImagePreview(_selectedImageData);
-
                 btnRemoveImage.Enabled = true;
 
                 var sizeKB = _imageService.GetImageSizeInKB(_selectedImageData);
@@ -259,7 +315,13 @@ namespace TestingSystem.WindowsForms
                 return;
             }
 
-            // ПРОВЕРКА: Максимум 50 вопросов в тесте
+            // Проверка баллов
+            if (numPoints.Value < 1 || numPoints.Value > 10)
+            {
+                lblMessage.Text = "Количество баллов должно быть от 1 до 10";
+                return;
+            }
+
             var questions = await _questionService.GetQuestionsByTestAsync(_test.Id);
             if (questions.Count() >= 50)
             {
@@ -276,9 +338,9 @@ namespace TestingSystem.WindowsForms
             };
 
             var answerOptions = new List<AnswerOption>();
+
             if (questionType != "TextAnswer")
             {
-                // ПРОВЕРКА: Максимум 10 вариантов ответов
                 if (_answerOptions.Count > 10)
                 {
                     lblMessage.Text = "Максимальное количество вариантов ответов - 10";
@@ -338,6 +400,7 @@ namespace TestingSystem.WindowsForms
                 QuestionText = txtQuestion.Text.Trim(),
                 QuestionType = questionType,
                 OrderIndex = orderIndex,
+                Points = (int)numPoints.Value,
                 AnswerOptions = answerOptions,
                 ImageData = _selectedImageData,
                 ImageContentType = _selectedImageContentType
@@ -381,12 +444,18 @@ namespace TestingSystem.WindowsForms
 
         private void CmbType_SelectedIndexChanged(object sender, EventArgs e)
         {
+            SaveCurrentAnswerOptions();
             UpdateAnswerPanel();
         }
 
         private void BtnAddOption_Click(object sender, EventArgs e)
         {
             AddAnswerOption();
+        }
+
+        private void lblImageInfo_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }

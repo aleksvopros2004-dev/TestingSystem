@@ -1,4 +1,4 @@
-﻿using System.Windows.Forms;
+﻿using System.Diagnostics;
 using TestingSystem.Core.Models;
 using TestingSystem.Services.Interfaces;
 
@@ -9,14 +9,15 @@ namespace TestingSystem.WindowsForms
         private readonly IQuestionService _questionService;
         private readonly IImageService _imageService;
         private readonly Question _question;
-		private readonly User _currentUser;
-		private List<AnswerOption> _answerOptions = new();
+        private readonly User _currentUser;
+        private List<AnswerOption> _answerOptions = new();
         private byte[]? _selectedImageData;
         private string? _selectedImageContentType;
 
         public event EventHandler? QuestionUpdated;
 
-        public EditQuestionForm(IQuestionService questionService, IImageService imageService, Question question, User currentUser)
+        public EditQuestionForm(IQuestionService questionService, IImageService imageService,
+                       Question question, User currentUser)
         {
             _questionService = questionService;
             _imageService = imageService;
@@ -27,9 +28,29 @@ namespace TestingSystem.WindowsForms
             _selectedImageContentType = question.ImageContentType;
 
             InitializeComponent();
+
+            if (_currentUser.Role == UserRole.Admin)
+            {
+                cmbType.Visible = true;
+                txtTypeDisplay.Visible = false;
+                cmbType.SelectedIndexChanged += CmbType_SelectedIndexChanged;
+            }
+            else
+            {
+                cmbType.Visible = false;
+                txtTypeDisplay.Visible = true;
+            }
+
+            if (question.QuestionType != "TextAnswer")
+            {
+                pnlAnswers.Visible = true;
+                lblAnswers.Visible = true;
+            }
+
             LoadQuestionData();
 
-            if (_currentUser.Role == UserRole.User) 
+            // Блокируем функционал для обычных пользователей
+            if (_currentUser.Role == UserRole.User)
             {
                 this.Text = "Просмотр вопроса";
                 SetupReadOnlyMode();
@@ -44,43 +65,45 @@ namespace TestingSystem.WindowsForms
         {
             txtQuestion.ReadOnly = true;
             txtQuestion.BackColor = SystemColors.Control;
+
+            txtOrder.ReadOnly = true;
+            txtOrder.BackColor = SystemColors.Control;
+
+            txtTypeDisplay.ReadOnly = true;
+            txtTypeDisplay.BackColor = SystemColors.Control;
+
+            cmbType.Visible = false;
+            txtTypeDisplay.Visible = true;
+
+            numPoints.Enabled = false;
+            numPoints.BackColor = SystemColors.Control;
+
             btnLoadImage.Visible = false;
             btnRemoveImage.Visible = false;
             btnSave.Visible = false;
             btnCancel.Text = "Закрыть";
             btnAddOption.Visible = false;
 
-            foreach (Control control in pnlAnswers.Controls)
+            var lblViewMode = new Label
             {
-                if (control is TextBox textBox)
-                {
-                    textBox.ReadOnly = true;
-                    textBox.BackColor = SystemColors.Control;
-                }
-                else if (control is RadioButton radioButton)
-                {
-                    radioButton.Enabled = false;
-                }
-				else if (control is CheckBox checkBox)
-				{
-					checkBox.Enabled = false;
-				}
-				else if (control is Button button && button.Text == "*")
-				{
-					button.Enabled = false;
-				}
-			}
+                Text = "Режим просмотра",
+                Font = new Font("Arial", 9, FontStyle.Bold),
+                ForeColor = Color.Gray,
+                Location = new Point(500, 10),
+                Size = new Size(150, 20)
+            };
+            this.Controls.Add(lblViewMode);
 
-            if (_question.QuestionType == "TextAnswer")
+            if (_question.QuestionType != "TextAnswer")
             {
-                pnlAnswers.Visible = false;
-                lblAnswers.Visible = false;
+                pnlAnswers.Visible = true;
+                lblAnswers.Visible = true;
             }
         }
 
         private void LoadQuestionData()
         {
-            txtType.Text = _question.QuestionType switch
+            txtTypeDisplay.Text = _question.QuestionType switch
             {
                 "SingleChoice" => "Один вариант",
                 "MultipleChoice" => "Несколько вариантов",
@@ -88,8 +111,29 @@ namespace TestingSystem.WindowsForms
                 _ => _question.QuestionType
             };
 
+            cmbType.Items.Clear();
+            cmbType.Items.Add("Один вариант");
+            cmbType.Items.Add("Несколько вариантов");
+            cmbType.Items.Add("Текстовый ответ");
+
+            switch (_question.QuestionType)
+            {
+                case "SingleChoice":
+                    cmbType.SelectedIndex = 0;
+                    break;
+                case "MultipleChoice":
+                    cmbType.SelectedIndex = 1;
+                    break;
+                case "TextAnswer":
+                    cmbType.SelectedIndex = 2;
+                    break;
+            }
+
             txtQuestion.Text = _question.QuestionText;
             txtOrder.Text = _question.OrderIndex.ToString();
+
+            numPoints.Value = _question.Points;
+            Console.WriteLine($"Загрузка вопроса ID {_question.Id}: баллы = {_question.Points}");
 
             if (_selectedImageData != null && _selectedImageData.Length > 0)
             {
@@ -108,20 +152,13 @@ namespace TestingSystem.WindowsForms
 
                 lblAnswers.Visible = true;
                 pnlAnswers.Visible = true;
-
                 btnAddOption.Visible = _currentUser.Role == UserRole.Admin;
             }
             else
             {
-
                 lblAnswers.Visible = false;
                 pnlAnswers.Visible = false;
                 btnAddOption.Visible = false;
-            }
-
-            if (_currentUser.Role == UserRole.User)
-            {
-                SetupReadOnlyMode();
             }
         }
 
@@ -161,7 +198,7 @@ namespace TestingSystem.WindowsForms
                         Checked = option.IsCorrect,
                         Tag = i,
                         Name = $"rdoCorrect_{i}",
-                        Enabled = _currentUser.Role == UserRole.Admin 
+                        Enabled = _currentUser.Role == UserRole.Admin
                     };
                 }
                 else if (_question.QuestionType == "MultipleChoice")
@@ -181,15 +218,14 @@ namespace TestingSystem.WindowsForms
                     continue;
                 }
 
-                // Текст варианта
                 var txtOption = new TextBox
                 {
                     Location = new Point(40, yPos),
-                    Size = new Size(500, 25),
+                    Size = new Size(520, 25),
                     Text = option.OptionText,
                     Tag = i,
                     Name = $"txtOption_{i}",
-                    ReadOnly = _currentUser.Role == UserRole.User, 
+                    ReadOnly = _currentUser.Role == UserRole.User,
                     BackColor = _currentUser.Role == UserRole.User ? SystemColors.Control : SystemColors.Window
                 };
 
@@ -201,7 +237,7 @@ namespace TestingSystem.WindowsForms
                     var lblCorrect = new Label
                     {
                         Text = "✓",
-                        Location = new Point(545, yPos),
+                        Location = new Point(565, yPos),
                         Size = new Size(20, 20),
                         ForeColor = Color.Green,
                         Font = new Font("Arial", 12, FontStyle.Bold),
@@ -215,13 +251,12 @@ namespace TestingSystem.WindowsForms
                     var btnDelete = new Button
                     {
                         Text = "×",
-                        Location = new Point(570, yPos),
+                        Location = new Point(590, yPos),
                         Size = new Size(30, 25),
                         ForeColor = Color.Red,
                         Font = new Font("Arial", 10, FontStyle.Bold),
                         Tag = i,
                         Name = $"btnDelete_{i}",
-                        BackColor = SystemColors.Control,
                         FlatStyle = FlatStyle.Flat
                     };
 
@@ -230,7 +265,7 @@ namespace TestingSystem.WindowsForms
                         if (btnDelete.Tag is int idx && idx < _answerOptions.Count)
                         {
                             _answerOptions.RemoveAt(idx);
-                            LoadAnswerOptions(); 
+                            LoadAnswerOptions();
                         }
                     };
 
@@ -239,24 +274,18 @@ namespace TestingSystem.WindowsForms
             }
 
             pnlAnswers.Visible = true;
-
-            if (_currentUser.Role == UserRole.Admin)
-            {
-                btnAddOption.Visible = true;
-            }
         }
 
         private void AddAnswerOption()
         {
-			if (_currentUser.Role != UserRole.Admin)
-			{
-				MessageBox.Show("Только администраторы могут создавать тесты", "Ограничение",
-					MessageBoxButtons.OK,
-					MessageBoxIcon.Information);
-				return;
-			}
+            if (_currentUser.Role != UserRole.Admin)
+            {
+                MessageBox.Show("Только администраторы могут добавлять варианты ответов", "Ограничение",
+                    MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
 
-			if (_answerOptions.Count >= 10)
+            if (_answerOptions.Count >= 10)
             {
                 MessageBox.Show("Максимальное количество вариантов ответов - 10", "Ограничение",
                     MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -275,15 +304,14 @@ namespace TestingSystem.WindowsForms
 
         private void BtnLoadImage_Click(object? sender, EventArgs e)
         {
-			if (_currentUser.Role != UserRole.Admin)
-			{
-				MessageBox.Show("Только администраторы могут создавать тесты", "Ограничение",
-					MessageBoxButtons.OK,
-					MessageBoxIcon.Information);
-				return;
-			}
+            if (_currentUser.Role != UserRole.Admin)
+            {
+                MessageBox.Show("Только администраторы могут загружать изображения", "Ограничение",
+                    MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
 
-			using var openFileDialog = new OpenFileDialog
+            using var openFileDialog = new OpenFileDialog
             {
                 Filter = "Image Files|*.jpg;*.jpeg;*.png;*.gif;*.bmp",
                 Title = "Выберите изображение",
@@ -298,15 +326,14 @@ namespace TestingSystem.WindowsForms
 
         private void BtnRemoveImage_Click(object? sender, EventArgs e)
         {
-			if (_currentUser.Role != UserRole.Admin)
-			{
-				MessageBox.Show("Только администраторы могут создавать тесты", "Ограничение",
-					MessageBoxButtons.OK,
-					MessageBoxIcon.Information);
-				return;
-			}
+            if (_currentUser.Role != UserRole.Admin)
+            {
+                MessageBox.Show("Только администраторы могут удалять изображения", "Ограничение",
+                    MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
 
-			_selectedImageData = null;
+            _selectedImageData = null;
             _selectedImageContentType = null;
             pictureBox.Image = null;
             pictureBox.Visible = false;
@@ -326,7 +353,6 @@ namespace TestingSystem.WindowsForms
                 }
 
                 _selectedImageData = _imageService.LoadImageFromFile(filePath);
-
                 if (_selectedImageData == null)
                 {
                     MessageBox.Show("Не удалось загрузить изображение", "Ошибка",
@@ -369,25 +395,28 @@ namespace TestingSystem.WindowsForms
 
         private async void BtnSave_Click(object? sender, EventArgs e)
         {
-			if (_currentUser.Role != UserRole.Admin)
-			{
-				MessageBox.Show("Только администраторы могут создавать тесты", "Ограничение",
-					MessageBoxButtons.OK,
-					MessageBoxIcon.Information);
-				return;
-			}
+            if (_currentUser.Role != UserRole.Admin)
+            {
+                MessageBox.Show("Только администраторы могут сохранять изменения", "Ограничение",
+                    MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
 
-			// Валидация
-			if (string.IsNullOrWhiteSpace(txtQuestion.Text))
+            if (string.IsNullOrWhiteSpace(txtQuestion.Text))
             {
                 lblMessage.Text = "Введите текст вопроса";
+                return;
+            }
+
+            if (numPoints.Value < 1 || numPoints.Value > 10)
+            {
+                lblMessage.Text = "Количество баллов должно быть от 1 до 10";
                 return;
             }
 
             // Собираем данные вариантов ответов
             if (_question.QuestionType != "TextAnswer")
             {
-                // Собираем данные из контролов
                 for (int i = 0; i < _answerOptions.Count; i++)
                 {
                     var txtOption = pnlAnswers.Controls.Find($"txtOption_{i}", true).FirstOrDefault() as TextBox;
@@ -434,13 +463,14 @@ namespace TestingSystem.WindowsForms
                 }
             }
 
-            // Обновляем вопрос
             _question.QuestionText = txtQuestion.Text.Trim();
+            _question.Points = (int)numPoints.Value; 
             _question.AnswerOptions = _answerOptions;
             _question.ImageData = _selectedImageData;
             _question.ImageContentType = _selectedImageContentType;
 
-            // Блокируем кнопку
+            Console.WriteLine($"Сохранение вопроса ID {_question.Id}: баллы = {_question.Points}");
+
             btnSave.Enabled = false;
             lblMessage.Text = "Сохранение...";
             lblMessage.ForeColor = Color.Blue;
@@ -448,7 +478,6 @@ namespace TestingSystem.WindowsForms
             try
             {
                 var (success, message) = await _questionService.UpdateQuestionAsync(_question);
-
                 if (success)
                 {
                     lblMessage.Text = "Вопрос успешно сохранен!";
@@ -470,6 +499,85 @@ namespace TestingSystem.WindowsForms
                 lblMessage.ForeColor = Color.Red;
                 btnSave.Enabled = true;
             }
+        }
+
+        private void CmbType_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (_currentUser.Role != UserRole.Admin)
+                return;
+
+            var selectedType = cmbType.SelectedIndex switch
+            {
+                0 => "SingleChoice",
+                1 => "MultipleChoice",
+                2 => "TextAnswer",
+                _ => _question.QuestionType
+            };
+
+            if (selectedType != _question.QuestionType)
+            {
+                var result = MessageBox.Show(
+                    "Изменение типа вопроса может привести к потере данных вариантов ответов. Продолжить?",
+                    "Подтверждение",
+                    MessageBoxButtons.YesNo,
+                    MessageBoxIcon.Warning);
+
+                if (result == DialogResult.Yes)
+                {
+                    _question.QuestionType = selectedType;
+
+                    _answerOptions.Clear();
+
+                    if (_question.QuestionType == "TextAnswer")
+                    {
+                        lblAnswers.Visible = false;
+                        pnlAnswers.Visible = false;
+                        btnAddOption.Visible = false;
+                    }
+                    else
+                    {
+                        lblAnswers.Visible = true;
+                        pnlAnswers.Visible = true;
+                        btnAddOption.Visible = true;
+
+                        AddInitialAnswerOptions();
+                    }
+                }
+                else
+                {
+                    switch (_question.QuestionType)
+                    {
+                        case "SingleChoice":
+                            cmbType.SelectedIndex = 0;
+                            break;
+                        case "MultipleChoice":
+                            cmbType.SelectedIndex = 1;
+                            break;
+                        case "TextAnswer":
+                            cmbType.SelectedIndex = 2;
+                            break;
+                    }
+                }
+            }
+        }
+
+        private void AddInitialAnswerOptions()
+        {
+            if (_question.QuestionType == "TextAnswer")
+                return;
+
+            // Добавляем два начальных варианта
+            for (int i = 0; i < 2; i++)
+            {
+                var newOption = new AnswerOption
+                {
+                    OptionText = $"Вариант {_answerOptions.Count + 1}",
+                    IsCorrect = i == 0 
+                };
+                _answerOptions.Add(newOption);
+            }
+
+            LoadAnswerOptions();
         }
 
         private void BtnCancel_Click(object? sender, EventArgs e)

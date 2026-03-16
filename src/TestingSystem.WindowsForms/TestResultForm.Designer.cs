@@ -24,8 +24,10 @@
             lblResultLabel = new Label();
             lblTotalLabel = new Label();
             lblTotalQuestions = new Label();
-            lblCorrectLabel = new Label();
-            lblCorrectAnswers = new Label();
+            lblPointsLabel = new Label();
+            lblEarnedPoints = new Label();
+            lblOfTotal = new Label();
+            lblTotalPoints = new Label();
             lblPercentageLabel = new Label();
             lblPercentage = new Label();
             lblTimeLabel = new Label();
@@ -72,8 +74,10 @@
             panelCenter.Controls.Add(lblResultLabel);
             panelCenter.Controls.Add(lblTotalLabel);
             panelCenter.Controls.Add(lblTotalQuestions);
-            panelCenter.Controls.Add(lblCorrectLabel);
-            panelCenter.Controls.Add(lblCorrectAnswers);
+            panelCenter.Controls.Add(lblPointsLabel);
+            panelCenter.Controls.Add(lblEarnedPoints);
+            panelCenter.Controls.Add(lblOfTotal);
+            panelCenter.Controls.Add(lblTotalPoints);
             panelCenter.Controls.Add(lblPercentageLabel);
             panelCenter.Controls.Add(lblPercentage);
             panelCenter.Controls.Add(lblTimeLabel);
@@ -83,7 +87,7 @@
             panelCenter.Location = new Point(0, 70);
             panelCenter.Name = "panelCenter";
             panelCenter.Padding = new Padding(20);
-            panelCenter.Size = new Size(500, 230);
+            panelCenter.Size = new Size(500, 250);
             panelCenter.TabIndex = 1;
 
             // lblResultLabel
@@ -112,71 +116,88 @@
             lblTotalQuestions.TabIndex = 2;
             lblTotalQuestions.Text = "0";
 
-            // lblCorrectLabel
-            lblCorrectLabel.AutoSize = true;
-            lblCorrectLabel.Location = new Point(40, 75);
-            lblCorrectLabel.Name = "lblCorrectLabel";
-            lblCorrectLabel.Size = new Size(127, 15);
-            lblCorrectLabel.TabIndex = 3;
-            lblCorrectLabel.Text = "Правильных ответов:";
+            // lblPointsLabel
+            lblPointsLabel.AutoSize = true;
+            lblPointsLabel.Location = new Point(40, 75);
+            lblPointsLabel.Name = "lblPointsLabel";
+            lblPointsLabel.Size = new Size(96, 15);
+            lblPointsLabel.TabIndex = 3;
+            lblPointsLabel.Text = "Набрано баллов:";
 
-            // lblCorrectAnswers
-            lblCorrectAnswers.AutoSize = true;
-            lblCorrectAnswers.Font = new Font("Arial", 10F, FontStyle.Bold);
-            lblCorrectAnswers.Location = new Point(200, 75);
-            lblCorrectAnswers.Name = "lblCorrectAnswers";
-            lblCorrectAnswers.Size = new Size(15, 16);
-            lblCorrectAnswers.TabIndex = 4;
-            lblCorrectAnswers.Text = "0";
+            // lblEarnedPoints
+            lblEarnedPoints.AutoSize = true;
+            lblEarnedPoints.Font = new Font("Arial", 10F, FontStyle.Bold);
+            lblEarnedPoints.Location = new Point(200, 75);
+            lblEarnedPoints.Name = "lblEarnedPoints";
+            lblEarnedPoints.Size = new Size(15, 16);
+            lblEarnedPoints.TabIndex = 4;
+            lblEarnedPoints.Text = "0";
+
+            // lblOfTotal
+            lblOfTotal.AutoSize = true;
+            lblOfTotal.Location = new Point(220, 75);
+            lblOfTotal.Name = "lblOfTotal";
+            lblOfTotal.Size = new Size(18, 15);
+            lblOfTotal.TabIndex = 5;
+            lblOfTotal.Text = "из";
+
+            // lblTotalPoints
+            lblTotalPoints.AutoSize = true;
+            lblTotalPoints.Font = new Font("Arial", 10F, FontStyle.Bold);
+            lblTotalPoints.Location = new Point(240, 75);
+            lblTotalPoints.Name = "lblTotalPoints";
+            lblTotalPoints.Size = new Size(15, 16);
+            lblTotalPoints.TabIndex = 6;
+            lblTotalPoints.Text = "0";
 
             // lblPercentageLabel
             lblPercentageLabel.AutoSize = true;
-            lblPercentageLabel.Location = new Point(40, 100);
+            lblPercentageLabel.Location = new Point(40, 105);
             lblPercentageLabel.Name = "lblPercentageLabel";
             lblPercentageLabel.Size = new Size(45, 15);
-            lblPercentageLabel.TabIndex = 5;
+            lblPercentageLabel.TabIndex = 7;
             lblPercentageLabel.Text = "Итого:";
 
             // lblPercentage
             lblPercentage.AutoSize = true;
             lblPercentage.Font = new Font("Arial", 14F, FontStyle.Bold);
-            lblPercentage.Location = new Point(200, 95);
+            lblPercentage.Location = new Point(200, 100);
             lblPercentage.Name = "lblPercentage";
             lblPercentage.Size = new Size(35, 22);
-            lblPercentage.TabIndex = 6;
+            lblPercentage.TabIndex = 8;
             lblPercentage.Text = "0%";
 
             // lblTimeLabel
             lblTimeLabel.AutoSize = true;
-            lblTimeLabel.Location = new Point(40, 130);
+            lblTimeLabel.Location = new Point(40, 135);
             lblTimeLabel.Name = "lblTimeLabel";
             lblTimeLabel.Size = new Size(45, 15);
-            lblTimeLabel.TabIndex = 7;
+            lblTimeLabel.TabIndex = 9;
             lblTimeLabel.Text = "Время:";
 
             // lblTimeSpent
             lblTimeSpent.AutoSize = true;
             lblTimeSpent.Font = new Font("Arial", 10F);
-            lblTimeSpent.Location = new Point(200, 130);
+            lblTimeSpent.Location = new Point(200, 135);
             lblTimeSpent.Name = "lblTimeSpent";
             lblTimeSpent.Size = new Size(36, 16);
-            lblTimeSpent.TabIndex = 8;
+            lblTimeSpent.TabIndex = 10;
             lblTimeSpent.Text = "0 мин";
 
             // lblGrade
             lblGrade.AutoSize = true;
             lblGrade.Font = new Font("Arial", 18F, FontStyle.Bold);
-            lblGrade.Location = new Point(200, 165);
+            lblGrade.Location = new Point(200, 170);
             lblGrade.Name = "lblGrade";
             lblGrade.Size = new Size(106, 29);
-            lblGrade.TabIndex = 9;
+            lblGrade.TabIndex = 11;
             lblGrade.Text = "Оценка";
 
             // panelBottom
             panelBottom.BackColor = Color.FromArgb(240, 240, 240);
             panelBottom.Controls.Add(btnOk);
             panelBottom.Dock = DockStyle.Bottom;
-            panelBottom.Location = new Point(0, 300);
+            panelBottom.Location = new Point(0, 320);
             panelBottom.Name = "panelBottom";
             panelBottom.Size = new Size(500, 50);
             panelBottom.TabIndex = 2;
@@ -195,7 +216,7 @@
             // TestResultForm
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(500, 350);
+            ClientSize = new Size(500, 370);
             Controls.Add(panelCenter);
             Controls.Add(panelBottom);
             Controls.Add(panelTop);
@@ -221,8 +242,10 @@
         private Label lblResultLabel;
         private Label lblTotalLabel;
         private Label lblTotalQuestions;
-        private Label lblCorrectLabel;
-        private Label lblCorrectAnswers;
+        private Label lblPointsLabel;
+        private Label lblEarnedPoints;
+        private Label lblOfTotal;
+        private Label lblTotalPoints;
         private Label lblPercentageLabel;
         private Label lblPercentage;
         private Label lblTimeLabel;

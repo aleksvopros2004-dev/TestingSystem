@@ -18,6 +18,9 @@ public class Question
     [Column("order_index")]
     public int OrderIndex { get; set; }
 
+    [Column("points")]
+    public int Points { get; set; } = 1;
+
     [Column("image_data")]
     public byte[]? ImageData { get; set; }
 
