@@ -2,15 +2,16 @@
 {
     public partial class TestResultForm : Form
     {
-        public TestResultForm(string testTitle, int totalQuestions, int correctAnswers, string timeSpent)
+        public TestResultForm(string testTitle, int totalQuestions, int earnedPoints, int totalPoints, string timeSpent)
         {
             InitializeComponent();
 
             lblTestTitle.Text = testTitle;
             lblTotalQuestions.Text = totalQuestions.ToString();
-            lblCorrectAnswers.Text = correctAnswers.ToString();
+            lblEarnedPoints.Text = earnedPoints.ToString();
+            lblTotalPoints.Text = totalPoints.ToString();
 
-            double percentage = totalQuestions > 0 ? (double)correctAnswers / totalQuestions * 100 : 0;
+            double percentage = totalPoints > 0 ? (double)earnedPoints / totalPoints * 100 : 0;
             lblPercentage.Text = $"{percentage:F1}%";
 
             lblTimeSpent.Text = timeSpent;

@@ -88,7 +88,10 @@ public class TestRepository : ITestRepository
             test_id as TestId,
             question_text as QuestionText,
             question_type as QuestionType,
-            order_index as OrderIndex
+            order_index as OrderIndex,
+            points,  /* Добавьте это поле */
+            image_data as ImageData,
+            image_content_type as ImageContentType
         FROM questions
         WHERE test_id = @TestId
         ORDER BY order_index";
@@ -185,7 +188,6 @@ public class TestRepository : ITestRepository
                 : null
         }).ToList();
 
-        // Загружаем вопросы для каждого теста
         foreach (var test in tests)
         {
             test.Questions = (await GetQuestionsForTestAsync(connection, test.Id)).ToList();
@@ -203,7 +205,6 @@ public class TestRepository : ITestRepository
         if (test.TimeLimit.HasValue)
         {
             var ts = test.TimeLimit.Value;
-            // Формат: INTERVAL 'HH:MM:SS'
             timeLimitExpression = $"INTERVAL '{ts.Hours}:{ts.Minutes}:{ts.Seconds}'";
         }
 
