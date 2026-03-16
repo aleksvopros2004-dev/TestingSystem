@@ -91,143 +91,162 @@ namespace TestingSystem.WindowsForms
             txtQuestion.Text = _question.QuestionText;
             txtOrder.Text = _question.OrderIndex.ToString();
 
-            // Загружаем изображение, если оно есть
             if (_selectedImageData != null && _selectedImageData.Length > 0)
             {
                 ShowImagePreview(_selectedImageData);
-                btnRemoveImage.Enabled = true;
+                btnRemoveImage.Enabled = _currentUser.Role == UserRole.Admin;
             }
 
-            // Здесь нужно загрузить варианты ответов для вопросов с выбором
             if (_question.QuestionType != "TextAnswer")
             {
-                LoadAnswerOptions(); // Вызов метода загрузки вариантов
+                if (_answerOptions == null)
+                {
+                    _answerOptions = _question.AnswerOptions?.ToList() ?? new List<AnswerOption>();
+                }
+
+                LoadAnswerOptions();
+
+                lblAnswers.Visible = true;
                 pnlAnswers.Visible = true;
+
+                btnAddOption.Visible = _currentUser.Role == UserRole.Admin;
+            }
+            else
+            {
+
+                lblAnswers.Visible = false;
+                pnlAnswers.Visible = false;
+                btnAddOption.Visible = false;
+            }
+
+            if (_currentUser.Role == UserRole.User)
+            {
+                SetupReadOnlyMode();
+            }
+        }
+
+        private void LoadAnswerOptions()
+        {
+            pnlAnswers.Controls.Clear();
+
+            // Проверяем, есть ли варианты ответов
+            if (_answerOptions == null || !_answerOptions.Any())
+            {
+                if (_currentUser.Role == UserRole.Admin)
+                {
+                    var lblNoOptions = new Label
+                    {
+                        Text = "Нет вариантов ответов. Нажмите 'Добавить вариант'",
+                        Location = new Point(10, 10),
+                        ForeColor = Color.Gray,
+                        AutoSize = true
+                    };
+                    pnlAnswers.Controls.Add(lblNoOptions);
+                }
+                return;
+            }
+
+            for (int i = 0; i < _answerOptions.Count; i++)
+            {
+                var option = _answerOptions[i];
+                var yPos = 10 + (i * 35);
+
+                Control correctControl;
+                if (_question.QuestionType == "SingleChoice")
+                {
+                    correctControl = new RadioButton
+                    {
+                        Location = new Point(10, yPos),
+                        Size = new Size(20, 20),
+                        Checked = option.IsCorrect,
+                        Tag = i,
+                        Name = $"rdoCorrect_{i}",
+                        Enabled = _currentUser.Role == UserRole.Admin 
+                    };
+                }
+                else if (_question.QuestionType == "MultipleChoice")
+                {
+                    correctControl = new CheckBox
+                    {
+                        Location = new Point(10, yPos),
+                        Size = new Size(20, 20),
+                        Checked = option.IsCorrect,
+                        Tag = i,
+                        Name = $"chkCorrect_{i}",
+                        Enabled = _currentUser.Role == UserRole.Admin
+                    };
+                }
+                else
+                {
+                    continue;
+                }
+
+                // Текст варианта
+                var txtOption = new TextBox
+                {
+                    Location = new Point(40, yPos),
+                    Size = new Size(500, 25),
+                    Text = option.OptionText,
+                    Tag = i,
+                    Name = $"txtOption_{i}",
+                    ReadOnly = _currentUser.Role == UserRole.User, 
+                    BackColor = _currentUser.Role == UserRole.User ? SystemColors.Control : SystemColors.Window
+                };
+
+                pnlAnswers.Controls.Add(correctControl);
+                pnlAnswers.Controls.Add(txtOption);
+
+                if (option.IsCorrect)
+                {
+                    var lblCorrect = new Label
+                    {
+                        Text = "✓",
+                        Location = new Point(545, yPos),
+                        Size = new Size(20, 20),
+                        ForeColor = Color.Green,
+                        Font = new Font("Arial", 12, FontStyle.Bold),
+                        TextAlign = ContentAlignment.MiddleCenter
+                    };
+                    pnlAnswers.Controls.Add(lblCorrect);
+                }
+
+                if (_currentUser.Role == UserRole.Admin)
+                {
+                    var btnDelete = new Button
+                    {
+                        Text = "×",
+                        Location = new Point(570, yPos),
+                        Size = new Size(30, 25),
+                        ForeColor = Color.Red,
+                        Font = new Font("Arial", 10, FontStyle.Bold),
+                        Tag = i,
+                        Name = $"btnDelete_{i}",
+                        BackColor = SystemColors.Control,
+                        FlatStyle = FlatStyle.Flat
+                    };
+
+                    btnDelete.Click += (s, e) =>
+                    {
+                        if (btnDelete.Tag is int idx && idx < _answerOptions.Count)
+                        {
+                            _answerOptions.RemoveAt(idx);
+                            LoadAnswerOptions(); 
+                        }
+                    };
+
+                    pnlAnswers.Controls.Add(btnDelete);
+                }
+            }
+
+            pnlAnswers.Visible = true;
+
+            if (_currentUser.Role == UserRole.Admin)
+            {
                 btnAddOption.Visible = true;
             }
         }
 
-		private void LoadAnswerOptions()
-		{
-			pnlAnswers.Controls.Clear();
-
-			// Проверяем, есть ли варианты ответов
-			if (_answerOptions == null || !_answerOptions.Any())
-			{
-				// Если вариантов нет, показываем сообщение
-				var lblNoOptions = new Label
-				{
-					Text = "Нет вариантов ответов",
-					Location = new Point(10, 10),
-					ForeColor = Color.Gray
-				};
-				pnlAnswers.Controls.Add(lblNoOptions);
-				return;
-			}
-
-			for (int i = 0; i < _answerOptions.Count; i++)
-			{
-				var option = _answerOptions[i];
-				var yPos = 10 + (i * 35);
-
-				// CheckBox/Radiobutton для отметки правильности
-				Control correctControl;
-				if (_question.QuestionType == "SingleChoice")
-				{
-					correctControl = new RadioButton
-					{
-						Location = new Point(10, yPos),
-						Size = new Size(20, 20),
-						Checked = option.IsCorrect,
-						Tag = i,
-						Name = $"rdoCorrect_{i}",
-						Enabled = false // Всегда отключаем для пользователей
-					};
-				}
-				else if (_question.QuestionType == "MultipleChoice")
-				{
-					correctControl = new CheckBox
-					{
-						Location = new Point(10, yPos),
-						Size = new Size(20, 20),
-						Checked = option.IsCorrect,
-						Tag = i,
-						Name = $"chkCorrect_{i}",
-						Enabled = false // Всегда отключаем для пользователей
-					};
-				}
-				else
-				{
-					// Для других типов вопросов не создаем контролы
-					continue;
-				}
-
-				// Текст варианта
-				var txtOption = new TextBox
-				{
-					Location = new Point(40, yPos),
-					Size = new Size(550, 25),
-					Text = option.OptionText,
-					Tag = i,
-					Name = $"txtOption_{i}",
-					ReadOnly = true, // Всегда только чтение для пользователей
-					BackColor = SystemColors.Control
-				};
-
-				// Добавляем иконку правильности для наглядности
-				if (option.IsCorrect)
-				{
-					var lblCorrect = new Label
-					{
-						Text = "✓",
-						Location = new Point(595, yPos),
-						Size = new Size(20, 20),
-						ForeColor = Color.Green,
-						Font = new Font("Arial", 12, FontStyle.Bold),
-						TextAlign = ContentAlignment.MiddleCenter
-					};
-					pnlAnswers.Controls.Add(lblCorrect);
-				}
-
-				// Кнопка удаления показываем только админам
-				if (_currentUser.Role == UserRole.Admin)
-				{
-					var btnDelete = new Button
-					{
-						Text = "×",
-						Location = new Point(600, yPos),
-						Size = new Size(30, 25),
-						ForeColor = Color.Red,
-						Font = new Font("Arial", 10, FontStyle.Bold),
-						Tag = i,
-						Name = $"btnDelete_{i}"
-					};
-
-					btnDelete.Click += (s, e) =>
-					{
-						if (btnDelete.Tag is int idx && idx < _answerOptions.Count)
-						{
-							_answerOptions.RemoveAt(idx);
-							LoadAnswerOptions();
-						}
-					};
-
-					pnlAnswers.Controls.Add(btnDelete);
-				}
-
-				pnlAnswers.Controls.Add(correctControl);
-				pnlAnswers.Controls.Add(txtOption);
-			}
-
-			// Делаем панель видимой, если есть варианты
-			if (_answerOptions.Any())
-			{
-				pnlAnswers.Visible = true;
-				lblAnswers.Visible = true;
-			}
-		}
-
-		private void AddAnswerOption()
+        private void AddAnswerOption()
         {
 			if (_currentUser.Role != UserRole.Admin)
 			{

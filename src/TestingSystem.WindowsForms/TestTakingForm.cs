@@ -52,11 +52,17 @@ namespace TestingSystem.WindowsForms
                     return;
                 }
 
-                // Перемешиваем вопросы, если нужно
+                // Перемешиваем вопросы, если установлен флаг
                 if (_test.QuestionsOrderRandom)
                 {
                     var rnd = new Random();
                     _questions = _questions.OrderBy(x => rnd.Next()).ToList();
+                    Console.WriteLine("Вопросы перемешаны");
+                }
+                else
+                {
+                    // Если не перемешивать, сортируем по OrderIndex
+                    _questions = _questions.OrderBy(q => q.OrderIndex).ToList();
                 }
 
                 lblQuestionCounter.Text = $"Вопрос {_currentQuestionIndex + 1} из {_questions.Count}";
