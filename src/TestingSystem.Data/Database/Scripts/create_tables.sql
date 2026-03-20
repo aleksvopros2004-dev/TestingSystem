@@ -19,7 +19,8 @@ CREATE TABLE IF NOT EXISTS tests (
     time_limit INTERVAL NULL,
     is_active BOOLEAN DEFAULT FALSE,
     questions_order_random BOOLEAN DEFAULT FALSE,
-    answer_options_random BOOLEAN DEFAULT FALSE
+    answer_options_random BOOLEAN DEFAULT FALSE,
+    is_scored BOOLEAN DEFAULT TRUE  -- Новое поле: TRUE - тест с баллами, FALSE - опрос
 );
 
 -- Таблица вопросов

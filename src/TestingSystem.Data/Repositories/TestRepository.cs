@@ -1,4 +1,5 @@
-﻿using Dapper;
+﻿using System.Diagnostics;
+using Dapper;
 using System.Data;
 using TestingSystem.Core.Models;
 using TestingSystem.Data.Database;
@@ -14,6 +15,167 @@ public class TestRepository : ITestRepository
         _context = context;
     }
 
+    public async Task<IEnumerable<Test>> GetByAuthorIdAsync(int authorId)
+    {
+        var stopwatch = Stopwatch.StartNew();
+
+        try
+        {
+            using var connection = _context.CreateConnection();
+            const string sql = @"
+                SELECT
+                    t.*,
+                    u.full_name as AuthorName,
+                    EXTRACT(EPOCH FROM t.time_limit) as TimeLimitSeconds
+                FROM tests t
+                LEFT JOIN users u ON t.author_id = u.id
+                WHERE t.author_id = @AuthorId
+                ORDER BY t.created_date DESC";
+
+            var results = await connection.QueryAsync<dynamic>(sql, new { AuthorId = authorId });
+
+            // ОТЛАДКА: Сырые данные из БД
+            foreach (var result in results)
+            {
+                Console.WriteLine($"=== ОТЛАДКА: Сырые данные из БД ===");
+                Console.WriteLine($"ID: {result.id}");
+                Console.WriteLine($"Title: {result.title}");
+                Console.WriteLine($"is_scored: {result.is_scored}");
+                Console.WriteLine($"Тип поля is_scored: {result.is_scored.GetType()}");
+                Console.WriteLine($"Значение: {(result.is_scored == true ? "true" : "false")}");
+                Console.WriteLine("================================");
+            }
+
+            var tests = results.Select(result => {
+                // ОТЛАБАКА: Значение is_scored перед созданием объекта
+                bool isScoredValue = result.is_scored == true;
+
+                Console.WriteLine($"--- Создание объекта Test ---");
+                Console.WriteLine($"ID: {result.id}");
+                Console.WriteLine($"is_scored из БД: {result.is_scored}");
+                Console.WriteLine($"Преобразованное значение: {isScoredValue}");
+                Console.WriteLine($"-----------------------------");
+
+                return new Test
+                {
+                    Id = result.id,
+                    Title = result.title,
+                    Description = result.description,
+                    AuthorId = result.author_id,
+                    CreatedDate = result.created_date,
+                    IsActive = result.is_active,
+                    QuestionsOrderRandom = result.questions_order_random,
+                    AnswerOptionsRandom = result.answer_options_random,
+                    IsScored = result.is_scored, // Просто присваиваем, без проверок
+                    TimeLimit = result.timelimitseconds != null && result.timelimitseconds > 0
+                        ? TimeSpan.FromSeconds((double)result.timelimitseconds)
+                        : null
+                };
+            }).ToList();
+
+            // ОТЛАДКА: Проверяем созданные объекты
+            foreach (var test in tests)
+            {
+                Console.WriteLine($">>> Созданный объект Test <<<");
+                Console.WriteLine($"ID: {test.Id}");
+                Console.WriteLine($"Название: {test.Title}");
+                Console.WriteLine($"IsScored: {test.IsScored}");
+                Console.WriteLine($"Тип: {(test.IsScored ? "Тест с баллами" : "Опрос")}");
+                Console.WriteLine($"================================");
+            }
+
+            // Загружаем вопросы для каждого теста
+            foreach (var test in tests)
+            {
+                test.Questions = (await GetQuestionsForTestAsync(connection, test.Id)).ToList();
+            }
+
+            stopwatch.Stop();
+            Console.WriteLine($"Время выполнения GetByAuthorIdAsync: {stopwatch.ElapsedMilliseconds} мс");
+
+            return tests;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Ошибка в GetByAuthorIdAsync: {ex.Message}");
+            throw;
+        }
+    }
+
+    public async Task<IEnumerable<Test>> GetActiveTestsAsync()
+    {
+        var stopwatch = Stopwatch.StartNew();
+
+        try
+        {
+            using var connection = _context.CreateConnection();
+            const string sql = @"
+                SELECT
+                    t.*,
+                    u.full_name as AuthorName,
+                    EXTRACT(EPOCH FROM t.time_limit) as TimeLimitSeconds
+                FROM tests t
+                LEFT JOIN users u ON t.author_id = u.id
+                WHERE t.is_active = true
+                ORDER BY t.title";
+
+            var results = await connection.QueryAsync<dynamic>(sql);
+
+            // ОТЛАДКА: Проверяем сырые данные
+            foreach (var result in results)
+            {
+                Console.WriteLine($"=== Активные тесты из БД ===");
+                Console.WriteLine($"ID: {result.id}");
+                Console.WriteLine($"Title: {result.title}");
+                Console.WriteLine($"is_scored: {result.is_scored}");
+                Console.WriteLine($"Значение: {(result.is_scored == true ? "true" : "false")}");
+                Console.WriteLine($"==============================");
+            }
+
+            var tests = results.Select(result => new Test
+            {
+                Id = result.id,
+                Title = result.title,
+                Description = result.description,
+                AuthorId = result.author_id,
+                CreatedDate = result.created_date,
+                IsActive = result.is_active,
+                QuestionsOrderRandom = result.questions_order_random,
+                AnswerOptionsRandom = result.answer_options_random,
+                IsScored = result.is_scored, // Просто присваиваем
+                TimeLimit = result.timelimitseconds != null && result.timelimitseconds > 0
+                    ? TimeSpan.FromSeconds((double)result.timelimitseconds)
+                    : null
+            }).ToList();
+
+            // ОТЛАДКА: Проверяем созданные объекты
+            foreach (var test in tests)
+            {
+                Console.WriteLine($">>> Созданный объект активного теста <<<");
+                Console.WriteLine($"ID: {test.Id}");
+                Console.WriteLine($"Название: {test.Title}");
+                Console.WriteLine($"IsScored: {test.IsScored}");
+                Console.WriteLine($"======================================");
+            }
+
+            // Загружаем вопросы для каждого теста
+            foreach (var test in tests)
+            {
+                test.Questions = (await GetQuestionsForTestAsync(connection, test.Id)).ToList();
+            }
+
+            stopwatch.Stop();
+            Console.WriteLine($"Время выполнения GetActiveTestsAsync: {stopwatch.ElapsedMilliseconds} мс");
+
+            return tests;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Ошибка в GetActiveTestsAsync: {ex.Message}");
+            throw;
+        }
+    }
+
     public async Task<Test?> GetByIdAsync(int id)
     {
         using var connection = _context.CreateConnection();
@@ -23,6 +185,13 @@ public class TestRepository : ITestRepository
         var test = await connection.QueryFirstOrDefaultAsync<Test>(testSql, new { Id = id });
 
         if (test == null) return null;
+
+        // ОТЛАДКА: Проверяем загруженный тест
+        Console.WriteLine($"=== Загрузка теста по ID {id} ===");
+        Console.WriteLine($"ID: {test.Id}");
+        Console.WriteLine($"Название: {test.Title}");
+        Console.WriteLine($"IsScored: {test.IsScored}");
+        Console.WriteLine($"==================================");
 
         // Отдельно получаем вопросы
         const string questionsSql = "SELECT * FROM questions WHERE test_id = @TestId ORDER BY order_index";
@@ -40,136 +209,18 @@ public class TestRepository : ITestRepository
         return test;
     }
 
-    public async Task<IEnumerable<Test>> GetByAuthorIdAsync(int authorId)
-    {
-        using var connection = _context.CreateConnection();
-
-        const string sql = @"
-        SELECT
-            t.*,
-            u.full_name as AuthorName,
-            EXTRACT(EPOCH FROM t.time_limit) as TimeLimitSeconds
-        FROM tests t
-        LEFT JOIN users u ON t.author_id = u.id
-        WHERE t.author_id = @AuthorId
-        ORDER BY t.created_date DESC";
-
-        var results = await connection.QueryAsync<dynamic>(sql, new { AuthorId = authorId });
-
-        var tests = results.Select(result => new Test
-        {
-            Id = result.id,
-            Title = result.title,
-            Description = result.description,
-            AuthorId = result.author_id,
-            CreatedDate = result.created_date,
-            IsActive = result.is_active,
-            QuestionsOrderRandom = result.questions_order_random,
-            AnswerOptionsRandom = result.answer_options_random,
-            TimeLimit = result.timelimitseconds != null && result.timelimitseconds > 0
-                ? TimeSpan.FromSeconds((double)result.timelimitseconds)
-                : null
-        }).ToList();
-
-        // Загружаем вопросы для каждого теста
-        foreach (var test in tests)
-        {
-            test.Questions = (await GetQuestionsForTestAsync(connection, test.Id)).ToList();
-        }
-
-        return tests;
-    }
-
-    private async Task<IEnumerable<Question>> GetQuestionsForTestAsync(IDbConnection connection, int testId)
-    {
-        const string questionsSql = @"
-        SELECT
-            id,
-            test_id as TestId,
-            question_text as QuestionText,
-            question_type as QuestionType,
-            order_index as OrderIndex,
-            points,  /* Добавьте это поле */
-            image_data as ImageData,
-            image_content_type as ImageContentType
-        FROM questions
-        WHERE test_id = @TestId
-        ORDER BY order_index";
-
-        var questions = await connection.QueryAsync<Question>(questionsSql, new { TestId = testId });
-
-        // Загружаем варианты ответов для каждого вопроса
-        foreach (var question in questions)
-        {
-            const string optionsSql = @"
-            SELECT
-                id,
-                question_id as QuestionId,
-                option_text as OptionText,
-                is_correct as IsCorrect
-            FROM answer_options
-            WHERE question_id = @QuestionId
-            ORDER BY id";
-
-            var options = await connection.QueryAsync<AnswerOption>(optionsSql, new { QuestionId = question.Id });
-            question.AnswerOptions = options.ToList();
-        }
-
-        return questions;
-    }
-
-    public async Task<IEnumerable<Test>> GetActiveTestsAsync()
-    {
-        using var connection = _context.CreateConnection();
-
-        const string sql = @"
-        SELECT
-            t.*,
-            u.full_name as AuthorName,
-            EXTRACT(EPOCH FROM t.time_limit) as TimeLimitSeconds
-        FROM tests t
-        LEFT JOIN users u ON t.author_id = u.id
-        WHERE t.is_active = true
-        ORDER BY t.title";
-
-        var results = await connection.QueryAsync<dynamic>(sql);
-
-        var tests = results.Select(result => new Test
-        {
-            Id = result.id,
-            Title = result.title,
-            Description = result.description,
-            AuthorId = result.author_id,
-            CreatedDate = result.created_date,
-            IsActive = result.is_active,
-            QuestionsOrderRandom = result.questions_order_random,
-            AnswerOptionsRandom = result.answer_options_random,
-            TimeLimit = result.timelimitseconds != null && result.timelimitseconds > 0
-                ? TimeSpan.FromSeconds((double)result.timelimitseconds)
-                : null
-        }).ToList();
-
-        // Загружаем вопросы для каждого теста
-        foreach (var test in tests)
-        {
-            test.Questions = (await GetQuestionsForTestAsync(connection, test.Id)).ToList();
-        }
-
-        return tests;
-    }
-
+    // Остальные методы без изменений...
     public async Task<IEnumerable<Test>> GetAllTestsAsync()
     {
         using var connection = _context.CreateConnection();
-
         const string sql = @"
-        SELECT
-            t.*,
-            u.full_name as AuthorName,
-            EXTRACT(EPOCH FROM t.time_limit) as TimeLimitSeconds
-        FROM tests t
-        LEFT JOIN users u ON t.author_id = u.id
-        ORDER BY t.created_date DESC";
+            SELECT
+                t.*,
+                u.full_name as AuthorName,
+                EXTRACT(EPOCH FROM t.time_limit) as TimeLimitSeconds
+            FROM tests t
+            LEFT JOIN users u ON t.author_id = u.id
+            ORDER BY t.created_date DESC";
 
         var results = await connection.QueryAsync<dynamic>(sql);
 
@@ -183,6 +234,7 @@ public class TestRepository : ITestRepository
             IsActive = result.is_active,
             QuestionsOrderRandom = result.questions_order_random,
             AnswerOptionsRandom = result.answer_options_random,
+            IsScored = result.is_scored,
             TimeLimit = result.timelimitseconds != null && result.timelimitseconds > 0
                 ? TimeSpan.FromSeconds((double)result.timelimitseconds)
                 : null
@@ -200,7 +252,6 @@ public class TestRepository : ITestRepository
     {
         using var connection = _context.CreateConnection();
 
-        // Преобразуем TimeSpan в строку формата PostgreSQL interval
         string timeLimitExpression = "NULL";
         if (test.TimeLimit.HasValue)
         {
@@ -209,11 +260,11 @@ public class TestRepository : ITestRepository
         }
 
         var sql = $@"
-        INSERT INTO tests (title, description, author_id, time_limit, is_active, 
-                          questions_order_random, answer_options_random)
-        VALUES (@Title, @Description, @AuthorId, {timeLimitExpression}, @IsActive, 
-                @QuestionsOrderRandom, @AnswerOptionsRandom)
-        RETURNING id";
+            INSERT INTO tests (title, description, author_id, time_limit, is_active,
+            questions_order_random, answer_options_random, is_scored)
+            VALUES (@Title, @Description, @AuthorId, {timeLimitExpression}, @IsActive,
+            @QuestionsOrderRandom, @AnswerOptionsRandom, @IsScored)
+            RETURNING id";
 
         return await connection.ExecuteScalarAsync<int>(sql, new
         {
@@ -222,7 +273,8 @@ public class TestRepository : ITestRepository
             test.AuthorId,
             test.IsActive,
             test.QuestionsOrderRandom,
-            test.AnswerOptionsRandom
+            test.AnswerOptionsRandom,
+            test.IsScored
         });
     }
 
@@ -230,7 +282,6 @@ public class TestRepository : ITestRepository
     {
         using var connection = _context.CreateConnection();
 
-        // Преобразуем TimeSpan в строку формата PostgreSQL interval
         string timeLimitExpression = "NULL";
         if (test.TimeLimit.HasValue)
         {
@@ -239,14 +290,15 @@ public class TestRepository : ITestRepository
         }
 
         var sql = $@"
-        UPDATE tests
-        SET title = @Title,
-            description = @Description,
-            time_limit = {timeLimitExpression},
-            is_active = @IsActive,
-            questions_order_random = @QuestionsOrderRandom,
-            answer_options_random = @AnswerOptionsRandom
-        WHERE id = @Id";
+            UPDATE tests
+            SET title = @Title,
+                description = @Description,
+                time_limit = {timeLimitExpression},
+                is_active = @IsActive,
+                questions_order_random = @QuestionsOrderRandom,
+                answer_options_random = @AnswerOptionsRandom,
+                is_scored = @IsScored
+            WHERE id = @Id";
 
         var affectedRows = await connection.ExecuteAsync(sql, new
         {
@@ -255,7 +307,8 @@ public class TestRepository : ITestRepository
             test.Description,
             test.IsActive,
             test.QuestionsOrderRandom,
-            test.AnswerOptionsRandom
+            test.AnswerOptionsRandom,
+            test.IsScored
         });
 
         return affectedRows > 0;
@@ -264,24 +317,57 @@ public class TestRepository : ITestRepository
     public async Task<bool> DeleteAsync(int id)
     {
         using var connection = _context.CreateConnection();
-
         const string sql = "DELETE FROM tests WHERE id = @Id";
         var affectedRows = await connection.ExecuteAsync(sql, new { Id = id });
-
         return affectedRows > 0;
     }
 
     public async Task<bool> ActivateTestAsync(int testId, bool isActive)
     {
         using var connection = _context.CreateConnection();
-
         const string sql = "UPDATE tests SET is_active = @IsActive WHERE id = @TestId";
         var affectedRows = await connection.ExecuteAsync(sql, new
         {
             TestId = testId,
             IsActive = isActive
         });
-
         return affectedRows > 0;
+    }
+
+    private async Task<IEnumerable<Question>> GetQuestionsForTestAsync(IDbConnection connection, int testId)
+    {
+        const string questionsSql = @"
+            SELECT
+                id,
+                test_id as TestId,
+                question_text as QuestionText,
+                question_type as QuestionType,
+                order_index as OrderIndex,
+                points,
+                image_data as ImageData,
+                image_content_type as ImageContentType
+            FROM questions
+            WHERE test_id = @TestId
+            ORDER BY order_index";
+
+        var questions = await connection.QueryAsync<Question>(questionsSql, new { TestId = testId });
+
+        foreach (var question in questions)
+        {
+            const string optionsSql = @"
+                SELECT
+                    id,
+                    question_id as QuestionId,
+                    option_text as OptionText,
+                    is_correct as IsCorrect
+                FROM answer_options
+                WHERE question_id = @QuestionId
+                ORDER BY id";
+
+            var options = await connection.QueryAsync<AnswerOption>(optionsSql, new { QuestionId = question.Id });
+            question.AnswerOptions = options.ToList();
+        }
+
+        return questions;
     }
 }
