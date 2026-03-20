@@ -15,6 +15,7 @@ public partial class CreateTestForm : Form
         _testService = testService;
         _currentUser = currentUser;
         InitializeComponent();
+
     }
 
     private void BtnCancel_Click(object? sender, EventArgs e)
@@ -33,12 +34,11 @@ public partial class CreateTestForm : Form
 
         // Блокируем кнопку
         btnCreate.Enabled = false;
-        lblMessage.Text = "Создание теста...";
+        lblMessage.Text = "Создание...";
         lblMessage.ForeColor = Color.Blue;
 
         try
         {
-            // Создаем объект теста
             var test = new Test
             {
                 Title = txtTitle.Text.Trim(),
@@ -47,21 +47,17 @@ public partial class CreateTestForm : Form
                 TimeLimit = GetTimeLimit(),
                 IsActive = chkActive?.Checked ?? false,
                 QuestionsOrderRandom = chkRandomQuestions?.Checked ?? true,
-                AnswerOptionsRandom = chkRandomAnswers?.Checked ?? true
+                AnswerOptionsRandom = chkRandomAnswers?.Checked ?? true,
+                IsScored = chkIsScored?.Checked ?? true 
             };
 
-            // Сохраняем в базу
             var (success, message, testId) = await _testService.CreateTestAsync(test);
 
             if (success)
             {
-                lblMessage.Text = $"Тест успешно создан (ID: {testId})!";
+                lblMessage.Text = $"Успешно создано (ID: {testId})!";
                 lblMessage.ForeColor = Color.Green;
-
-                // Задержка для отображения сообщения
                 await Task.Delay(1500);
-
-                // Вызываем событие
                 TestCreated?.Invoke(this, EventArgs.Empty);
                 this.Close();
             }
@@ -73,6 +69,7 @@ public partial class CreateTestForm : Form
         }
         catch (Exception ex)
         {
+            MessageBox.Show($"Ошибка: {ex.Message}", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
             lblMessage.Text = $"Ошибка: {ex.Message}";
             lblMessage.ForeColor = Color.Red;
         }
@@ -86,9 +83,7 @@ public partial class CreateTestForm : Form
     {
         var hours = (int)(numHours?.Value ?? 0);
         var minutes = (int)(numMinutes?.Value ?? 0);
-
         if (hours == 0 && minutes == 0) return null;
-
         return new TimeSpan(hours, minutes, 0);
     }
 }

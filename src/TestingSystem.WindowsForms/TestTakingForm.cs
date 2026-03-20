@@ -42,9 +42,13 @@ namespace TestingSystem.WindowsForms
                 var questionsEnumerable = await _questionService.GetQuestionsByTestAsync(_test.Id);
                 dbStopwatch.Stop();
 
-                Console.WriteLine($"Время загрузки вопросов для теста: {dbStopwatch.ElapsedMilliseconds} мс");
-
                 _questions = questionsEnumerable.ToList();
+
+                // Выводим баллы для отладки
+                foreach (var q in _questions)
+                {
+                    Console.WriteLine($"Загружен вопрос {q.Id}: баллы = {q.Points}");
+                }
 
                 if (_questions.Count == 0)
                 {
@@ -59,11 +63,9 @@ namespace TestingSystem.WindowsForms
                 {
                     var rnd = new Random();
                     _questions = _questions.OrderBy(x => rnd.Next()).ToList();
-                    Console.WriteLine("Вопросы перемешаны");
                 }
                 else
                 {
-                    // Если не перемешивать, сортируем по OrderIndex
                     _questions = _questions.OrderBy(q => q.OrderIndex).ToList();
                 }
 
@@ -259,13 +261,27 @@ namespace TestingSystem.WindowsForms
         {
             _testStopwatch.Stop();
 
-            CalculateResults();
-
             var timeSpan = _testStopwatch.Elapsed;
             var timeString = $"Время: {timeSpan.Minutes} мин {timeSpan.Seconds} сек";
 
-            var resultForm = new TestResultForm(_test.Title, _questions.Count, _earnedPoints, _totalPoints, timeString);
-            resultForm.ShowDialog();
+            if (_test.IsScored)
+            {
+                CalculateResults();
+
+                var resultForm = new TestResultForm(_test.Title, _questions.Count, _earnedPoints, _totalPoints, timeString);
+                resultForm.ShowDialog();
+            }
+            else
+            {
+                MessageBox.Show(
+                    $"Опрос \"{_test.Title}\" успешно пройден!\n\n" +
+                    $"Количество вопросов: {_questions.Count}\n" +
+                    $"{timeString}\n\n" +
+                    $"Спасибо за участие!",
+                    "Опрос завершен",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Information);
+            }
 
             this.Close();
         }
@@ -343,7 +359,6 @@ namespace TestingSystem.WindowsForms
             _earnedPoints = earnedPoints;
             _totalPoints = totalPoints;
 
-            Console.WriteLine($"Всего набрано баллов: {earnedPoints} из {totalPoints}");
         }
 
         private void BtnCancel_Click(object? sender, EventArgs e)

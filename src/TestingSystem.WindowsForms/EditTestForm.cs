@@ -32,6 +32,7 @@ namespace TestingSystem.WindowsForms
             chkRandomQuestions.Checked = _test.QuestionsOrderRandom;
             chkRandomAnswers.Checked = _test.AnswerOptionsRandom;
             chkActive.Checked = _test.IsActive;
+            chkIsScored.Checked = _test.IsScored; 
         }
 
         private async void BtnSave_Click(object? sender, EventArgs e)
@@ -50,13 +51,13 @@ namespace TestingSystem.WindowsForms
 
             try
             {
-                // Обновляем объект теста
                 _test.Title = txtTitle.Text.Trim();
                 _test.Description = txtDescription?.Text?.Trim();
                 _test.TimeLimit = GetTimeLimit();
                 _test.QuestionsOrderRandom = chkRandomQuestions?.Checked ?? true;
                 _test.AnswerOptionsRandom = chkRandomAnswers?.Checked ?? true;
                 _test.IsActive = chkActive?.Checked ?? false;
+                _test.IsScored = chkIsScored?.Checked ?? true; 
 
                 // Сохраняем в базу
                 var (success, message) = await _testService.UpdateTestAsync(_test);
@@ -65,11 +66,7 @@ namespace TestingSystem.WindowsForms
                 {
                     lblMessage.Text = "Тест успешно обновлен!";
                     lblMessage.ForeColor = Color.Green;
-
-                    // Задержка для отображения сообщения
                     await Task.Delay(1000);
-
-                    // Вызываем событие
                     TestUpdated?.Invoke(this, EventArgs.Empty);
                     this.Close();
                 }
@@ -81,6 +78,7 @@ namespace TestingSystem.WindowsForms
             }
             catch (Exception ex)
             {
+                MessageBox.Show($"Ошибка: {ex.Message}", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 lblMessage.Text = $"Ошибка: {ex.Message}";
                 lblMessage.ForeColor = Color.Red;
             }
@@ -94,10 +92,8 @@ namespace TestingSystem.WindowsForms
         {
             var hours = (int)numHours.Value;
             var minutes = (int)numMinutes.Value;
-
             if (hours == 0 && minutes == 0)
                 return null;
-
             return new TimeSpan(hours, minutes, 0);
         }
 
