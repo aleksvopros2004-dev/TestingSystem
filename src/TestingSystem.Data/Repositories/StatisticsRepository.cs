@@ -1,4 +1,6 @@
 ﻿using Dapper;
+using Newtonsoft.Json;
+using TestingSystem.Core.Interfaces;  // ← добавляем using
 using TestingSystem.Core.Models;
 using TestingSystem.Data.Database;
 
@@ -7,10 +9,12 @@ namespace TestingSystem.Data.Repositories
     public class StatisticsRepository : IStatisticsRepository
     {
         private readonly IDatabaseContext _context;
+        private readonly ILemmatizationService _lemmatizationService;  // ← используем интерфейс
 
-        public StatisticsRepository(IDatabaseContext context)
+        public StatisticsRepository(IDatabaseContext context, ILemmatizationService lemmatizationService)
         {
             _context = context;
+            _lemmatizationService = lemmatizationService;
         }
 
         public async Task<TestStatistics> GetTestStatisticsAsync(int testId)
@@ -129,9 +133,9 @@ namespace TestingSystem.Data.Repositories
             using var connection = _context.CreateConnection();
 
             var questions = await connection.QueryAsync<Question>(@"
-        SELECT q.* FROM questions q 
-        WHERE q.test_id = @TestId 
-        ORDER BY q.order_index",
+                SELECT * FROM questions 
+                WHERE test_id = @TestId 
+                ORDER BY order_index",
                 new { TestId = testId });
 
             var questionStats = new List<QuestionStatistics>();
@@ -143,22 +147,22 @@ namespace TestingSystem.Data.Repositories
                     QuestionId = question.Id,
                     QuestionText = question.QuestionText,
                     QuestionType = question.QuestionType,
-                    Points = question.Points
+                    Points = question.Points,
+                    OptionPopularity = new List<OptionPopularity>(),
+                    CommonWords = new List<WordFrequency>()
                 };
 
-                // Получаем все ответы на этот вопрос
                 var answers = await connection.QueryAsync<dynamic>(@"
-            SELECT 
-                ua.is_correct,
-                ua.points_earned,
-                ua.answer_text,
-                ua.selected_options_json
-            FROM user_answers ua
-            JOIN test_sessions ts ON ua.session_id = ts.id
-            WHERE ua.question_id = @QuestionId 
-              AND ts.is_completed = true
-              AND ts.test_id = @TestId",
-                    new { QuestionId = question.Id, TestId = testId });
+                    SELECT 
+                        ua.is_correct,
+                        ua.points_earned,
+                        ua.answer_text,
+                        ua.selected_options_json
+                    FROM user_answers ua
+                    JOIN test_sessions ts ON ua.session_id = ts.id
+                    WHERE ua.question_id = @QuestionId 
+                      AND ts.is_completed = true",
+                    new { QuestionId = question.Id });
 
                 var answersList = answers.ToList();
                 stats.TotalAnswers = answersList.Count;
@@ -170,24 +174,26 @@ namespace TestingSystem.Data.Repositories
                     stats.AveragePointsEarned = Math.Round(answersList.Average(a => (int)a.points_earned), 1);
                 }
 
-                // Для вопросов с вариантами - собираем популярность
-                if (question.QuestionType != "TextAnswer" && stats.TotalAnswers > 0)
+                // Для вопросов с вариантами ответов
+                if (question.QuestionType != "TextAnswer")
                 {
                     var options = await connection.QueryAsync<AnswerOption>(@"
-                SELECT * FROM answer_options WHERE question_id = @QuestionId",
+                        SELECT * FROM answer_options 
+                        WHERE question_id = @QuestionId 
+                        ORDER BY id",
                         new { QuestionId = question.Id });
 
                     foreach (var option in options)
                     {
-                        // Считаем, сколько раз выбран этот вариант
                         int selectionCount = 0;
+
                         foreach (var answer in answersList)
                         {
                             if (answer.selected_options_json != null)
                             {
                                 try
                                 {
-                                    var selectedIds = Newtonsoft.Json.JsonConvert
+                                    var selectedIds = JsonConvert
                                         .DeserializeObject<List<int>>(answer.selected_options_json);
                                     if (selectedIds != null && selectedIds.Contains(option.Id))
                                     {
@@ -204,14 +210,27 @@ namespace TestingSystem.Data.Repositories
                             OptionText = option.OptionText,
                             IsCorrect = option.IsCorrect,
                             SelectionCount = selectionCount,
-                            SelectionPercentage = Math.Round(selectionCount * 100.0 / stats.TotalAnswers, 1)
+                            SelectionPercentage = stats.TotalAnswers > 0
+                                ? Math.Round(selectionCount * 100.0 / stats.TotalAnswers, 1)
+                                : 0
                         });
+                    }
+                }
+                else
+                {
+                    // Для текстовых ответов - используем интерфейс
+                    var textAnswers = answersList
+                        .Where(a => a.answer_text != null)
+                        .Select(a => (string)a.answer_text)
+                        .ToList();
+
+                    if (textAnswers.Any())
+                    {
+                        stats.CommonWords = _lemmatizationService.GetWordFrequencies(textAnswers, 30);
                     }
                 }
 
                 questionStats.Add(stats);
-
-                Console.WriteLine($"Вопрос {question.Id}: правильно {stats.CorrectAnswers} из {stats.TotalAnswers} ({stats.CorrectPercentage}%)");
             }
 
             return questionStats;

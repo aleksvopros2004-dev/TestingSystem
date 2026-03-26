@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using TestingSystem.Core.Interfaces;
 using TestingSystem.Core.Models;
 using TestingSystem.Data.Repositories;
 using TestingSystem.Services.Interfaces;
@@ -59,7 +60,7 @@ namespace TestingSystem.WindowsForms
                 Program.ServiceProvider.GetRequiredService<ITestService>(),
                 Program.ServiceProvider.GetRequiredService<IStatisticsRepository>(),
                 Program.ServiceProvider.GetRequiredService<ExcelExportService>(),
-                Program.ServiceProvider.GetRequiredService<LemmatizationService>(),
+                Program.ServiceProvider.GetRequiredService<ILemmatizationService>(),  // ← интерфейс
                 CurrentUser);
             statisticsForm.ShowDialog();
         }

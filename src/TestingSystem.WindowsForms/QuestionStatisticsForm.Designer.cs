@@ -4,23 +4,30 @@
     {
         private System.ComponentModel.IContainer components = null;
 
-        private System.Windows.Forms.TableLayoutPanel tableLayout;
+        private System.Windows.Forms.Panel panelTop;
         private System.Windows.Forms.Label lblQuestionTitle;
         private System.Windows.Forms.Label lblQuestionText;
+        private System.Windows.Forms.Panel panelType;
         private System.Windows.Forms.Label lblTypeTitle;
         private System.Windows.Forms.Label lblType;
+        private System.Windows.Forms.Panel panelStats;
         private System.Windows.Forms.Label lblStatsTitle;
         private System.Windows.Forms.Label lblStats;
+        private System.Windows.Forms.SplitContainer splitContainer;
+        private System.Windows.Forms.Panel panelLeft;
         private System.Windows.Forms.Label lblOptionsTitle;
         private System.Windows.Forms.ListView listViewOptions;
         private System.Windows.Forms.ColumnHeader colOptionText;
         private System.Windows.Forms.ColumnHeader colCount;
         private System.Windows.Forms.ColumnHeader colPercent;
         private System.Windows.Forms.ColumnHeader colCorrect;
+        private System.Windows.Forms.Panel panelRight;
+        private System.Windows.Forms.Label lblWordsTitle;
         private System.Windows.Forms.ListView listViewWords;
         private System.Windows.Forms.ColumnHeader colWord;
         private System.Windows.Forms.ColumnHeader colWordCount;
         private System.Windows.Forms.Label lblNoData;
+        private System.Windows.Forms.Panel panelBottom;
         private System.Windows.Forms.Button btnClose;
 
         protected override void Dispose(bool disposing)
@@ -34,151 +41,210 @@
 
         private void InitializeComponent()
         {
-            tableLayout = new TableLayoutPanel();
+            panelTop = new Panel();
             lblQuestionTitle = new Label();
             lblQuestionText = new Label();
+            panelType = new Panel();
             lblTypeTitle = new Label();
             lblType = new Label();
+            panelStats = new Panel();
             lblStatsTitle = new Label();
             lblStats = new Label();
+            splitContainer = new SplitContainer();
+            panelLeft = new Panel();
             lblOptionsTitle = new Label();
             listViewOptions = new ListView();
             colOptionText = new ColumnHeader();
             colCount = new ColumnHeader();
             colPercent = new ColumnHeader();
             colCorrect = new ColumnHeader();
+            panelRight = new Panel();
+            lblWordsTitle = new Label();
             listViewWords = new ListView();
             colWord = new ColumnHeader();
             colWordCount = new ColumnHeader();
             lblNoData = new Label();
+            panelBottom = new Panel();
             btnClose = new Button();
-            tableLayout.SuspendLayout();
+            panelTop.SuspendLayout();
+            panelType.SuspendLayout();
+            panelStats.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)splitContainer).BeginInit();
+            splitContainer.Panel1.SuspendLayout();
+            splitContainer.Panel2.SuspendLayout();
+            splitContainer.SuspendLayout();
+            panelLeft.SuspendLayout();
+            panelRight.SuspendLayout();
+            panelBottom.SuspendLayout();
             SuspendLayout();
             // 
-            // tableLayout
+            // panelTop
             // 
-            tableLayout.ColumnCount = 2;
-            tableLayout.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 105F));
-            tableLayout.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
-            tableLayout.Controls.Add(lblQuestionTitle, 0, 0);
-            tableLayout.Controls.Add(lblQuestionText, 1, 0);
-            tableLayout.Controls.Add(lblTypeTitle, 0, 1);
-            tableLayout.Controls.Add(lblType, 1, 1);
-            tableLayout.Controls.Add(lblStatsTitle, 0, 2);
-            tableLayout.Controls.Add(lblStats, 1, 2);
-            tableLayout.Controls.Add(lblOptionsTitle, 0, 3);
-            tableLayout.Controls.Add(listViewOptions, 1, 3);
-            tableLayout.Controls.Add(listViewWords, 1, 3);
-            tableLayout.Controls.Add(lblNoData, 1, 3);
-            tableLayout.Controls.Add(btnClose, 1, 4);
-            tableLayout.Dock = DockStyle.Fill;
-            tableLayout.Location = new Point(0, 0);
-            tableLayout.Margin = new Padding(3, 2, 3, 2);
-            tableLayout.Name = "tableLayout";
-            tableLayout.Padding = new Padding(18, 15, 18, 15);
-            tableLayout.RowCount = 5;
-            tableLayout.RowStyles.Add(new RowStyle(SizeType.Absolute, 38F));
-            tableLayout.RowStyles.Add(new RowStyle(SizeType.Absolute, 30F));
-            tableLayout.RowStyles.Add(new RowStyle(SizeType.Absolute, 45F));
-            tableLayout.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
-            tableLayout.RowStyles.Add(new RowStyle(SizeType.Absolute, 38F));
-            tableLayout.RowStyles.Add(new RowStyle(SizeType.Absolute, 20F));
-            tableLayout.Size = new Size(700, 375);
-            tableLayout.TabIndex = 0;
+            panelTop.BackColor = Color.FromArgb(0, 120, 215);
+            panelTop.Controls.Add(lblQuestionTitle);
+            panelTop.Controls.Add(lblQuestionText);
+            panelTop.Dock = DockStyle.Top;
+            panelTop.Location = new Point(0, 0);
+            panelTop.Margin = new Padding(3, 2, 3, 2);
+            panelTop.Name = "panelTop";
+            panelTop.Padding = new Padding(13, 8, 13, 8);
+            panelTop.Size = new Size(788, 60);
+            panelTop.TabIndex = 0;
             // 
             // lblQuestionTitle
             // 
-            lblQuestionTitle.Dock = DockStyle.Fill;
-            lblQuestionTitle.Location = new Point(21, 15);
+            lblQuestionTitle.AutoSize = true;
+            lblQuestionTitle.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
+            lblQuestionTitle.ForeColor = Color.White;
+            lblQuestionTitle.Location = new Point(13, 9);
             lblQuestionTitle.Name = "lblQuestionTitle";
-            lblQuestionTitle.Size = new Size(99, 38);
+            lblQuestionTitle.Size = new Size(65, 19);
             lblQuestionTitle.TabIndex = 0;
             lblQuestionTitle.Text = "Вопрос:";
-            lblQuestionTitle.TextAlign = ContentAlignment.MiddleLeft;
             // 
             // lblQuestionText
             // 
-            lblQuestionText.Dock = DockStyle.Fill;
+            lblQuestionText.AutoSize = true;
             lblQuestionText.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
-            lblQuestionText.Location = new Point(126, 15);
+            lblQuestionText.ForeColor = Color.White;
+            lblQuestionText.Location = new Point(13, 32);
             lblQuestionText.Name = "lblQuestionText";
-            lblQuestionText.Size = new Size(553, 38);
+            lblQuestionText.Size = new Size(108, 19);
             lblQuestionText.TabIndex = 1;
-            lblQuestionText.TextAlign = ContentAlignment.MiddleLeft;
+            lblQuestionText.Text = "Текст вопроса";
+            // 
+            // panelType
+            // 
+            panelType.BackColor = Color.FromArgb(240, 240, 240);
+            panelType.Controls.Add(lblTypeTitle);
+            panelType.Controls.Add(lblType);
+            panelType.Dock = DockStyle.Top;
+            panelType.Location = new Point(0, 60);
+            panelType.Margin = new Padding(3, 2, 3, 2);
+            panelType.Name = "panelType";
+            panelType.Padding = new Padding(13, 6, 13, 6);
+            panelType.Size = new Size(788, 34);
+            panelType.TabIndex = 1;
             // 
             // lblTypeTitle
             // 
-            lblTypeTitle.Dock = DockStyle.Fill;
-            lblTypeTitle.Location = new Point(21, 53);
+            lblTypeTitle.AutoSize = true;
+            lblTypeTitle.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+            lblTypeTitle.Location = new Point(13, 8);
             lblTypeTitle.Name = "lblTypeTitle";
-            lblTypeTitle.Size = new Size(99, 30);
-            lblTypeTitle.TabIndex = 2;
+            lblTypeTitle.Size = new Size(31, 15);
+            lblTypeTitle.TabIndex = 0;
             lblTypeTitle.Text = "Тип:";
-            lblTypeTitle.TextAlign = ContentAlignment.MiddleLeft;
             // 
             // lblType
             // 
-            lblType.Dock = DockStyle.Fill;
-            lblType.Location = new Point(126, 53);
+            lblType.AutoSize = true;
+            lblType.Font = new Font("Segoe UI", 9F);
+            lblType.Location = new Point(54, 8);
             lblType.Name = "lblType";
-            lblType.Size = new Size(553, 30);
-            lblType.TabIndex = 3;
-            lblType.TextAlign = ContentAlignment.MiddleLeft;
+            lblType.Size = new Size(76, 15);
+            lblType.TabIndex = 1;
+            lblType.Text = "Тип вопроса";
+            // 
+            // panelStats
+            // 
+            panelStats.BackColor = Color.FromArgb(255, 248, 225);
+            panelStats.Controls.Add(lblStatsTitle);
+            panelStats.Controls.Add(lblStats);
+            panelStats.Dock = DockStyle.Top;
+            panelStats.Location = new Point(0, 94);
+            panelStats.Margin = new Padding(3, 2, 3, 2);
+            panelStats.Name = "panelStats";
+            panelStats.Padding = new Padding(13, 6, 13, 6);
+            panelStats.Size = new Size(788, 41);
+            panelStats.TabIndex = 2;
             // 
             // lblStatsTitle
             // 
-            lblStatsTitle.Dock = DockStyle.Fill;
-            lblStatsTitle.Location = new Point(21, 83);
+            lblStatsTitle.AutoSize = true;
+            lblStatsTitle.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+            lblStatsTitle.Location = new Point(13, 8);
             lblStatsTitle.Name = "lblStatsTitle";
-            lblStatsTitle.Size = new Size(99, 45);
-            lblStatsTitle.TabIndex = 4;
+            lblStatsTitle.Size = new Size(73, 15);
+            lblStatsTitle.TabIndex = 0;
             lblStatsTitle.Text = "Статистика:";
-            lblStatsTitle.TextAlign = ContentAlignment.MiddleLeft;
             // 
             // lblStats
             // 
-            lblStats.Dock = DockStyle.Fill;
-            lblStats.Location = new Point(126, 83);
+            lblStats.AutoSize = true;
+            lblStats.Font = new Font("Segoe UI", 9F);
+            lblStats.Location = new Point(91, 8);
             lblStats.Name = "lblStats";
-            lblStats.Size = new Size(553, 45);
-            lblStats.TabIndex = 5;
-            lblStats.TextAlign = ContentAlignment.MiddleLeft;
+            lblStats.Size = new Size(211, 15);
+            lblStats.TabIndex = 1;
+            lblStats.Text = "Всего ответов: 0 | Правильных: 0 | 0%";
+            // 
+            // splitContainer
+            // 
+            splitContainer.Dock = DockStyle.Fill;
+            splitContainer.Location = new Point(0, 135);
+            splitContainer.Margin = new Padding(3, 2, 3, 2);
+            splitContainer.Name = "splitContainer";
+            splitContainer.Orientation = Orientation.Horizontal;
+            // 
+            // splitContainer.Panel1
+            // 
+            splitContainer.Panel1.Controls.Add(panelLeft);
+            splitContainer.Panel1MinSize = 250;
+            // 
+            // splitContainer.Panel2
+            // 
+            splitContainer.Panel2.Controls.Add(panelRight);
+            splitContainer.Size = new Size(788, 315);
+            splitContainer.SplitterDistance = 250;
+            splitContainer.SplitterWidth = 3;
+            splitContainer.TabIndex = 3;
+            // 
+            // panelLeft
+            // 
+            panelLeft.Controls.Add(lblOptionsTitle);
+            panelLeft.Controls.Add(listViewOptions);
+            panelLeft.Dock = DockStyle.Fill;
+            panelLeft.Location = new Point(0, 0);
+            panelLeft.Margin = new Padding(3, 2, 3, 2);
+            panelLeft.Name = "panelLeft";
+            panelLeft.Padding = new Padding(9, 8, 9, 8);
+            panelLeft.Size = new Size(788, 250);
+            panelLeft.TabIndex = 0;
             // 
             // lblOptionsTitle
             // 
-            lblOptionsTitle.Dock = DockStyle.Fill;
+            lblOptionsTitle.AutoSize = true;
             lblOptionsTitle.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
-            lblOptionsTitle.Location = new Point(21, 128);
+            lblOptionsTitle.Location = new Point(9, 8);
             lblOptionsTitle.Name = "lblOptionsTitle";
-            lblOptionsTitle.Size = new Size(99, 174);
-            lblOptionsTitle.TabIndex = 6;
-            lblOptionsTitle.Text = "Детальный анализ:";
-            lblOptionsTitle.TextAlign = ContentAlignment.MiddleLeft;
+            lblOptionsTitle.Size = new Size(142, 19);
+            lblOptionsTitle.TabIndex = 0;
+            lblOptionsTitle.Text = "Анализ вариантов:";
             // 
             // listViewOptions
             // 
+            listViewOptions.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             listViewOptions.Columns.AddRange(new ColumnHeader[] { colOptionText, colCount, colPercent, colCorrect });
-            listViewOptions.Dock = DockStyle.Fill;
             listViewOptions.FullRowSelect = true;
             listViewOptions.GridLines = true;
-            listViewOptions.Location = new Point(126, 304);
+            listViewOptions.Location = new Point(9, 30);
             listViewOptions.Margin = new Padding(3, 2, 3, 2);
             listViewOptions.Name = "listViewOptions";
-            listViewOptions.Size = new Size(553, 34);
-            listViewOptions.TabIndex = 7;
+            listViewOptions.Size = new Size(770, 213);
+            listViewOptions.TabIndex = 1;
             listViewOptions.UseCompatibleStateImageBehavior = false;
             listViewOptions.View = View.Details;
-            listViewOptions.Visible = false;
             // 
             // colOptionText
             // 
             colOptionText.Text = "Вариант ответа";
-            colOptionText.Width = 350;
+            colOptionText.Width = 400;
             // 
             // colCount
             // 
             colCount.Text = "Выбрано";
-            colCount.Width = 80;
+            colCount.Width = 100;
             // 
             // colPercent
             // 
@@ -188,19 +254,42 @@
             // colCorrect
             // 
             colCorrect.Text = "Правильный";
-            colCorrect.Width = 80;
+            colCorrect.Width = 100;
+            // 
+            // panelRight
+            // 
+            panelRight.Controls.Add(lblWordsTitle);
+            panelRight.Controls.Add(listViewWords);
+            panelRight.Controls.Add(lblNoData);
+            panelRight.Dock = DockStyle.Fill;
+            panelRight.Location = new Point(0, 0);
+            panelRight.Margin = new Padding(3, 2, 3, 2);
+            panelRight.Name = "panelRight";
+            panelRight.Padding = new Padding(9, 8, 9, 8);
+            panelRight.Size = new Size(788, 62);
+            panelRight.TabIndex = 0;
+            // 
+            // lblWordsTitle
+            // 
+            lblWordsTitle.AutoSize = true;
+            lblWordsTitle.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
+            lblWordsTitle.Location = new Point(9, 8);
+            lblWordsTitle.Name = "lblWordsTitle";
+            lblWordsTitle.Size = new Size(175, 19);
+            lblWordsTitle.TabIndex = 0;
+            lblWordsTitle.Text = "Анализ ключевых слов:";
             // 
             // listViewWords
             // 
+            listViewWords.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             listViewWords.Columns.AddRange(new ColumnHeader[] { colWord, colWordCount });
-            listViewWords.Dock = DockStyle.Fill;
             listViewWords.FullRowSelect = true;
             listViewWords.GridLines = true;
-            listViewWords.Location = new Point(21, 304);
+            listViewWords.Location = new Point(9, 30);
             listViewWords.Margin = new Padding(3, 2, 3, 2);
             listViewWords.Name = "listViewWords";
-            listViewWords.Size = new Size(99, 34);
-            listViewWords.TabIndex = 8;
+            listViewWords.Size = new Size(770, 26);
+            listViewWords.TabIndex = 1;
             listViewWords.UseCompatibleStateImageBehavior = false;
             listViewWords.View = View.Details;
             listViewWords.Visible = false;
@@ -208,7 +297,7 @@
             // colWord
             // 
             colWord.Text = "Слово";
-            colWord.Width = 400;
+            colWord.Width = 500;
             // 
             // colWordCount
             // 
@@ -217,40 +306,77 @@
             // 
             // lblNoData
             // 
-            lblNoData.Dock = DockStyle.Fill;
+            lblNoData.Anchor = AnchorStyles.None;
+            lblNoData.AutoSize = true;
             lblNoData.ForeColor = Color.Gray;
-            lblNoData.Location = new Point(126, 128);
+            lblNoData.Location = new Point(306, 10);
             lblNoData.Name = "lblNoData";
-            lblNoData.Size = new Size(553, 174);
-            lblNoData.TabIndex = 9;
+            lblNoData.Size = new Size(140, 15);
+            lblNoData.TabIndex = 2;
             lblNoData.Text = "Нет данных для анализа";
             lblNoData.TextAlign = ContentAlignment.MiddleCenter;
             lblNoData.Visible = false;
             // 
+            // panelBottom
+            // 
+            panelBottom.BackColor = Color.FromArgb(240, 240, 240);
+            panelBottom.Controls.Add(btnClose);
+            panelBottom.Dock = DockStyle.Bottom;
+            panelBottom.Location = new Point(0, 450);
+            panelBottom.Margin = new Padding(3, 2, 3, 2);
+            panelBottom.Name = "panelBottom";
+            panelBottom.Padding = new Padding(9, 8, 9, 8);
+            panelBottom.Size = new Size(788, 45);
+            panelBottom.TabIndex = 4;
+            // 
             // btnClose
             // 
-            btnClose.Location = new Point(21, 342);
+            btnClose.Anchor = AnchorStyles.None;
+            btnClose.BackColor = Color.FromArgb(0, 120, 215);
+            btnClose.FlatAppearance.BorderSize = 0;
+            btnClose.FlatStyle = FlatStyle.Flat;
+            btnClose.ForeColor = Color.White;
+            btnClose.Location = new Point(350, 9);
             btnClose.Margin = new Padding(3, 2, 3, 2);
             btnClose.Name = "btnClose";
-            btnClose.Size = new Size(88, 16);
-            btnClose.TabIndex = 10;
+            btnClose.Size = new Size(88, 26);
+            btnClose.TabIndex = 0;
             btnClose.Text = "Закрыть";
-            btnClose.UseVisualStyleBackColor = true;
+            btnClose.UseVisualStyleBackColor = false;
             // 
             // QuestionStatisticsForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.White;
-            ClientSize = new Size(700, 375);
-            Controls.Add(tableLayout);
+            ClientSize = new Size(788, 495);
+            Controls.Add(splitContainer);
+            Controls.Add(panelStats);
+            Controls.Add(panelType);
+            Controls.Add(panelTop);
+            Controls.Add(panelBottom);
             FormBorderStyle = FormBorderStyle.FixedDialog;
             Margin = new Padding(3, 2, 3, 2);
             MaximizeBox = false;
+            MinimumSize = new Size(702, 460);
             Name = "QuestionStatisticsForm";
             StartPosition = FormStartPosition.CenterParent;
             Text = "Детальная статистика вопроса";
-            tableLayout.ResumeLayout(false);
+            panelTop.ResumeLayout(false);
+            panelTop.PerformLayout();
+            panelType.ResumeLayout(false);
+            panelType.PerformLayout();
+            panelStats.ResumeLayout(false);
+            panelStats.PerformLayout();
+            splitContainer.Panel1.ResumeLayout(false);
+            splitContainer.Panel2.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)splitContainer).EndInit();
+            splitContainer.ResumeLayout(false);
+            panelLeft.ResumeLayout(false);
+            panelLeft.PerformLayout();
+            panelRight.ResumeLayout(false);
+            panelRight.PerformLayout();
+            panelBottom.ResumeLayout(false);
             ResumeLayout(false);
         }
     }

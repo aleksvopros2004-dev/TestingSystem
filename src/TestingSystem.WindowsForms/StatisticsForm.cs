@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics;
 using System.Windows.Forms.DataVisualization.Charting;
+using TestingSystem.Core.Interfaces;
 using TestingSystem.Core.Models;
 using TestingSystem.Data.Repositories;
 using TestingSystem.Services.Interfaces;
@@ -12,7 +13,7 @@ namespace TestingSystem.WindowsForms
         private readonly ITestService _testService;
         private readonly IStatisticsRepository _statisticsRepository;
         private readonly ExcelExportService _exportService;
-        private readonly LemmatizationService _lemmatizationService;
+        private readonly ILemmatizationService _lemmatizationService;  // ← интерфейс
         private readonly User _currentUser;
         private TestStatistics? _currentStats;
         private List<Test> _tests = new();
@@ -21,7 +22,7 @@ namespace TestingSystem.WindowsForms
             ITestService testService,
             IStatisticsRepository statisticsRepository,
             ExcelExportService exportService,
-            LemmatizationService lemmatizationService,
+            ILemmatizationService lemmatizationService,  // ← интерфейс
             User currentUser)
         {
             _testService = testService;
@@ -33,7 +34,6 @@ namespace TestingSystem.WindowsForms
             InitializeComponent();
             LoadTests();
 
-            // Подписываем события
             this.comboBoxTests.SelectedIndexChanged += ComboBoxTests_SelectedIndexChanged;
             this.buttonRefresh.Click += ButtonRefresh_Click;
             this.buttonExportExcel.Click += ButtonExportExcel_Click;
@@ -320,6 +320,13 @@ namespace TestingSystem.WindowsForms
             var question = listViewQuestions.SelectedItems[0].Tag as QuestionStatistics;
             if (question != null)
             {
+                // Отладочный вывод
+                Console.WriteLine($"=== Выбран вопрос ===");
+                Console.WriteLine($"ID: {question.QuestionId}");
+                Console.WriteLine($"Текст: {question.QuestionText}");
+                Console.WriteLine($"Тип: {question.QuestionType}");
+                Console.WriteLine($"Вариантов: {question.OptionPopularity?.Count ?? 0}");
+
                 var detailsForm = new QuestionStatisticsForm(question, _lemmatizationService);
                 detailsForm.ShowDialog();
             }

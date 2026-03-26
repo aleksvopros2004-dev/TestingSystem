@@ -1,23 +1,20 @@
-﻿using System.Data;
+﻿using TestingSystem.Core.Interfaces;  // ← добавляем using
 using TestingSystem.Core.Models;
-using TestingSystem.Services.Services;
 
 namespace TestingSystem.WindowsForms
 {
     public partial class QuestionStatisticsForm : Form
     {
         private readonly QuestionStatistics _question;
-        private readonly LemmatizationService _lemmatizationService;
+        private readonly ILemmatizationService _lemmatizationService;  // ← интерфейс
 
-        public QuestionStatisticsForm(QuestionStatistics question, LemmatizationService lemmatizationService)
+        public QuestionStatisticsForm(QuestionStatistics question, ILemmatizationService lemmatizationService)
         {
             _question = question;
             _lemmatizationService = lemmatizationService;
+
             InitializeComponent();
-
-            // Подписываем событие после InitializeComponent
             this.btnClose.Click += BtnClose_Click;
-
             LoadQuestionData();
         }
 
@@ -47,24 +44,33 @@ namespace TestingSystem.WindowsForms
             if (_question.OptionPopularity != null && _question.OptionPopularity.Any())
             {
                 LoadOptionPopularity();
+                lblWordsTitle.Visible = false;
+                listViewWords.Visible = false;
+                lblOptionsTitle.Visible = true;
+                listViewOptions.Visible = true;
+                lblNoData.Visible = false;
             }
             else if (_question.CommonWords != null && _question.CommonWords.Any())
             {
                 LoadWordFrequency();
+                lblOptionsTitle.Visible = false;
+                listViewOptions.Visible = false;
+                lblWordsTitle.Visible = true;
+                listViewWords.Visible = true;
+                lblNoData.Visible = false;
             }
             else
             {
-                lblNoData.Visible = true;
+                lblOptionsTitle.Visible = false;
                 listViewOptions.Visible = false;
+                lblWordsTitle.Visible = false;
                 listViewWords.Visible = false;
+                lblNoData.Visible = true;
             }
         }
 
         private void LoadOptionPopularity()
         {
-            listViewOptions.Visible = true;
-            listViewWords.Visible = false;
-            lblNoData.Visible = false;
             listViewOptions.Items.Clear();
 
             var sortedOptions = _question.OptionPopularity
@@ -99,9 +105,6 @@ namespace TestingSystem.WindowsForms
 
         private void LoadWordFrequency()
         {
-            listViewWords.Visible = true;
-            listViewOptions.Visible = false;
-            lblNoData.Visible = false;
             listViewWords.Items.Clear();
 
             foreach (var word in _question.CommonWords.OrderByDescending(w => w.Count))
