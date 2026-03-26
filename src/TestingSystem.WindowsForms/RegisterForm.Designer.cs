@@ -26,163 +26,211 @@
             txtPassword = new TextBox();
             lblConfirmPassword = new Label();
             txtConfirmPassword = new TextBox();
-            btnRegister = new Button();
+            tableLayout = new TableLayoutPanel();
+            buttonPanel = new FlowLayoutPanel();
             btnCancel = new Button();
+            btnRegister = new Button();
             lblMessage = new Label();
             lblInfo = new Label();
+            tableLayout.SuspendLayout();
+            buttonPanel.SuspendLayout();
             SuspendLayout();
             // 
             // lblTitle
             // 
-            lblTitle.AutoSize = true;
-            lblTitle.Font = new Font("Arial", 12F, FontStyle.Bold);
-            lblTitle.Location = new Point(18, 15);
+            tableLayout.SetColumnSpan(lblTitle, 2);
+            lblTitle.Dock = DockStyle.Fill;
+            lblTitle.Font = new Font("Segoe UI", 12F, FontStyle.Bold);
+            lblTitle.Location = new Point(23, 20);
             lblTitle.Name = "lblTitle";
-            lblTitle.Size = new Size(289, 19);
+            lblTitle.Size = new Size(404, 40);
             lblTitle.TabIndex = 0;
             lblTitle.Text = "Регистрация нового пользователя";
-            lblTitle.TextAlign = ContentAlignment.MiddleCenter;
+            lblTitle.TextAlign = ContentAlignment.MiddleLeft;
             // 
             // lblLogin
             // 
-            lblLogin.AutoSize = true;
-            lblLogin.Location = new Point(18, 52);
+            lblLogin.Dock = DockStyle.Fill;
+            lblLogin.Location = new Point(23, 60);
             lblLogin.Name = "lblLogin";
-            lblLogin.Size = new Size(44, 15);
+            lblLogin.Size = new Size(158, 40);
             lblLogin.TabIndex = 1;
             lblLogin.Text = "Логин:";
+            lblLogin.TextAlign = ContentAlignment.MiddleLeft;
             // 
             // txtLogin
             // 
-            txtLogin.Location = new Point(114, 52);
-            txtLogin.Margin = new Padding(3, 2, 3, 2);
+            txtLogin.Dock = DockStyle.Fill;
+            txtLogin.Location = new Point(187, 63);
             txtLogin.Name = "txtLogin";
-            txtLogin.Size = new Size(219, 23);
+            txtLogin.Size = new Size(240, 25);
             txtLogin.TabIndex = 2;
             // 
             // lblFullName
             // 
-            lblFullName.AutoSize = true;
-            lblFullName.Location = new Point(18, 75);
+            lblFullName.Dock = DockStyle.Fill;
+            lblFullName.Location = new Point(23, 100);
             lblFullName.Name = "lblFullName";
-            lblFullName.Size = new Size(37, 15);
+            lblFullName.Size = new Size(158, 40);
             lblFullName.TabIndex = 3;
             lblFullName.Text = "ФИО:";
+            lblFullName.TextAlign = ContentAlignment.MiddleLeft;
             // 
             // txtFullName
             // 
-            txtFullName.Location = new Point(114, 75);
-            txtFullName.Margin = new Padding(3, 2, 3, 2);
+            txtFullName.Dock = DockStyle.Fill;
+            txtFullName.Location = new Point(187, 103);
             txtFullName.Name = "txtFullName";
-            txtFullName.Size = new Size(219, 23);
+            txtFullName.Size = new Size(240, 25);
             txtFullName.TabIndex = 4;
             // 
             // lblPassword
             // 
-            lblPassword.AutoSize = true;
-            lblPassword.Location = new Point(18, 98);
+            lblPassword.Dock = DockStyle.Fill;
+            lblPassword.Location = new Point(23, 140);
             lblPassword.Name = "lblPassword";
-            lblPassword.Size = new Size(52, 15);
+            lblPassword.Size = new Size(158, 40);
             lblPassword.TabIndex = 5;
             lblPassword.Text = "Пароль:";
+            lblPassword.TextAlign = ContentAlignment.MiddleLeft;
             // 
             // txtPassword
             // 
-            txtPassword.Location = new Point(114, 98);
-            txtPassword.Margin = new Padding(3, 2, 3, 2);
+            txtPassword.Dock = DockStyle.Fill;
+            txtPassword.Location = new Point(187, 143);
             txtPassword.Name = "txtPassword";
-            txtPassword.PasswordChar = '*';
-            txtPassword.Size = new Size(219, 23);
+            txtPassword.PasswordChar = '●';
+            txtPassword.Size = new Size(240, 25);
             txtPassword.TabIndex = 6;
             // 
             // lblConfirmPassword
             // 
-            lblConfirmPassword.AutoSize = true;
-            lblConfirmPassword.Location = new Point(18, 120);
+            lblConfirmPassword.Dock = DockStyle.Fill;
+            lblConfirmPassword.Location = new Point(23, 180);
             lblConfirmPassword.Name = "lblConfirmPassword";
-            lblConfirmPassword.Size = new Size(97, 15);
+            lblConfirmPassword.Size = new Size(158, 40);
             lblConfirmPassword.TabIndex = 7;
             lblConfirmPassword.Text = "Подтверждение:";
+            lblConfirmPassword.TextAlign = ContentAlignment.MiddleLeft;
             // 
             // txtConfirmPassword
             // 
-            txtConfirmPassword.Location = new Point(114, 120);
-            txtConfirmPassword.Margin = new Padding(3, 2, 3, 2);
+            txtConfirmPassword.Dock = DockStyle.Fill;
+            txtConfirmPassword.Location = new Point(187, 183);
             txtConfirmPassword.Name = "txtConfirmPassword";
-            txtConfirmPassword.PasswordChar = '*';
-            txtConfirmPassword.Size = new Size(219, 23);
+            txtConfirmPassword.PasswordChar = '●';
+            txtConfirmPassword.Size = new Size(240, 25);
             txtConfirmPassword.TabIndex = 8;
             // 
-            // btnRegister
+            // tableLayout
             // 
-            btnRegister.Location = new Point(89, 150);
-            btnRegister.Margin = new Padding(3, 2, 3, 2);
-            btnRegister.Name = "btnRegister";
-            btnRegister.Size = new Size(130, 22);
-            btnRegister.TabIndex = 9;
-            btnRegister.Text = "Зарегистрироваться";
-            btnRegister.UseVisualStyleBackColor = true;
-            btnRegister.Click += BtnRegister_Click;
+            tableLayout.ColumnCount = 2;
+            tableLayout.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 40F));
+            tableLayout.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 60F));
+            tableLayout.Controls.Add(lblTitle, 0, 0);
+            tableLayout.Controls.Add(lblLogin, 0, 1);
+            tableLayout.Controls.Add(txtLogin, 1, 1);
+            tableLayout.Controls.Add(lblFullName, 0, 2);
+            tableLayout.Controls.Add(txtFullName, 1, 2);
+            tableLayout.Controls.Add(lblPassword, 0, 3);
+            tableLayout.Controls.Add(txtPassword, 1, 3);
+            tableLayout.Controls.Add(lblConfirmPassword, 0, 4);
+            tableLayout.Controls.Add(txtConfirmPassword, 1, 4);
+            tableLayout.Controls.Add(buttonPanel, 0, 5);
+            tableLayout.Controls.Add(lblMessage, 0, 6);
+            tableLayout.Controls.Add(lblInfo, 0, 7);
+            tableLayout.Dock = DockStyle.Fill;
+            tableLayout.Location = new Point(0, 0);
+            tableLayout.Name = "tableLayout";
+            tableLayout.Padding = new Padding(20);
+            tableLayout.RowCount = 8;
+            tableLayout.RowStyles.Add(new RowStyle(SizeType.Absolute, 40F));
+            tableLayout.RowStyles.Add(new RowStyle(SizeType.Absolute, 40F));
+            tableLayout.RowStyles.Add(new RowStyle(SizeType.Absolute, 40F));
+            tableLayout.RowStyles.Add(new RowStyle(SizeType.Absolute, 40F));
+            tableLayout.RowStyles.Add(new RowStyle(SizeType.Absolute, 40F));
+            tableLayout.RowStyles.Add(new RowStyle(SizeType.Absolute, 50F));
+            tableLayout.RowStyles.Add(new RowStyle(SizeType.Absolute, 30F));
+            tableLayout.RowStyles.Add(new RowStyle(SizeType.Absolute, 30F));
+            tableLayout.Size = new Size(450, 353);
+            tableLayout.TabIndex = 0;
+            // 
+            // buttonPanel
+            // 
+            tableLayout.SetColumnSpan(buttonPanel, 2);
+            buttonPanel.Controls.Add(btnCancel);
+            buttonPanel.Controls.Add(btnRegister);
+            buttonPanel.Dock = DockStyle.Fill;
+            buttonPanel.FlowDirection = FlowDirection.RightToLeft;
+            buttonPanel.Location = new Point(23, 223);
+            buttonPanel.Name = "buttonPanel";
+            buttonPanel.Size = new Size(404, 44);
+            buttonPanel.TabIndex = 9;
             // 
             // btnCancel
             // 
-            btnCancel.Location = new Point(228, 150);
-            btnCancel.Margin = new Padding(3, 2, 3, 2);
+            btnCancel.AutoSize = true;
+            btnCancel.Location = new Point(326, 3);
             btnCancel.Name = "btnCancel";
-            btnCancel.Size = new Size(70, 22);
-            btnCancel.TabIndex = 10;
+            btnCancel.Size = new Size(75, 29);
+            btnCancel.TabIndex = 0;
             btnCancel.Text = "Отмена";
-            btnCancel.UseVisualStyleBackColor = true;
             btnCancel.Click += BtnCancel_Click;
+            // 
+            // btnRegister
+            // 
+            btnRegister.AutoSize = true;
+            btnRegister.BackColor = Color.FromArgb(0, 120, 215);
+            btnRegister.FlatAppearance.BorderSize = 0;
+            btnRegister.FlatStyle = FlatStyle.Flat;
+            btnRegister.ForeColor = Color.White;
+            btnRegister.Location = new Point(174, 3);
+            btnRegister.Name = "btnRegister";
+            btnRegister.Size = new Size(146, 29);
+            btnRegister.TabIndex = 1;
+            btnRegister.Text = "Зарегистрироваться";
+            btnRegister.UseVisualStyleBackColor = false;
+            btnRegister.Click += BtnRegister_Click;
             // 
             // lblMessage
             // 
+            tableLayout.SetColumnSpan(lblMessage, 2);
+            lblMessage.Dock = DockStyle.Fill;
             lblMessage.ForeColor = Color.Red;
-            lblMessage.Location = new Point(18, 180);
+            lblMessage.Location = new Point(23, 270);
             lblMessage.Name = "lblMessage";
-            lblMessage.Size = new Size(350, 30);
-            lblMessage.TabIndex = 11;
+            lblMessage.Size = new Size(404, 30);
+            lblMessage.TabIndex = 10;
             lblMessage.TextAlign = ContentAlignment.MiddleCenter;
             // 
             // lblInfo
             // 
-            lblInfo.AutoSize = true;
-            lblInfo.Font = new Font("Arial", 8F);
+            tableLayout.SetColumnSpan(lblInfo, 2);
+            lblInfo.Dock = DockStyle.Fill;
             lblInfo.ForeColor = Color.Gray;
-            lblInfo.Location = new Point(69, 210);
+            lblInfo.Location = new Point(23, 300);
             lblInfo.Name = "lblInfo";
-            lblInfo.Size = new Size(263, 14);
-            lblInfo.TabIndex = 12;
+            lblInfo.Size = new Size(404, 33);
+            lblInfo.TabIndex = 11;
             lblInfo.Text = "После регистрации вы сможете войти в систему";
             lblInfo.TextAlign = ContentAlignment.MiddleCenter;
             // 
             // RegisterForm
             // 
-            AutoScaleDimensions = new SizeF(7F, 15F);
-            AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(380, 233);
-            Controls.Add(lblInfo);
-            Controls.Add(lblMessage);
-            Controls.Add(btnCancel);
-            Controls.Add(btnRegister);
-            Controls.Add(txtConfirmPassword);
-            Controls.Add(lblConfirmPassword);
-            Controls.Add(txtPassword);
-            Controls.Add(lblPassword);
-            Controls.Add(txtFullName);
-            Controls.Add(lblFullName);
-            Controls.Add(txtLogin);
-            Controls.Add(lblLogin);
-            Controls.Add(lblTitle);
+            BackColor = Color.White;
+            ClientSize = new Size(450, 353);
+            Controls.Add(tableLayout);
+            Font = new Font("Segoe UI", 10F);
             FormBorderStyle = FormBorderStyle.FixedDialog;
-            Margin = new Padding(3, 2, 3, 2);
             MaximizeBox = false;
             Name = "RegisterForm";
             StartPosition = FormStartPosition.CenterParent;
-            Text = "Регистрация нового пользователя";
-            Load += RegisterForm_Load;
+            Text = "Регистрация";
+            tableLayout.ResumeLayout(false);
+            tableLayout.PerformLayout();
+            buttonPanel.ResumeLayout(false);
+            buttonPanel.PerformLayout();
             ResumeLayout(false);
-            PerformLayout();
         }
 
         #endregion
@@ -196,8 +244,10 @@
         private TextBox txtPassword;
         private Label lblConfirmPassword;
         private TextBox txtConfirmPassword;
-        private Button btnRegister;
+        private TableLayoutPanel tableLayout;
+        private FlowLayoutPanel buttonPanel;
         private Button btnCancel;
+        private Button btnRegister;
         private Label lblMessage;
         private Label lblInfo;
     }

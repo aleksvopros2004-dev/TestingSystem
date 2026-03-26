@@ -35,7 +35,6 @@ namespace TestingSystem.WindowsForms
                 return;
             }
 
-            // Блокируем кнопку
             btnRegister.Enabled = false;
             lblMessage.Text = "Регистрация...";
             lblMessage.ForeColor = Color.Blue;
@@ -50,7 +49,6 @@ namespace TestingSystem.WindowsForms
                     lblMessage.Text = "Регистрация успешна!";
                     lblMessage.ForeColor = Color.Green;
 
-                    // Задержка для отображения сообщения
                     await Task.Delay(1500);
 
                     // Вызываем событие

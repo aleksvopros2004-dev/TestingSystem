@@ -17,240 +17,295 @@
 
         private void InitializeComponent()
         {
+            tableLayout = new TableLayoutPanel();
             panelTop = new Panel();
+            flowLayoutTop = new FlowLayoutPanel();
             lblTitle = new Label();
             lblTestTitle = new Label();
             panelCenter = new Panel();
+            tableLayoutCenter = new TableLayoutPanel();
             lblResultLabel = new Label();
             lblTotalLabel = new Label();
             lblTotalQuestions = new Label();
             lblPointsLabel = new Label();
-            lblEarnedPoints = new Label();
-            lblOfTotal = new Label();
-            lblTotalPoints = new Label();
+            lblPointsValue = new Label();
             lblPercentageLabel = new Label();
             lblPercentage = new Label();
             lblTimeLabel = new Label();
             lblTimeSpent = new Label();
-            lblGrade = new Label();
+            lblGradeText = new Label();
             panelBottom = new Panel();
             btnOk = new Button();
+            tableLayout.SuspendLayout();
             panelTop.SuspendLayout();
+            flowLayoutTop.SuspendLayout();
             panelCenter.SuspendLayout();
+            tableLayoutCenter.SuspendLayout();
             panelBottom.SuspendLayout();
             SuspendLayout();
-
+            // 
+            // tableLayout
+            // 
+            tableLayout.ColumnCount = 1;
+            tableLayout.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
+            tableLayout.Controls.Add(panelTop, 0, 0);
+            tableLayout.Controls.Add(panelCenter, 0, 1);
+            tableLayout.Controls.Add(panelBottom, 0, 2);
+            tableLayout.Dock = DockStyle.Fill;
+            tableLayout.Location = new Point(0, 0);
+            tableLayout.Name = "tableLayout";
+            tableLayout.RowCount = 3;
+            tableLayout.RowStyles.Add(new RowStyle(SizeType.Absolute, 85F));
+            tableLayout.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
+            tableLayout.RowStyles.Add(new RowStyle(SizeType.Absolute, 70F));
+            tableLayout.Size = new Size(600, 480);
+            tableLayout.TabIndex = 0;
+            // 
             // panelTop
+            // 
             panelTop.BackColor = Color.FromArgb(76, 175, 80);
-            panelTop.Controls.Add(lblTitle);
-            panelTop.Controls.Add(lblTestTitle);
-            panelTop.Dock = DockStyle.Top;
+            panelTop.Controls.Add(flowLayoutTop);
+            panelTop.Dock = DockStyle.Fill;
             panelTop.Location = new Point(0, 0);
             panelTop.Name = "panelTop";
-            panelTop.Size = new Size(500, 70);
+            panelTop.Padding = new Padding(20, 10, 20, 10);
+            panelTop.Size = new Size(600, 85);
             panelTop.TabIndex = 0;
-
+            // 
+            // flowLayoutTop
+            // 
+            flowLayoutTop.Controls.Add(lblTitle);
+            flowLayoutTop.Controls.Add(lblTestTitle);
+            flowLayoutTop.Dock = DockStyle.Fill;
+            flowLayoutTop.FlowDirection = FlowDirection.TopDown;
+            flowLayoutTop.Location = new Point(20, 10);
+            flowLayoutTop.Name = "flowLayoutTop";
+            flowLayoutTop.Size = new Size(560, 65);
+            flowLayoutTop.TabIndex = 0;
+            // 
             // lblTitle
+            // 
             lblTitle.AutoSize = true;
-            lblTitle.Font = new Font("Arial", 12F, FontStyle.Bold);
+            lblTitle.Font = new Font("Segoe UI", 12F, FontStyle.Bold);
             lblTitle.ForeColor = Color.White;
-            lblTitle.Location = new Point(12, 10);
+            lblTitle.Location = new Point(3, 0);
             lblTitle.Name = "lblTitle";
-            lblTitle.Size = new Size(113, 19);
+            lblTitle.Size = new Size(100, 21);
             lblTitle.TabIndex = 0;
             lblTitle.Text = "Результаты:";
-
+            // 
             // lblTestTitle
+            // 
             lblTestTitle.AutoSize = true;
-            lblTestTitle.Font = new Font("Arial", 14F, FontStyle.Bold);
+            lblTestTitle.Font = new Font("Segoe UI", 14F, FontStyle.Bold);
             lblTestTitle.ForeColor = Color.White;
-            lblTestTitle.Location = new Point(12, 35);
+            lblTestTitle.Location = new Point(3, 21);
             lblTestTitle.Name = "lblTestTitle";
-            lblTestTitle.Size = new Size(95, 22);
+            lblTestTitle.Size = new Size(135, 25);
             lblTestTitle.TabIndex = 1;
-            lblTestTitle.Text = "Название";
-
+            lblTestTitle.Text = "Название теста";
+            // 
             // panelCenter
-            panelCenter.Controls.Add(lblResultLabel);
-            panelCenter.Controls.Add(lblTotalLabel);
-            panelCenter.Controls.Add(lblTotalQuestions);
-            panelCenter.Controls.Add(lblPointsLabel);
-            panelCenter.Controls.Add(lblEarnedPoints);
-            panelCenter.Controls.Add(lblOfTotal);
-            panelCenter.Controls.Add(lblTotalPoints);
-            panelCenter.Controls.Add(lblPercentageLabel);
-            panelCenter.Controls.Add(lblPercentage);
-            panelCenter.Controls.Add(lblTimeLabel);
-            panelCenter.Controls.Add(lblTimeSpent);
-            panelCenter.Controls.Add(lblGrade);
+            // 
+            panelCenter.BackColor = Color.White;
+            panelCenter.Controls.Add(tableLayoutCenter);
             panelCenter.Dock = DockStyle.Fill;
-            panelCenter.Location = new Point(0, 70);
+            panelCenter.Location = new Point(0, 85);
             panelCenter.Name = "panelCenter";
-            panelCenter.Padding = new Padding(20);
-            panelCenter.Size = new Size(500, 250);
+            panelCenter.Padding = new Padding(30, 20, 30, 20);
+            panelCenter.Size = new Size(600, 325);
             panelCenter.TabIndex = 1;
-
+            // 
+            // tableLayoutCenter
+            // 
+            tableLayoutCenter.ColumnCount = 2;
+            tableLayoutCenter.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 160F));
+            tableLayoutCenter.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
+            tableLayoutCenter.Controls.Add(lblResultLabel, 0, 0);
+            tableLayoutCenter.Controls.Add(lblTotalLabel, 0, 1);
+            tableLayoutCenter.Controls.Add(lblTotalQuestions, 1, 1);
+            tableLayoutCenter.Controls.Add(lblPointsLabel, 0, 2);
+            tableLayoutCenter.Controls.Add(lblPointsValue, 1, 2);
+            tableLayoutCenter.Controls.Add(lblPercentageLabel, 0, 3);
+            tableLayoutCenter.Controls.Add(lblPercentage, 1, 3);
+            tableLayoutCenter.Controls.Add(lblTimeLabel, 0, 4);
+            tableLayoutCenter.Controls.Add(lblTimeSpent, 1, 4);
+            tableLayoutCenter.Controls.Add(lblGradeText, 0, 5);
+            tableLayoutCenter.Dock = DockStyle.Fill;
+            tableLayoutCenter.Location = new Point(30, 20);
+            tableLayoutCenter.Name = "tableLayoutCenter";
+            tableLayoutCenter.RowCount = 6;
+            tableLayoutCenter.RowStyles.Add(new RowStyle(SizeType.Absolute, 40F));
+            tableLayoutCenter.RowStyles.Add(new RowStyle(SizeType.Absolute, 40F));
+            tableLayoutCenter.RowStyles.Add(new RowStyle(SizeType.Absolute, 40F));
+            tableLayoutCenter.RowStyles.Add(new RowStyle(SizeType.Absolute, 50F));
+            tableLayoutCenter.RowStyles.Add(new RowStyle(SizeType.Absolute, 40F));
+            tableLayoutCenter.RowStyles.Add(new RowStyle(SizeType.Absolute, 70F));
+            tableLayoutCenter.Size = new Size(540, 280);
+            tableLayoutCenter.TabIndex = 0;
+            // 
             // lblResultLabel
-            lblResultLabel.AutoSize = true;
-            lblResultLabel.Font = new Font("Arial", 10F, FontStyle.Bold);
-            lblResultLabel.Location = new Point(20, 20);
+            // 
+            tableLayoutCenter.SetColumnSpan(lblResultLabel, 2);
+            lblResultLabel.Font = new Font("Segoe UI", 11F, FontStyle.Bold);
+            lblResultLabel.Location = new Point(3, 0);
             lblResultLabel.Name = "lblResultLabel";
-            lblResultLabel.Size = new Size(78, 16);
+            lblResultLabel.Size = new Size(534, 40);
             lblResultLabel.TabIndex = 0;
             lblResultLabel.Text = "Результат:";
-
+            lblResultLabel.TextAlign = ContentAlignment.MiddleLeft;
+            // 
             // lblTotalLabel
-            lblTotalLabel.AutoSize = true;
-            lblTotalLabel.Location = new Point(40, 50);
+            // 
+            lblTotalLabel.Location = new Point(3, 40);
             lblTotalLabel.Name = "lblTotalLabel";
-            lblTotalLabel.Size = new Size(111, 15);
+            lblTotalLabel.Size = new Size(154, 40);
             lblTotalLabel.TabIndex = 1;
             lblTotalLabel.Text = "Всего вопросов:";
-
+            lblTotalLabel.TextAlign = ContentAlignment.MiddleLeft;
+            // 
             // lblTotalQuestions
-            lblTotalQuestions.AutoSize = true;
-            lblTotalQuestions.Font = new Font("Arial", 10F, FontStyle.Bold);
-            lblTotalQuestions.Location = new Point(200, 50);
+            // 
+            lblTotalQuestions.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
+            lblTotalQuestions.Location = new Point(163, 40);
             lblTotalQuestions.Name = "lblTotalQuestions";
-            lblTotalQuestions.Size = new Size(15, 16);
+            lblTotalQuestions.Size = new Size(374, 40);
             lblTotalQuestions.TabIndex = 2;
             lblTotalQuestions.Text = "0";
-
+            lblTotalQuestions.TextAlign = ContentAlignment.MiddleLeft;
+            // 
             // lblPointsLabel
-            lblPointsLabel.AutoSize = true;
-            lblPointsLabel.Location = new Point(40, 75);
+            // 
+            lblPointsLabel.Location = new Point(3, 80);
             lblPointsLabel.Name = "lblPointsLabel";
-            lblPointsLabel.Size = new Size(96, 15);
+            lblPointsLabel.Size = new Size(154, 40);
             lblPointsLabel.TabIndex = 3;
             lblPointsLabel.Text = "Набрано баллов:";
-
-            // lblEarnedPoints
-            lblEarnedPoints.AutoSize = true;
-            lblEarnedPoints.Font = new Font("Arial", 10F, FontStyle.Bold);
-            lblEarnedPoints.Location = new Point(200, 75);
-            lblEarnedPoints.Name = "lblEarnedPoints";
-            lblEarnedPoints.Size = new Size(15, 16);
-            lblEarnedPoints.TabIndex = 4;
-            lblEarnedPoints.Text = "0";
-
-            // lblOfTotal
-            lblOfTotal.AutoSize = true;
-            lblOfTotal.Location = new Point(220, 75);
-            lblOfTotal.Name = "lblOfTotal";
-            lblOfTotal.Size = new Size(18, 15);
-            lblOfTotal.TabIndex = 5;
-            lblOfTotal.Text = "из";
-
-            // lblTotalPoints
-            lblTotalPoints.AutoSize = true;
-            lblTotalPoints.Font = new Font("Arial", 10F, FontStyle.Bold);
-            lblTotalPoints.Location = new Point(240, 75);
-            lblTotalPoints.Name = "lblTotalPoints";
-            lblTotalPoints.Size = new Size(15, 16);
-            lblTotalPoints.TabIndex = 6;
-            lblTotalPoints.Text = "0";
-
+            lblPointsLabel.TextAlign = ContentAlignment.MiddleLeft;
+            // 
+            // lblPointsValue
+            // 
+            lblPointsValue.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
+            lblPointsValue.Location = new Point(163, 80);
+            lblPointsValue.Name = "lblPointsValue";
+            lblPointsValue.Size = new Size(374, 40);
+            lblPointsValue.TabIndex = 4;
+            lblPointsValue.Text = "0 из 0";
+            lblPointsValue.TextAlign = ContentAlignment.MiddleLeft;
+            // 
             // lblPercentageLabel
-            lblPercentageLabel.AutoSize = true;
-            lblPercentageLabel.Location = new Point(40, 105);
+            // 
+            lblPercentageLabel.Location = new Point(3, 120);
             lblPercentageLabel.Name = "lblPercentageLabel";
-            lblPercentageLabel.Size = new Size(45, 15);
-            lblPercentageLabel.TabIndex = 7;
+            lblPercentageLabel.Size = new Size(154, 50);
+            lblPercentageLabel.TabIndex = 5;
             lblPercentageLabel.Text = "Итого:";
-
+            lblPercentageLabel.TextAlign = ContentAlignment.MiddleLeft;
+            // 
             // lblPercentage
-            lblPercentage.AutoSize = true;
-            lblPercentage.Font = new Font("Arial", 14F, FontStyle.Bold);
-            lblPercentage.Location = new Point(200, 100);
+            // 
+            lblPercentage.Font = new Font("Segoe UI", 14F, FontStyle.Bold);
+            lblPercentage.Location = new Point(163, 120);
             lblPercentage.Name = "lblPercentage";
-            lblPercentage.Size = new Size(35, 22);
-            lblPercentage.TabIndex = 8;
+            lblPercentage.Size = new Size(374, 50);
+            lblPercentage.TabIndex = 6;
             lblPercentage.Text = "0%";
-
+            lblPercentage.TextAlign = ContentAlignment.MiddleLeft;
+            // 
             // lblTimeLabel
-            lblTimeLabel.AutoSize = true;
-            lblTimeLabel.Location = new Point(40, 135);
+            // 
+            lblTimeLabel.Location = new Point(3, 170);
             lblTimeLabel.Name = "lblTimeLabel";
-            lblTimeLabel.Size = new Size(45, 15);
-            lblTimeLabel.TabIndex = 9;
+            lblTimeLabel.Size = new Size(154, 40);
+            lblTimeLabel.TabIndex = 7;
             lblTimeLabel.Text = "Время:";
-
+            lblTimeLabel.TextAlign = ContentAlignment.MiddleLeft;
+            // 
             // lblTimeSpent
-            lblTimeSpent.AutoSize = true;
-            lblTimeSpent.Font = new Font("Arial", 10F);
-            lblTimeSpent.Location = new Point(200, 135);
+            // 
+            lblTimeSpent.Font = new Font("Segoe UI", 10F);
+            lblTimeSpent.Location = new Point(163, 170);
             lblTimeSpent.Name = "lblTimeSpent";
-            lblTimeSpent.Size = new Size(36, 16);
-            lblTimeSpent.TabIndex = 10;
+            lblTimeSpent.Size = new Size(374, 40);
+            lblTimeSpent.TabIndex = 8;
             lblTimeSpent.Text = "0 мин";
-
-            // lblGrade
-            lblGrade.AutoSize = true;
-            lblGrade.Font = new Font("Arial", 18F, FontStyle.Bold);
-            lblGrade.Location = new Point(200, 170);
-            lblGrade.Name = "lblGrade";
-            lblGrade.Size = new Size(106, 29);
-            lblGrade.TabIndex = 11;
-            lblGrade.Text = "Оценка";
-
+            lblTimeSpent.TextAlign = ContentAlignment.MiddleLeft;
+            // 
+            // lblGradeText
+            // 
+            tableLayoutCenter.SetColumnSpan(lblGradeText, 2);
+            lblGradeText.Font = new Font("Segoe UI", 18F, FontStyle.Bold);
+            lblGradeText.Location = new Point(3, 210);
+            lblGradeText.Name = "lblGradeText";
+            lblGradeText.Size = new Size(534, 70);
+            lblGradeText.TabIndex = 9;
+            lblGradeText.Text = "Оценка";
+            lblGradeText.TextAlign = ContentAlignment.MiddleLeft;
+            // 
             // panelBottom
+            // 
             panelBottom.BackColor = Color.FromArgb(240, 240, 240);
             panelBottom.Controls.Add(btnOk);
-            panelBottom.Dock = DockStyle.Bottom;
-            panelBottom.Location = new Point(0, 320);
+            panelBottom.Dock = DockStyle.Fill;
+            panelBottom.Location = new Point(0, 410);
             panelBottom.Name = "panelBottom";
-            panelBottom.Size = new Size(500, 50);
+            panelBottom.Size = new Size(600, 70);
             panelBottom.TabIndex = 2;
-
+            // 
             // btnOk
-            btnOk.BackColor = Color.FromArgb(76, 175, 80);
+            // 
+            btnOk.BackColor = Color.FromArgb(0, 120, 215);
+            btnOk.FlatAppearance.BorderSize = 0;
+            btnOk.FlatStyle = FlatStyle.Flat;
             btnOk.ForeColor = Color.White;
-            btnOk.Location = new Point(200, 10);
+            btnOk.Location = new Point(250, 18);
             btnOk.Name = "btnOk";
-            btnOk.Size = new Size(100, 30);
+            btnOk.Size = new Size(100, 35);
             btnOk.TabIndex = 0;
             btnOk.Text = "OK";
             btnOk.UseVisualStyleBackColor = false;
             btnOk.Click += BtnOk_Click;
-
+            // 
             // TestResultForm
-            AutoScaleDimensions = new SizeF(8F, 20F);
-            AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(500, 370);
-            Controls.Add(panelCenter);
-            Controls.Add(panelBottom);
-            Controls.Add(panelTop);
+            // 
+            BackColor = Color.White;
+            ClientSize = new Size(600, 480);
+            Controls.Add(tableLayout);
+            Font = new Font("Segoe UI", 10F);
             FormBorderStyle = FormBorderStyle.FixedDialog;
             MaximizeBox = false;
             Name = "TestResultForm";
             StartPosition = FormStartPosition.CenterParent;
             Text = "Результаты тестирования";
+            tableLayout.ResumeLayout(false);
             panelTop.ResumeLayout(false);
-            panelTop.PerformLayout();
+            flowLayoutTop.ResumeLayout(false);
+            flowLayoutTop.PerformLayout();
             panelCenter.ResumeLayout(false);
-            panelCenter.PerformLayout();
+            tableLayoutCenter.ResumeLayout(false);
             panelBottom.ResumeLayout(false);
             ResumeLayout(false);
         }
 
         #endregion
 
+        private TableLayoutPanel tableLayout;
         private Panel panelTop;
+        private FlowLayoutPanel flowLayoutTop;
         private Label lblTitle;
         private Label lblTestTitle;
         private Panel panelCenter;
+        private TableLayoutPanel tableLayoutCenter;
         private Label lblResultLabel;
         private Label lblTotalLabel;
         private Label lblTotalQuestions;
         private Label lblPointsLabel;
-        private Label lblEarnedPoints;
-        private Label lblOfTotal;
-        private Label lblTotalPoints;
+        private Label lblPointsValue;
         private Label lblPercentageLabel;
         private Label lblPercentage;
         private Label lblTimeLabel;
         private Label lblTimeSpent;
-        private Label lblGrade;
+        private Label lblGradeText;
         private Panel panelBottom;
         private Button btnOk;
     }

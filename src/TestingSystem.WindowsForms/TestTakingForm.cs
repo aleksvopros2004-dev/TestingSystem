@@ -29,6 +29,14 @@ namespace TestingSystem.WindowsForms
             lblTestTitle.Text = _test.Title;
             lblTestDescription.Text = _test.Description ?? "Нет описания";
 
+            // Настройка панели ответов
+            pnlAnswers.AutoScroll = true;
+            pnlAnswers.HorizontalScroll.Enabled = false;
+            pnlAnswers.HorizontalScroll.Visible = false;
+            pnlAnswers.AutoScrollMinSize = new Size(0, 0);
+
+            panelQuestion.AutoScroll = true;
+
             _testStopwatch = Stopwatch.StartNew();
 
             LoadQuestionsAsync();
@@ -42,13 +50,9 @@ namespace TestingSystem.WindowsForms
                 var questionsEnumerable = await _questionService.GetQuestionsByTestAsync(_test.Id);
                 dbStopwatch.Stop();
 
-                _questions = questionsEnumerable.ToList();
+                Console.WriteLine($"Время загрузки вопросов для теста: {dbStopwatch.ElapsedMilliseconds} мс");
 
-                // Выводим баллы для отладки
-                foreach (var q in _questions)
-                {
-                    Console.WriteLine($"Загружен вопрос {q.Id}: баллы = {q.Points}");
-                }
+                _questions = questionsEnumerable.ToList();
 
                 if (_questions.Count == 0)
                 {
@@ -58,11 +62,11 @@ namespace TestingSystem.WindowsForms
                     return;
                 }
 
-                // Перемешиваем вопросы, если установлен флаг
                 if (_test.QuestionsOrderRandom)
                 {
                     var rnd = new Random();
                     _questions = _questions.OrderBy(x => rnd.Next()).ToList();
+                    Console.WriteLine("Вопросы перемешаны");
                 }
                 else
                 {
@@ -91,23 +95,33 @@ namespace TestingSystem.WindowsForms
 
             lblQuestionText.Text = question.QuestionText;
 
-            if (question.ImageData != null && question.ImageData.Length > 0)
+            // Проверяем наличие изображения
+            bool hasImage = question.ImageData != null && question.ImageData.Length > 0;
+
+            if (hasImage)
             {
                 try
                 {
                     using var ms = new MemoryStream(question.ImageData);
                     pictureBoxQuestion.Image = Image.FromStream(ms);
                     pictureBoxQuestion.Visible = true;
+                    pnlAnswers.Location = new Point(20, 360);
                 }
                 catch
                 {
                     pictureBoxQuestion.Visible = false;
+                    hasImage = false;
                 }
             }
-            else
+
+            if (!hasImage)
             {
                 pictureBoxQuestion.Visible = false;
+                pnlAnswers.Location = new Point(20, 135);
             }
+
+            // Устанавливаем размер панели 
+            pnlAnswers.Size = new Size(800, 280);
 
             int yPos = 10;
 
@@ -116,10 +130,12 @@ namespace TestingSystem.WindowsForms
                 var txtAnswer = new TextBox
                 {
                     Location = new Point(10, yPos),
-                    Size = new Size(500, 100),
+                    Size = new Size(770, 100),
                     Multiline = true,
                     ScrollBars = ScrollBars.Vertical,
-                    Tag = question.Id
+                    Tag = question.Id,
+                    Font = new Font("Segoe UI", 10F),
+                    WordWrap = true
                 };
 
                 if (_userAnswers.ContainsKey(question.Id))
@@ -133,6 +149,16 @@ namespace TestingSystem.WindowsForms
                 };
 
                 pnlAnswers.Controls.Add(txtAnswer);
+
+                var lblInfo = new Label
+                {
+                    Text = "Введите ваш ответ текстом",
+                    Location = new Point(10, yPos + 110),
+                    Size = new Size(300, 25),
+                    ForeColor = Color.Gray,
+                    Font = new Font("Segoe UI", 8F, FontStyle.Italic)
+                };
+                pnlAnswers.Controls.Add(lblInfo);
             }
             else
             {
@@ -152,9 +178,11 @@ namespace TestingSystem.WindowsForms
                         {
                             Text = option.OptionText,
                             Location = new Point(10, yPos),
-                            Size = new Size(500, 25),
+                            Size = new Size(770, 30),
                             Tag = option.Id,
-                            Name = $"rdo_{option.Id}"
+                            Name = $"rdo_{option.Id}",
+                            Font = new Font("Segoe UI", 10F),
+                            AutoSize = false
                         };
 
                         if (_userAnswers.ContainsKey(question.Id) &&
@@ -172,7 +200,7 @@ namespace TestingSystem.WindowsForms
                         };
 
                         pnlAnswers.Controls.Add(rdoOption);
-                        yPos += 30;
+                        yPos += 35;
                     }
                     else if (question.QuestionType == "MultipleChoice")
                     {
@@ -180,9 +208,11 @@ namespace TestingSystem.WindowsForms
                         {
                             Text = option.OptionText,
                             Location = new Point(10, yPos),
-                            Size = new Size(500, 25),
+                            Size = new Size(770, 30),
                             Tag = option.Id,
-                            Name = $"chk_{option.Id}"
+                            Name = $"chk_{option.Id}",
+                            Font = new Font("Segoe UI", 10F),
+                            AutoSize = false
                         };
 
                         if (_userAnswers.ContainsKey(question.Id))
@@ -200,7 +230,7 @@ namespace TestingSystem.WindowsForms
                         };
 
                         pnlAnswers.Controls.Add(chkOption);
-                        yPos += 30;
+                        yPos += 35;
                     }
                 }
             }

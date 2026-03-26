@@ -17,79 +17,102 @@
 
         private void InitializeComponent()
         {
+            tableLayout = new TableLayoutPanel();
             lblWelcome = new Label();
             btnManageTests = new Button();
             btnManageUsers = new Button();
             btnLogout = new Button();
+            tableLayout.SuspendLayout();
             SuspendLayout();
+            // 
+            // tableLayout
+            // 
+            tableLayout.ColumnCount = 1;
+            tableLayout.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
+            tableLayout.Controls.Add(lblWelcome, 0, 0);
+            tableLayout.Controls.Add(btnManageTests, 0, 1);
+            tableLayout.Controls.Add(btnManageUsers, 0, 2);
+            tableLayout.Controls.Add(btnLogout, 0, 3);
+            tableLayout.Dock = DockStyle.Fill;
+            tableLayout.Location = new Point(0, 0);
+            tableLayout.Name = "tableLayout";
+            tableLayout.Padding = new Padding(20);
+            tableLayout.RowCount = 4;
+            tableLayout.RowStyles.Add(new RowStyle(SizeType.Absolute, 50F));
+            tableLayout.RowStyles.Add(new RowStyle(SizeType.Absolute, 60F));
+            tableLayout.RowStyles.Add(new RowStyle(SizeType.Absolute, 60F));
+            tableLayout.RowStyles.Add(new RowStyle(SizeType.Absolute, 50F));
+            tableLayout.Size = new Size(700, 250);
+            tableLayout.TabIndex = 0;
             // 
             // lblWelcome
             // 
-            lblWelcome.AutoSize = true;
-            lblWelcome.Font = new Font("Arial", 12F, FontStyle.Bold);
-            lblWelcome.Location = new Point(18, 15);
+            lblWelcome.Dock = DockStyle.Fill;
+            lblWelcome.Font = new Font("Segoe UI", 12F, FontStyle.Bold);
+            lblWelcome.Location = new Point(23, 20);
             lblWelcome.Name = "lblWelcome";
-            lblWelcome.Size = new Size(363, 19);
+            lblWelcome.Size = new Size(654, 50);
             lblWelcome.TabIndex = 0;
             lblWelcome.Text = "Добро пожаловать, {UserName} ({UserRole})!";
+            lblWelcome.TextAlign = ContentAlignment.MiddleLeft;
             // 
             // btnManageTests
             // 
-            btnManageTests.Font = new Font("Arial", 10F, FontStyle.Bold);
-            btnManageTests.Location = new Point(18, 52);
-            btnManageTests.Margin = new Padding(3, 2, 3, 2);
+            btnManageTests.BackColor = Color.FromArgb(0, 120, 215);
+            btnManageTests.FlatAppearance.BorderSize = 0;
+            btnManageTests.FlatStyle = FlatStyle.Flat;
+            btnManageTests.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
+            btnManageTests.ForeColor = Color.White;
+            btnManageTests.Location = new Point(23, 73);
             btnManageTests.Name = "btnManageTests";
-            btnManageTests.Size = new Size(131, 42);
+            btnManageTests.Size = new Size(654, 50);
             btnManageTests.TabIndex = 1;
-            btnManageTests.Text = "Управление тестами";
-            btnManageTests.UseVisualStyleBackColor = true;
+            btnManageTests.Text = "Тесты и вопросы";
+            btnManageTests.UseVisualStyleBackColor = false;
             btnManageTests.Visible = false;
             btnManageTests.Click += BtnManageTests_Click;
             // 
             // btnManageUsers
             // 
-            btnManageUsers.Font = new Font("Arial", 10F, FontStyle.Bold);
-            btnManageUsers.Location = new Point(18, 112);
-            btnManageUsers.Margin = new Padding(3, 2, 3, 2);
+            btnManageUsers.BackColor = Color.FromArgb(0, 120, 215);
+            btnManageUsers.FlatAppearance.BorderSize = 0;
+            btnManageUsers.FlatStyle = FlatStyle.Flat;
+            btnManageUsers.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
+            btnManageUsers.ForeColor = Color.White;
+            btnManageUsers.Location = new Point(23, 133);
             btnManageUsers.Name = "btnManageUsers";
-            btnManageUsers.Size = new Size(131, 42);
+            btnManageUsers.Size = new Size(654, 50);
             btnManageUsers.TabIndex = 2;
-            btnManageUsers.Text = "Управление пользователями";
-            btnManageUsers.UseVisualStyleBackColor = true;
+            btnManageUsers.Text = "Пользователи";
+            btnManageUsers.UseVisualStyleBackColor = false;
             btnManageUsers.Visible = false;
             btnManageUsers.Click += BtnManageUsers_Click;
             // 
             // btnLogout
             // 
-            btnLogout.Location = new Point(569, 15);
-            btnLogout.Margin = new Padding(3, 2, 3, 2);
+            btnLogout.Location = new Point(23, 193);
             btnLogout.Name = "btnLogout";
-            btnLogout.Size = new Size(88, 22);
+            btnLogout.Size = new Size(100, 30);
             btnLogout.TabIndex = 3;
-            btnLogout.Text = "Выйти";
-            btnLogout.UseVisualStyleBackColor = true;
+            btnLogout.Text = "Выход";
             btnLogout.Click += BtnLogout_Click;
             // 
             // MainForm
             // 
-            AutoScaleDimensions = new SizeF(7F, 15F);
-            AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.White;
-            ClientSize = new Size(700, 450);
-            Controls.Add(btnLogout);
-            Controls.Add(btnManageUsers);
-            Controls.Add(btnManageTests);
-            Controls.Add(lblWelcome);
-            Margin = new Padding(3, 2, 3, 2);
+            ClientSize = new Size(700, 250);
+            Controls.Add(tableLayout);
+            Font = new Font("Segoe UI", 10F);
             Name = "MainForm";
             StartPosition = FormStartPosition.CenterScreen;
-            Text = "Система тестирования - Главная";
+            Text = "Система тестирования";
+            tableLayout.ResumeLayout(false);
             ResumeLayout(false);
-            PerformLayout();
         }
 
         #endregion
 
+        private TableLayoutPanel tableLayout;
         private Label lblWelcome;
         private Button btnManageTests;
         private Button btnManageUsers;

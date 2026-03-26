@@ -1,4 +1,4 @@
-﻿using System.Diagnostics; // Добавляем для Stopwatch
+﻿using System.Diagnostics; 
 using TestingSystem.Core.Models;
 using TestingSystem.Services.Interfaces;
 
@@ -21,7 +21,6 @@ public partial class QuestionManagementForm : Form
 
         InitializeComponent();
 
-        // Замеряем время загрузки формы
         var loadStopwatch = Stopwatch.StartNew();
 
         if (_currentUser.Role == UserRole.User)
@@ -35,7 +34,6 @@ public partial class QuestionManagementForm : Form
             this.Text = $"Управление вопросами теста: {test.Title}";
         }
 
-        // Загружаем вопросы и замеряем время
         LoadQuestionsWithTiming();
 
         loadStopwatch.Stop();
