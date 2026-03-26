@@ -56,47 +56,52 @@
 
         private void InitializeComponent()
         {
-            tableLayout = new TableLayoutPanel();
-            panelTop = new Panel();
-            labelTestSelect = new Label();
-            comboBoxTests = new ComboBox();
-            buttonRefresh = new Button();
-            buttonExportExcel = new Button();
-            panelGeneral = new Panel();
-            labelGeneralTitle = new Label();
-            labelAttempts = new Label();
-            labelTotalAttempts = new Label();
-            labelScore = new Label();
-            labelAverageScore = new Label();
-            labelMedian = new Label();
-            labelMedianScore = new Label();
-            labelMax = new Label();
-            labelMaxScore = new Label();
-            labelMin = new Label();
-            labelMinScore = new Label();
-            labelTime = new Label();
-            labelAverageTime = new Label();
-            progressAverage = new ProgressBar();
-            panelCharts = new Panel();
-            panelQuestions = new Panel();
-            labelQuestionsTitle = new Label();
-            listViewQuestions = new ListView();
-            columnHeaderId = new ColumnHeader();
-            columnHeaderText = new ColumnHeader();
-            columnHeaderPercent = new ColumnHeader();
-            columnHeaderCount = new ColumnHeader();
-            panelAttempts = new Panel();
-            labelAttemptsTitle = new Label();
-            listViewAttempts = new ListView();
-            columnHeaderUserName = new ColumnHeader();
-            columnHeaderDate = new ColumnHeader();
-            columnHeaderPoints = new ColumnHeader();
-            columnHeaderPercentResult = new ColumnHeader();
-            columnHeaderTime = new ColumnHeader();
-            labelMessage = new Label();
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea1 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Series series1 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            tableLayout = new System.Windows.Forms.TableLayoutPanel();
+            panelTop = new System.Windows.Forms.Panel();
+            labelTestSelect = new System.Windows.Forms.Label();
+            comboBoxTests = new System.Windows.Forms.ComboBox();
+            buttonRefresh = new System.Windows.Forms.Button();
+            buttonExportExcel = new System.Windows.Forms.Button();
+            panelGeneral = new System.Windows.Forms.Panel();
+            labelGeneralTitle = new System.Windows.Forms.Label();
+            labelAttempts = new System.Windows.Forms.Label();
+            labelTotalAttempts = new System.Windows.Forms.Label();
+            labelScore = new System.Windows.Forms.Label();
+            labelAverageScore = new System.Windows.Forms.Label();
+            labelMedian = new System.Windows.Forms.Label();
+            labelMedianScore = new System.Windows.Forms.Label();
+            labelMax = new System.Windows.Forms.Label();
+            labelMaxScore = new System.Windows.Forms.Label();
+            labelMin = new System.Windows.Forms.Label();
+            labelMinScore = new System.Windows.Forms.Label();
+            labelTime = new System.Windows.Forms.Label();
+            labelAverageTime = new System.Windows.Forms.Label();
+            progressAverage = new System.Windows.Forms.ProgressBar();
+            panelCharts = new System.Windows.Forms.Panel();
+            chartScoreDistribution = new System.Windows.Forms.DataVisualization.Charting.Chart();
+            panelQuestions = new System.Windows.Forms.Panel();
+            labelQuestionsTitle = new System.Windows.Forms.Label();
+            listViewQuestions = new System.Windows.Forms.ListView();
+            columnHeaderId = new System.Windows.Forms.ColumnHeader();
+            columnHeaderText = new System.Windows.Forms.ColumnHeader();
+            columnHeaderPercent = new System.Windows.Forms.ColumnHeader();
+            columnHeaderCount = new System.Windows.Forms.ColumnHeader();
+            panelAttempts = new System.Windows.Forms.Panel();
+            labelAttemptsTitle = new System.Windows.Forms.Label();
+            listViewAttempts = new System.Windows.Forms.ListView();
+            columnHeaderUserName = new System.Windows.Forms.ColumnHeader();
+            columnHeaderDate = new System.Windows.Forms.ColumnHeader();
+            columnHeaderPoints = new System.Windows.Forms.ColumnHeader();
+            columnHeaderPercentResult = new System.Windows.Forms.ColumnHeader();
+            columnHeaderTime = new System.Windows.Forms.ColumnHeader();
+            labelMessage = new System.Windows.Forms.Label();
             tableLayout.SuspendLayout();
             panelTop.SuspendLayout();
             panelGeneral.SuspendLayout();
+            panelCharts.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)chartScoreDistribution).BeginInit();
             panelQuestions.SuspendLayout();
             panelAttempts.SuspendLayout();
             SuspendLayout();
@@ -104,25 +109,24 @@
             // tableLayout
             // 
             tableLayout.ColumnCount = 2;
-            tableLayout.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50F));
-            tableLayout.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50F));
+            tableLayout.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            tableLayout.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
             tableLayout.Controls.Add(panelTop, 0, 0);
             tableLayout.Controls.Add(panelGeneral, 0, 1);
             tableLayout.Controls.Add(panelCharts, 1, 1);
             tableLayout.Controls.Add(panelQuestions, 0, 2);
             tableLayout.Controls.Add(panelAttempts, 1, 2);
             tableLayout.Controls.Add(labelMessage, 0, 3);
-            tableLayout.Dock = DockStyle.Fill;
-            tableLayout.Location = new Point(0, 0);
-            tableLayout.Margin = new Padding(3, 2, 3, 2);
+            tableLayout.Dock = System.Windows.Forms.DockStyle.Fill;
+            tableLayout.Location = new System.Drawing.Point(0, 0);
             tableLayout.Name = "tableLayout";
-            tableLayout.Padding = new Padding(9, 8, 9, 8);
+            tableLayout.Padding = new System.Windows.Forms.Padding(10);
             tableLayout.RowCount = 4;
-            tableLayout.RowStyles.Add(new RowStyle(SizeType.Absolute, 38F));
-            tableLayout.RowStyles.Add(new RowStyle(SizeType.Percent, 35F));
-            tableLayout.RowStyles.Add(new RowStyle(SizeType.Percent, 55F));
-            tableLayout.RowStyles.Add(new RowStyle(SizeType.Absolute, 30F));
-            tableLayout.Size = new Size(1050, 525);
+            tableLayout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 50F));
+            tableLayout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 35F));
+            tableLayout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 55F));
+            tableLayout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 40F));
+            tableLayout.Size = new System.Drawing.Size(1200, 700);
             tableLayout.TabIndex = 0;
             // 
             // panelTop
@@ -131,59 +135,55 @@
             panelTop.Controls.Add(comboBoxTests);
             panelTop.Controls.Add(buttonRefresh);
             panelTop.Controls.Add(buttonExportExcel);
-            panelTop.Dock = DockStyle.Fill;
-            panelTop.Location = new Point(12, 10);
-            panelTop.Margin = new Padding(3, 2, 3, 2);
+            panelTop.Dock = System.Windows.Forms.DockStyle.Fill;
+            panelTop.Location = new System.Drawing.Point(13, 13);
             panelTop.Name = "panelTop";
-            panelTop.Size = new Size(510, 34);
+            panelTop.Size = new System.Drawing.Size(1174, 44);
             panelTop.TabIndex = 0;
             // 
             // labelTestSelect
             // 
             labelTestSelect.AutoSize = true;
-            labelTestSelect.Location = new Point(9, 9);
+            labelTestSelect.Location = new System.Drawing.Point(10, 12);
             labelTestSelect.Name = "labelTestSelect";
-            labelTestSelect.Size = new Size(33, 15);
+            labelTestSelect.Size = new System.Drawing.Size(43, 20);
             labelTestSelect.TabIndex = 0;
             labelTestSelect.Text = "Тест:";
             // 
             // comboBoxTests
             // 
-            comboBoxTests.DropDownStyle = ComboBoxStyle.DropDownList;
-            comboBoxTests.Location = new Point(52, 7);
-            comboBoxTests.Margin = new Padding(3, 2, 3, 2);
+            comboBoxTests.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            comboBoxTests.Location = new System.Drawing.Point(60, 9);
             comboBoxTests.Name = "comboBoxTests";
-            comboBoxTests.Size = new Size(263, 23);
+            comboBoxTests.Size = new System.Drawing.Size(300, 28);
             comboBoxTests.TabIndex = 1;
             // 
             // buttonRefresh
             // 
-            buttonRefresh.Location = new Point(332, 6);
-            buttonRefresh.Margin = new Padding(3, 2, 3, 2);
+            buttonRefresh.Location = new System.Drawing.Point(380, 8);
             buttonRefresh.Name = "buttonRefresh";
-            buttonRefresh.Size = new Size(88, 22);
+            buttonRefresh.Size = new System.Drawing.Size(100, 30);
             buttonRefresh.TabIndex = 2;
             buttonRefresh.Text = "Обновить";
             buttonRefresh.UseVisualStyleBackColor = true;
             // 
             // buttonExportExcel
             // 
-            buttonExportExcel.BackColor = Color.FromArgb(0, 120, 215);
+            buttonExportExcel.BackColor = System.Drawing.Color.FromArgb(0, 120, 215);
             buttonExportExcel.FlatAppearance.BorderSize = 0;
-            buttonExportExcel.FlatStyle = FlatStyle.Flat;
-            buttonExportExcel.ForeColor = Color.White;
-            buttonExportExcel.Location = new Point(423, 6);
-            buttonExportExcel.Margin = new Padding(3, 2, 3, 2);
+            buttonExportExcel.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            buttonExportExcel.ForeColor = System.Drawing.Color.White;
+            buttonExportExcel.Location = new System.Drawing.Point(490, 8);
             buttonExportExcel.Name = "buttonExportExcel";
-            buttonExportExcel.Size = new Size(84, 22);
+            buttonExportExcel.Size = new System.Drawing.Size(80, 30);
             buttonExportExcel.TabIndex = 3;
-            buttonExportExcel.Text = "Экспорт Excel";
+            buttonExportExcel.Text = "Экспорт";
             buttonExportExcel.UseVisualStyleBackColor = false;
             // 
             // panelGeneral
             // 
-            panelGeneral.BackColor = Color.White;
-            panelGeneral.BorderStyle = BorderStyle.FixedSingle;
+            panelGeneral.BackColor = System.Drawing.Color.White;
+            panelGeneral.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             panelGeneral.Controls.Add(labelGeneralTitle);
             panelGeneral.Controls.Add(labelAttempts);
             panelGeneral.Controls.Add(labelTotalAttempts);
@@ -198,169 +198,183 @@
             panelGeneral.Controls.Add(labelTime);
             panelGeneral.Controls.Add(labelAverageTime);
             panelGeneral.Controls.Add(progressAverage);
-            panelGeneral.Dock = DockStyle.Fill;
-            panelGeneral.Location = new Point(12, 48);
-            panelGeneral.Margin = new Padding(3, 2, 3, 2);
+            panelGeneral.Dock = System.Windows.Forms.DockStyle.Fill;
+            panelGeneral.Location = new System.Drawing.Point(13, 63);
             panelGeneral.Name = "panelGeneral";
-            panelGeneral.Size = new Size(510, 167);
+            panelGeneral.Size = new System.Drawing.Size(574, 199);
             panelGeneral.TabIndex = 1;
             // 
             // labelGeneralTitle
             // 
-            labelGeneralTitle.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
-            labelGeneralTitle.Location = new Point(9, 8);
+            labelGeneralTitle.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
+            labelGeneralTitle.Location = new System.Drawing.Point(10, 10);
             labelGeneralTitle.Name = "labelGeneralTitle";
-            labelGeneralTitle.Size = new Size(175, 19);
+            labelGeneralTitle.Size = new System.Drawing.Size(200, 25);
             labelGeneralTitle.TabIndex = 0;
             labelGeneralTitle.Text = "Общая статистика";
             // 
             // labelAttempts
             // 
-            labelAttempts.Location = new Point(9, 34);
+            labelAttempts.Location = new System.Drawing.Point(10, 45);
             labelAttempts.Name = "labelAttempts";
-            labelAttempts.Size = new Size(131, 19);
+            labelAttempts.Size = new System.Drawing.Size(150, 25);
             labelAttempts.TabIndex = 1;
             labelAttempts.Text = "Попыток (всего/завершено):";
             // 
             // labelTotalAttempts
             // 
-            labelTotalAttempts.Location = new Point(149, 34);
+            labelTotalAttempts.Location = new System.Drawing.Point(170, 45);
             labelTotalAttempts.Name = "labelTotalAttempts";
-            labelTotalAttempts.Size = new Size(88, 19);
+            labelTotalAttempts.Size = new System.Drawing.Size(100, 25);
             labelTotalAttempts.TabIndex = 2;
             labelTotalAttempts.Text = "0 / 0";
             // 
             // labelScore
             // 
-            labelScore.Location = new Point(9, 56);
+            labelScore.Location = new System.Drawing.Point(10, 75);
             labelScore.Name = "labelScore";
-            labelScore.Size = new Size(88, 19);
+            labelScore.Size = new System.Drawing.Size(100, 25);
             labelScore.TabIndex = 3;
             labelScore.Text = "Средний балл:";
             // 
             // labelAverageScore
             // 
-            labelAverageScore.Location = new Point(105, 56);
+            labelAverageScore.Location = new System.Drawing.Point(120, 75);
             labelAverageScore.Name = "labelAverageScore";
-            labelAverageScore.Size = new Size(70, 19);
+            labelAverageScore.Size = new System.Drawing.Size(80, 25);
             labelAverageScore.TabIndex = 4;
             labelAverageScore.Text = "0%";
             // 
             // labelMedian
             // 
-            labelMedian.Location = new Point(9, 79);
+            labelMedian.Location = new System.Drawing.Point(10, 105);
             labelMedian.Name = "labelMedian";
-            labelMedian.Size = new Size(96, 19);
+            labelMedian.Size = new System.Drawing.Size(110, 25);
             labelMedian.TabIndex = 5;
             labelMedian.Text = "Медианный балл:";
             // 
             // labelMedianScore
             // 
-            labelMedianScore.Location = new Point(114, 79);
+            labelMedianScore.Location = new System.Drawing.Point(130, 105);
             labelMedianScore.Name = "labelMedianScore";
-            labelMedianScore.Size = new Size(70, 19);
+            labelMedianScore.Size = new System.Drawing.Size(80, 25);
             labelMedianScore.TabIndex = 6;
             labelMedianScore.Text = "0%";
             // 
             // labelMax
             // 
-            labelMax.Location = new Point(262, 34);
+            labelMax.Location = new System.Drawing.Point(300, 45);
             labelMax.Name = "labelMax";
-            labelMax.Size = new Size(88, 19);
+            labelMax.Size = new System.Drawing.Size(100, 25);
             labelMax.TabIndex = 7;
             labelMax.Text = "Максимум:";
             // 
             // labelMaxScore
             // 
-            labelMaxScore.Location = new Point(359, 34);
+            labelMaxScore.Location = new System.Drawing.Point(410, 45);
             labelMaxScore.Name = "labelMaxScore";
-            labelMaxScore.Size = new Size(70, 19);
+            labelMaxScore.Size = new System.Drawing.Size(80, 25);
             labelMaxScore.TabIndex = 8;
             labelMaxScore.Text = "0%";
             // 
             // labelMin
             // 
-            labelMin.Location = new Point(262, 56);
+            labelMin.Location = new System.Drawing.Point(300, 75);
             labelMin.Name = "labelMin";
-            labelMin.Size = new Size(88, 19);
+            labelMin.Size = new System.Drawing.Size(100, 25);
             labelMin.TabIndex = 9;
             labelMin.Text = "Минимум:";
             // 
             // labelMinScore
             // 
-            labelMinScore.Location = new Point(359, 56);
+            labelMinScore.Location = new System.Drawing.Point(410, 75);
             labelMinScore.Name = "labelMinScore";
-            labelMinScore.Size = new Size(70, 19);
+            labelMinScore.Size = new System.Drawing.Size(80, 25);
             labelMinScore.TabIndex = 10;
             labelMinScore.Text = "0%";
             // 
             // labelTime
             // 
-            labelTime.Location = new Point(262, 79);
+            labelTime.Location = new System.Drawing.Point(300, 105);
             labelTime.Name = "labelTime";
-            labelTime.Size = new Size(88, 19);
+            labelTime.Size = new System.Drawing.Size(100, 25);
             labelTime.TabIndex = 11;
             labelTime.Text = "Среднее время:";
             // 
             // labelAverageTime
             // 
-            labelAverageTime.Location = new Point(359, 79);
+            labelAverageTime.Location = new System.Drawing.Point(410, 105);
             labelAverageTime.Name = "labelAverageTime";
-            labelAverageTime.Size = new Size(88, 19);
+            labelAverageTime.Size = new System.Drawing.Size(100, 25);
             labelAverageTime.TabIndex = 12;
             labelAverageTime.Text = "0 мин";
             // 
             // progressAverage
             // 
-            progressAverage.Location = new Point(9, 109);
-            progressAverage.Margin = new Padding(3, 2, 3, 2);
+            progressAverage.Location = new System.Drawing.Point(10, 145);
             progressAverage.Name = "progressAverage";
-            progressAverage.Size = new Size(481, 19);
+            progressAverage.Size = new System.Drawing.Size(550, 25);
             progressAverage.TabIndex = 13;
+            progressAverage.Maximum = 100;
             // 
             // panelCharts
             // 
-            panelCharts.Dock = DockStyle.Fill;
-            panelCharts.Location = new Point(528, 48);
-            panelCharts.Margin = new Padding(3, 2, 3, 2);
+            panelCharts.Controls.Add(chartScoreDistribution);
+            panelCharts.Dock = System.Windows.Forms.DockStyle.Fill;
+            panelCharts.Location = new System.Drawing.Point(593, 63);
             panelCharts.Name = "panelCharts";
-            panelCharts.Size = new Size(510, 167);
+            panelCharts.Size = new System.Drawing.Size(594, 199);
             panelCharts.TabIndex = 2;
+            // 
+            // chartScoreDistribution
+            // 
+            chartScoreDistribution.Dock = System.Windows.Forms.DockStyle.Fill;
+            chartArea1.Name = "ChartArea1";
+            chartScoreDistribution.ChartAreas.Add(chartArea1);
+            chartScoreDistribution.Location = new System.Drawing.Point(0, 0);
+            chartScoreDistribution.Name = "chartScoreDistribution";
+            series1.ChartArea = "ChartArea1";
+            series1.Name = "Распределение оценок";
+            chartScoreDistribution.Series.Add(series1);
+            chartScoreDistribution.Size = new System.Drawing.Size(594, 199);
+            chartScoreDistribution.TabIndex = 0;
             // 
             // panelQuestions
             // 
-            panelQuestions.BorderStyle = BorderStyle.FixedSingle;
+            panelQuestions.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             panelQuestions.Controls.Add(labelQuestionsTitle);
             panelQuestions.Controls.Add(listViewQuestions);
-            panelQuestions.Dock = DockStyle.Fill;
-            panelQuestions.Location = new Point(12, 219);
-            panelQuestions.Margin = new Padding(3, 2, 3, 2);
+            panelQuestions.Dock = System.Windows.Forms.DockStyle.Fill;
+            panelQuestions.Location = new System.Drawing.Point(13, 268);
             panelQuestions.Name = "panelQuestions";
-            panelQuestions.Size = new Size(510, 265);
+            panelQuestions.Size = new System.Drawing.Size(574, 371);
             panelQuestions.TabIndex = 3;
             // 
             // labelQuestionsTitle
             // 
-            labelQuestionsTitle.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
-            labelQuestionsTitle.Location = new Point(9, 8);
+            labelQuestionsTitle.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
+            labelQuestionsTitle.Location = new System.Drawing.Point(10, 10);
             labelQuestionsTitle.Name = "labelQuestionsTitle";
-            labelQuestionsTitle.Size = new Size(175, 19);
+            labelQuestionsTitle.Size = new System.Drawing.Size(200, 25);
             labelQuestionsTitle.TabIndex = 0;
             labelQuestionsTitle.Text = "Самые сложные вопросы";
             // 
             // listViewQuestions
             // 
-            listViewQuestions.Columns.AddRange(new ColumnHeader[] { columnHeaderId, columnHeaderText, columnHeaderPercent, columnHeaderCount });
-            listViewQuestions.Dock = DockStyle.Fill;
+            listViewQuestions.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            columnHeaderId,
+            columnHeaderText,
+            columnHeaderPercent,
+            columnHeaderCount});
+            listViewQuestions.Dock = System.Windows.Forms.DockStyle.Fill;
             listViewQuestions.FullRowSelect = true;
             listViewQuestions.GridLines = true;
-            listViewQuestions.Location = new Point(0, 0);
-            listViewQuestions.Margin = new Padding(3, 2, 3, 2);
+            listViewQuestions.Location = new System.Drawing.Point(0, 35);
             listViewQuestions.Name = "listViewQuestions";
-            listViewQuestions.Size = new Size(508, 263);
+            listViewQuestions.Size = new System.Drawing.Size(572, 334);
             listViewQuestions.TabIndex = 1;
             listViewQuestions.UseCompatibleStateImageBehavior = false;
-            listViewQuestions.View = View.Details;
+            listViewQuestions.View = System.Windows.Forms.View.Details;
             // 
             // columnHeaderId
             // 
@@ -384,38 +398,41 @@
             // 
             // panelAttempts
             // 
-            panelAttempts.BorderStyle = BorderStyle.FixedSingle;
+            panelAttempts.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             panelAttempts.Controls.Add(labelAttemptsTitle);
             panelAttempts.Controls.Add(listViewAttempts);
-            panelAttempts.Dock = DockStyle.Fill;
-            panelAttempts.Location = new Point(528, 219);
-            panelAttempts.Margin = new Padding(3, 2, 3, 2);
+            panelAttempts.Dock = System.Windows.Forms.DockStyle.Fill;
+            panelAttempts.Location = new System.Drawing.Point(593, 268);
             panelAttempts.Name = "panelAttempts";
-            panelAttempts.Size = new Size(510, 265);
+            panelAttempts.Size = new System.Drawing.Size(594, 371);
             panelAttempts.TabIndex = 4;
             // 
             // labelAttemptsTitle
             // 
-            labelAttemptsTitle.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
-            labelAttemptsTitle.Location = new Point(9, 8);
+            labelAttemptsTitle.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
+            labelAttemptsTitle.Location = new System.Drawing.Point(10, 10);
             labelAttemptsTitle.Name = "labelAttemptsTitle";
-            labelAttemptsTitle.Size = new Size(175, 19);
+            labelAttemptsTitle.Size = new System.Drawing.Size(200, 25);
             labelAttemptsTitle.TabIndex = 0;
             labelAttemptsTitle.Text = "Последние попытки";
             // 
             // listViewAttempts
             // 
-            listViewAttempts.Columns.AddRange(new ColumnHeader[] { columnHeaderUserName, columnHeaderDate, columnHeaderPoints, columnHeaderPercentResult, columnHeaderTime });
-            listViewAttempts.Dock = DockStyle.Fill;
+            listViewAttempts.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            columnHeaderUserName,
+            columnHeaderDate,
+            columnHeaderPoints,
+            columnHeaderPercentResult,
+            columnHeaderTime});
+            listViewAttempts.Dock = System.Windows.Forms.DockStyle.Fill;
             listViewAttempts.FullRowSelect = true;
             listViewAttempts.GridLines = true;
-            listViewAttempts.Location = new Point(0, 0);
-            listViewAttempts.Margin = new Padding(3, 2, 3, 2);
+            listViewAttempts.Location = new System.Drawing.Point(0, 35);
             listViewAttempts.Name = "listViewAttempts";
-            listViewAttempts.Size = new Size(508, 263);
+            listViewAttempts.Size = new System.Drawing.Size(592, 334);
             listViewAttempts.TabIndex = 2;
             listViewAttempts.UseCompatibleStateImageBehavior = false;
-            listViewAttempts.View = View.Details;
+            listViewAttempts.View = System.Windows.Forms.View.Details;
             // 
             // columnHeaderUserName
             // 
@@ -445,29 +462,31 @@
             // labelMessage
             // 
             tableLayout.SetColumnSpan(labelMessage, 2);
-            labelMessage.ForeColor = Color.Blue;
-            labelMessage.Location = new Point(12, 486);
+            labelMessage.AutoSize = false;
+            labelMessage.Location = new System.Drawing.Point(13, 645);
             labelMessage.Name = "labelMessage";
-            labelMessage.Size = new Size(1026, 22);
+            labelMessage.Size = new System.Drawing.Size(1174, 30);
             labelMessage.TabIndex = 5;
-            labelMessage.TextAlign = ContentAlignment.MiddleCenter;
+            labelMessage.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            labelMessage.ForeColor = System.Drawing.Color.Blue;
             labelMessage.Visible = false;
             // 
             // StatisticsForm
             // 
-            AutoScaleDimensions = new SizeF(7F, 15F);
-            AutoScaleMode = AutoScaleMode.Font;
-            BackColor = Color.FromArgb(240, 240, 240);
-            ClientSize = new Size(1050, 525);
+            AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
+            AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            BackColor = System.Drawing.Color.FromArgb(240, 240, 240);
+            ClientSize = new System.Drawing.Size(1200, 700);
             Controls.Add(tableLayout);
-            Margin = new Padding(3, 2, 3, 2);
             Name = "StatisticsForm";
-            StartPosition = FormStartPosition.CenterParent;
+            StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             Text = "Статистика и аналитика";
             tableLayout.ResumeLayout(false);
             panelTop.ResumeLayout(false);
             panelTop.PerformLayout();
             panelGeneral.ResumeLayout(false);
+            panelCharts.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)chartScoreDistribution).EndInit();
             panelQuestions.ResumeLayout(false);
             panelAttempts.ResumeLayout(false);
             ResumeLayout(false);
