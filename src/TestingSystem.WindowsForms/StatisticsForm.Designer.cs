@@ -56,421 +56,440 @@
 
         private void InitializeComponent()
         {
-            tableLayout = new TableLayoutPanel();
-            panelTop = new Panel();
-            labelTestSelect = new Label();
-            comboBoxTests = new ComboBox();
-            buttonRefresh = new Button();
-            buttonExportExcel = new Button();
-            panelGeneral = new Panel();
-            labelGeneralTitle = new Label();
-            labelAttempts = new Label();
-            labelTotalAttempts = new Label();
-            labelScore = new Label();
-            labelAverageScore = new Label();
-            labelMedian = new Label();
-            labelMedianScore = new Label();
-            labelMax = new Label();
-            labelMaxScore = new Label();
-            labelMin = new Label();
-            labelMinScore = new Label();
-            labelTime = new Label();
-            labelAverageTime = new Label();
-            progressAverage = new ProgressBar();
-            panelCharts = new Panel();
-            panelQuestions = new Panel();
-            labelQuestionsTitle = new Label();
-            listViewQuestions = new ListView();
-            columnHeaderId = new ColumnHeader();
-            columnHeaderText = new ColumnHeader();
-            columnHeaderPercent = new ColumnHeader();
-            columnHeaderCount = new ColumnHeader();
-            panelAttempts = new Panel();
-            labelAttemptsTitle = new Label();
-            listViewAttempts = new ListView();
-            columnHeaderUserName = new ColumnHeader();
-            columnHeaderDate = new ColumnHeader();
-            columnHeaderPoints = new ColumnHeader();
-            columnHeaderPercentResult = new ColumnHeader();
-            columnHeaderTime = new ColumnHeader();
-            labelMessage = new Label();
-            tableLayout.SuspendLayout();
-            panelTop.SuspendLayout();
-            panelGeneral.SuspendLayout();
-            panelQuestions.SuspendLayout();
-            panelAttempts.SuspendLayout();
-            SuspendLayout();
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea1 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Series series1 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            this.tableLayout = new System.Windows.Forms.TableLayoutPanel();
+            this.panelTop = new System.Windows.Forms.Panel();
+            this.labelTestSelect = new System.Windows.Forms.Label();
+            this.comboBoxTests = new System.Windows.Forms.ComboBox();
+            this.buttonRefresh = new System.Windows.Forms.Button();
+            this.buttonExportExcel = new System.Windows.Forms.Button();
+            this.panelGeneral = new System.Windows.Forms.Panel();
+            this.labelGeneralTitle = new System.Windows.Forms.Label();
+            this.labelAttempts = new System.Windows.Forms.Label();
+            this.labelTotalAttempts = new System.Windows.Forms.Label();
+            this.labelScore = new System.Windows.Forms.Label();
+            this.labelAverageScore = new System.Windows.Forms.Label();
+            this.labelMedian = new System.Windows.Forms.Label();
+            this.labelMedianScore = new System.Windows.Forms.Label();
+            this.labelMax = new System.Windows.Forms.Label();
+            this.labelMaxScore = new System.Windows.Forms.Label();
+            this.labelMin = new System.Windows.Forms.Label();
+            this.labelMinScore = new System.Windows.Forms.Label();
+            this.labelTime = new System.Windows.Forms.Label();
+            this.labelAverageTime = new System.Windows.Forms.Label();
+            this.progressAverage = new System.Windows.Forms.ProgressBar();
+            this.panelCharts = new System.Windows.Forms.Panel();
+            this.chartScoreDistribution = new System.Windows.Forms.DataVisualization.Charting.Chart();
+            this.panelQuestions = new System.Windows.Forms.Panel();
+            this.labelQuestionsTitle = new System.Windows.Forms.Label();
+            this.listViewQuestions = new System.Windows.Forms.ListView();
+            this.columnHeaderId = new System.Windows.Forms.ColumnHeader();
+            this.columnHeaderText = new System.Windows.Forms.ColumnHeader();
+            this.columnHeaderPercent = new System.Windows.Forms.ColumnHeader();
+            this.columnHeaderCount = new System.Windows.Forms.ColumnHeader();
+            this.panelAttempts = new System.Windows.Forms.Panel();
+            this.labelAttemptsTitle = new System.Windows.Forms.Label();
+            this.listViewAttempts = new System.Windows.Forms.ListView();
+            this.columnHeaderUserName = new System.Windows.Forms.ColumnHeader();
+            this.columnHeaderDate = new System.Windows.Forms.ColumnHeader();
+            this.columnHeaderPoints = new System.Windows.Forms.ColumnHeader();
+            this.columnHeaderPercentResult = new System.Windows.Forms.ColumnHeader();
+            this.columnHeaderTime = new System.Windows.Forms.ColumnHeader();
+            this.labelMessage = new System.Windows.Forms.Label();
+            this.tableLayout.SuspendLayout();
+            this.panelTop.SuspendLayout();
+            this.panelGeneral.SuspendLayout();
+            this.panelCharts.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.chartScoreDistribution)).BeginInit();
+            this.panelQuestions.SuspendLayout();
+            this.panelAttempts.SuspendLayout();
+            this.SuspendLayout();
             // 
             // tableLayout
             // 
-            tableLayout.ColumnCount = 2;
-            tableLayout.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50F));
-            tableLayout.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50F));
-            tableLayout.Controls.Add(panelTop, 0, 0);
-            tableLayout.Controls.Add(panelGeneral, 0, 1);
-            tableLayout.Controls.Add(panelCharts, 1, 1);
-            tableLayout.Controls.Add(panelQuestions, 0, 2);
-            tableLayout.Controls.Add(panelAttempts, 1, 2);
-            tableLayout.Controls.Add(labelMessage, 0, 3);
-            tableLayout.Dock = DockStyle.Fill;
-            tableLayout.Location = new Point(0, 0);
-            tableLayout.Margin = new Padding(3, 2, 3, 2);
-            tableLayout.Name = "tableLayout";
-            tableLayout.Padding = new Padding(9, 8, 9, 8);
-            tableLayout.RowCount = 4;
-            tableLayout.RowStyles.Add(new RowStyle(SizeType.Absolute, 38F));
-            tableLayout.RowStyles.Add(new RowStyle(SizeType.Percent, 35F));
-            tableLayout.RowStyles.Add(new RowStyle(SizeType.Percent, 55F));
-            tableLayout.RowStyles.Add(new RowStyle(SizeType.Absolute, 30F));
-            tableLayout.Size = new Size(1050, 525);
-            tableLayout.TabIndex = 0;
+            this.tableLayout.ColumnCount = 2;
+            this.tableLayout.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tableLayout.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tableLayout.Controls.Add(this.panelTop, 0, 0);
+            this.tableLayout.Controls.Add(this.panelGeneral, 0, 1);
+            this.tableLayout.Controls.Add(this.panelCharts, 1, 1);
+            this.tableLayout.Controls.Add(this.panelQuestions, 0, 2);
+            this.tableLayout.Controls.Add(this.panelAttempts, 1, 2);
+            this.tableLayout.Controls.Add(this.labelMessage, 0, 3);
+            this.tableLayout.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tableLayout.Location = new System.Drawing.Point(0, 0);
+            this.tableLayout.Name = "tableLayout";
+            this.tableLayout.Padding = new System.Windows.Forms.Padding(10);
+            this.tableLayout.RowCount = 4;
+            this.tableLayout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 50F));
+            this.tableLayout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 35F));
+            this.tableLayout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 55F));
+            this.tableLayout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 40F));
+            this.tableLayout.Size = new System.Drawing.Size(1200, 700);
+            this.tableLayout.TabIndex = 0;
             // 
             // panelTop
             // 
-            panelTop.Controls.Add(labelTestSelect);
-            panelTop.Controls.Add(comboBoxTests);
-            panelTop.Controls.Add(buttonRefresh);
-            panelTop.Controls.Add(buttonExportExcel);
-            panelTop.Dock = DockStyle.Fill;
-            panelTop.Location = new Point(12, 10);
-            panelTop.Margin = new Padding(3, 2, 3, 2);
-            panelTop.Name = "panelTop";
-            panelTop.Size = new Size(510, 34);
-            panelTop.TabIndex = 0;
+            this.panelTop.Controls.Add(this.labelTestSelect);
+            this.panelTop.Controls.Add(this.comboBoxTests);
+            this.panelTop.Controls.Add(this.buttonRefresh);
+            this.panelTop.Controls.Add(this.buttonExportExcel);
+            this.panelTop.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.panelTop.Location = new System.Drawing.Point(13, 13);
+            this.panelTop.Name = "panelTop";
+            this.panelTop.Size = new System.Drawing.Size(1174, 44);
+            this.panelTop.TabIndex = 0;
             // 
             // labelTestSelect
             // 
-            labelTestSelect.AutoSize = true;
-            labelTestSelect.Location = new Point(9, 9);
-            labelTestSelect.Name = "labelTestSelect";
-            labelTestSelect.Size = new Size(33, 15);
-            labelTestSelect.TabIndex = 0;
-            labelTestSelect.Text = "Тест:";
+            this.labelTestSelect.AutoSize = true;
+            this.labelTestSelect.Location = new System.Drawing.Point(10, 12);
+            this.labelTestSelect.Name = "labelTestSelect";
+            this.labelTestSelect.Size = new System.Drawing.Size(43, 20);
+            this.labelTestSelect.TabIndex = 0;
+            this.labelTestSelect.Text = "Тест:";
             // 
             // comboBoxTests
             // 
-            comboBoxTests.DropDownStyle = ComboBoxStyle.DropDownList;
-            comboBoxTests.Location = new Point(52, 7);
-            comboBoxTests.Margin = new Padding(3, 2, 3, 2);
-            comboBoxTests.Name = "comboBoxTests";
-            comboBoxTests.Size = new Size(263, 23);
-            comboBoxTests.TabIndex = 1;
+            this.comboBoxTests.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboBoxTests.Location = new System.Drawing.Point(60, 9);
+            this.comboBoxTests.Name = "comboBoxTests";
+            this.comboBoxTests.Size = new System.Drawing.Size(300, 28);
+            this.comboBoxTests.TabIndex = 1;
             // 
             // buttonRefresh
             // 
-            buttonRefresh.Location = new Point(332, 6);
-            buttonRefresh.Margin = new Padding(3, 2, 3, 2);
-            buttonRefresh.Name = "buttonRefresh";
-            buttonRefresh.Size = new Size(88, 22);
-            buttonRefresh.TabIndex = 2;
-            buttonRefresh.Text = "Обновить";
-            buttonRefresh.UseVisualStyleBackColor = true;
+            this.buttonRefresh.Location = new System.Drawing.Point(380, 8);
+            this.buttonRefresh.Name = "buttonRefresh";
+            this.buttonRefresh.Size = new System.Drawing.Size(100, 30);
+            this.buttonRefresh.TabIndex = 2;
+            this.buttonRefresh.Text = "Обновить";
+            this.buttonRefresh.UseVisualStyleBackColor = true;
             // 
             // buttonExportExcel
             // 
-            buttonExportExcel.BackColor = Color.FromArgb(0, 120, 215);
-            buttonExportExcel.FlatAppearance.BorderSize = 0;
-            buttonExportExcel.FlatStyle = FlatStyle.Flat;
-            buttonExportExcel.ForeColor = Color.White;
-            buttonExportExcel.Location = new Point(423, 6);
-            buttonExportExcel.Margin = new Padding(3, 2, 3, 2);
-            buttonExportExcel.Name = "buttonExportExcel";
-            buttonExportExcel.Size = new Size(84, 22);
-            buttonExportExcel.TabIndex = 3;
-            buttonExportExcel.Text = "Экспорт Excel";
-            buttonExportExcel.UseVisualStyleBackColor = false;
+            this.buttonExportExcel.BackColor = System.Drawing.Color.FromArgb(0, 120, 215);
+            this.buttonExportExcel.FlatAppearance.BorderSize = 0;
+            this.buttonExportExcel.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.buttonExportExcel.ForeColor = System.Drawing.Color.White;
+            this.buttonExportExcel.Location = new System.Drawing.Point(500, 8);
+            this.buttonExportExcel.Name = "buttonExportExcel";
+            this.buttonExportExcel.Size = new System.Drawing.Size(120, 30);
+            this.buttonExportExcel.TabIndex = 3;
+            this.buttonExportExcel.Text = "Экспорт Excel";
+            this.buttonExportExcel.UseVisualStyleBackColor = false;
             // 
             // panelGeneral
             // 
-            panelGeneral.BackColor = Color.White;
-            panelGeneral.BorderStyle = BorderStyle.FixedSingle;
-            panelGeneral.Controls.Add(labelGeneralTitle);
-            panelGeneral.Controls.Add(labelAttempts);
-            panelGeneral.Controls.Add(labelTotalAttempts);
-            panelGeneral.Controls.Add(labelScore);
-            panelGeneral.Controls.Add(labelAverageScore);
-            panelGeneral.Controls.Add(labelMedian);
-            panelGeneral.Controls.Add(labelMedianScore);
-            panelGeneral.Controls.Add(labelMax);
-            panelGeneral.Controls.Add(labelMaxScore);
-            panelGeneral.Controls.Add(labelMin);
-            panelGeneral.Controls.Add(labelMinScore);
-            panelGeneral.Controls.Add(labelTime);
-            panelGeneral.Controls.Add(labelAverageTime);
-            panelGeneral.Controls.Add(progressAverage);
-            panelGeneral.Dock = DockStyle.Fill;
-            panelGeneral.Location = new Point(12, 48);
-            panelGeneral.Margin = new Padding(3, 2, 3, 2);
-            panelGeneral.Name = "panelGeneral";
-            panelGeneral.Size = new Size(510, 167);
-            panelGeneral.TabIndex = 1;
+            this.panelGeneral.BackColor = System.Drawing.Color.White;
+            this.panelGeneral.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panelGeneral.Controls.Add(this.labelGeneralTitle);
+            this.panelGeneral.Controls.Add(this.labelAttempts);
+            this.panelGeneral.Controls.Add(this.labelTotalAttempts);
+            this.panelGeneral.Controls.Add(this.labelScore);
+            this.panelGeneral.Controls.Add(this.labelAverageScore);
+            this.panelGeneral.Controls.Add(this.labelMedian);
+            this.panelGeneral.Controls.Add(this.labelMedianScore);
+            this.panelGeneral.Controls.Add(this.labelMax);
+            this.panelGeneral.Controls.Add(this.labelMaxScore);
+            this.panelGeneral.Controls.Add(this.labelMin);
+            this.panelGeneral.Controls.Add(this.labelMinScore);
+            this.panelGeneral.Controls.Add(this.labelTime);
+            this.panelGeneral.Controls.Add(this.labelAverageTime);
+            this.panelGeneral.Controls.Add(this.progressAverage);
+            this.panelGeneral.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.panelGeneral.Location = new System.Drawing.Point(13, 63);
+            this.panelGeneral.Name = "panelGeneral";
+            this.panelGeneral.Size = new System.Drawing.Size(574, 199);
+            this.panelGeneral.TabIndex = 1;
             // 
             // labelGeneralTitle
             // 
-            labelGeneralTitle.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
-            labelGeneralTitle.Location = new Point(9, 8);
-            labelGeneralTitle.Name = "labelGeneralTitle";
-            labelGeneralTitle.Size = new Size(175, 19);
-            labelGeneralTitle.TabIndex = 0;
-            labelGeneralTitle.Text = "Общая статистика";
+            this.labelGeneralTitle.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
+            this.labelGeneralTitle.Location = new System.Drawing.Point(10, 10);
+            this.labelGeneralTitle.Name = "labelGeneralTitle";
+            this.labelGeneralTitle.Size = new System.Drawing.Size(200, 25);
+            this.labelGeneralTitle.TabIndex = 0;
+            this.labelGeneralTitle.Text = "Общая статистика";
             // 
             // labelAttempts
             // 
-            labelAttempts.Location = new Point(9, 34);
-            labelAttempts.Name = "labelAttempts";
-            labelAttempts.Size = new Size(131, 19);
-            labelAttempts.TabIndex = 1;
-            labelAttempts.Text = "Попыток (всего/завершено):";
+            this.labelAttempts.Location = new System.Drawing.Point(10, 45);
+            this.labelAttempts.Name = "labelAttempts";
+            this.labelAttempts.Size = new System.Drawing.Size(150, 25);
+            this.labelAttempts.TabIndex = 1;
+            this.labelAttempts.Text = "Попыток (всего/завершено):";
             // 
             // labelTotalAttempts
             // 
-            labelTotalAttempts.Location = new Point(149, 34);
-            labelTotalAttempts.Name = "labelTotalAttempts";
-            labelTotalAttempts.Size = new Size(88, 19);
-            labelTotalAttempts.TabIndex = 2;
-            labelTotalAttempts.Text = "0 / 0";
+            this.labelTotalAttempts.Location = new System.Drawing.Point(170, 45);
+            this.labelTotalAttempts.Name = "labelTotalAttempts";
+            this.labelTotalAttempts.Size = new System.Drawing.Size(100, 25);
+            this.labelTotalAttempts.TabIndex = 2;
+            this.labelTotalAttempts.Text = "0 / 0";
             // 
             // labelScore
             // 
-            labelScore.Location = new Point(9, 56);
-            labelScore.Name = "labelScore";
-            labelScore.Size = new Size(88, 19);
-            labelScore.TabIndex = 3;
-            labelScore.Text = "Средний балл:";
+            this.labelScore.Location = new System.Drawing.Point(10, 75);
+            this.labelScore.Name = "labelScore";
+            this.labelScore.Size = new System.Drawing.Size(100, 25);
+            this.labelScore.TabIndex = 3;
+            this.labelScore.Text = "Средний балл:";
             // 
             // labelAverageScore
             // 
-            labelAverageScore.Location = new Point(105, 56);
-            labelAverageScore.Name = "labelAverageScore";
-            labelAverageScore.Size = new Size(70, 19);
-            labelAverageScore.TabIndex = 4;
-            labelAverageScore.Text = "0%";
+            this.labelAverageScore.Location = new System.Drawing.Point(120, 75);
+            this.labelAverageScore.Name = "labelAverageScore";
+            this.labelAverageScore.Size = new System.Drawing.Size(80, 25);
+            this.labelAverageScore.TabIndex = 4;
+            this.labelAverageScore.Text = "0%";
             // 
             // labelMedian
             // 
-            labelMedian.Location = new Point(9, 79);
-            labelMedian.Name = "labelMedian";
-            labelMedian.Size = new Size(96, 19);
-            labelMedian.TabIndex = 5;
-            labelMedian.Text = "Медианный балл:";
+            this.labelMedian.Location = new System.Drawing.Point(10, 105);
+            this.labelMedian.Name = "labelMedian";
+            this.labelMedian.Size = new System.Drawing.Size(110, 25);
+            this.labelMedian.TabIndex = 5;
+            this.labelMedian.Text = "Медианный балл:";
             // 
             // labelMedianScore
             // 
-            labelMedianScore.Location = new Point(114, 79);
-            labelMedianScore.Name = "labelMedianScore";
-            labelMedianScore.Size = new Size(70, 19);
-            labelMedianScore.TabIndex = 6;
-            labelMedianScore.Text = "0%";
+            this.labelMedianScore.Location = new System.Drawing.Point(130, 105);
+            this.labelMedianScore.Name = "labelMedianScore";
+            this.labelMedianScore.Size = new System.Drawing.Size(80, 25);
+            this.labelMedianScore.TabIndex = 6;
+            this.labelMedianScore.Text = "0%";
             // 
             // labelMax
             // 
-            labelMax.Location = new Point(262, 34);
-            labelMax.Name = "labelMax";
-            labelMax.Size = new Size(88, 19);
-            labelMax.TabIndex = 7;
-            labelMax.Text = "Максимум:";
+            this.labelMax.Location = new System.Drawing.Point(300, 45);
+            this.labelMax.Name = "labelMax";
+            this.labelMax.Size = new System.Drawing.Size(100, 25);
+            this.labelMax.TabIndex = 7;
+            this.labelMax.Text = "Максимум:";
             // 
             // labelMaxScore
             // 
-            labelMaxScore.Location = new Point(359, 34);
-            labelMaxScore.Name = "labelMaxScore";
-            labelMaxScore.Size = new Size(70, 19);
-            labelMaxScore.TabIndex = 8;
-            labelMaxScore.Text = "0%";
+            this.labelMaxScore.Location = new System.Drawing.Point(410, 45);
+            this.labelMaxScore.Name = "labelMaxScore";
+            this.labelMaxScore.Size = new System.Drawing.Size(80, 25);
+            this.labelMaxScore.TabIndex = 8;
+            this.labelMaxScore.Text = "0%";
             // 
             // labelMin
             // 
-            labelMin.Location = new Point(262, 56);
-            labelMin.Name = "labelMin";
-            labelMin.Size = new Size(88, 19);
-            labelMin.TabIndex = 9;
-            labelMin.Text = "Минимум:";
+            this.labelMin.Location = new System.Drawing.Point(300, 75);
+            this.labelMin.Name = "labelMin";
+            this.labelMin.Size = new System.Drawing.Size(100, 25);
+            this.labelMin.TabIndex = 9;
+            this.labelMin.Text = "Минимум:";
             // 
             // labelMinScore
             // 
-            labelMinScore.Location = new Point(359, 56);
-            labelMinScore.Name = "labelMinScore";
-            labelMinScore.Size = new Size(70, 19);
-            labelMinScore.TabIndex = 10;
-            labelMinScore.Text = "0%";
+            this.labelMinScore.Location = new System.Drawing.Point(410, 75);
+            this.labelMinScore.Name = "labelMinScore";
+            this.labelMinScore.Size = new System.Drawing.Size(80, 25);
+            this.labelMinScore.TabIndex = 10;
+            this.labelMinScore.Text = "0%";
             // 
             // labelTime
             // 
-            labelTime.Location = new Point(262, 79);
-            labelTime.Name = "labelTime";
-            labelTime.Size = new Size(88, 19);
-            labelTime.TabIndex = 11;
-            labelTime.Text = "Среднее время:";
+            this.labelTime.Location = new System.Drawing.Point(300, 105);
+            this.labelTime.Name = "labelTime";
+            this.labelTime.Size = new System.Drawing.Size(100, 25);
+            this.labelTime.TabIndex = 11;
+            this.labelTime.Text = "Среднее время:";
             // 
             // labelAverageTime
             // 
-            labelAverageTime.Location = new Point(359, 79);
-            labelAverageTime.Name = "labelAverageTime";
-            labelAverageTime.Size = new Size(88, 19);
-            labelAverageTime.TabIndex = 12;
-            labelAverageTime.Text = "0 мин";
+            this.labelAverageTime.Location = new System.Drawing.Point(410, 105);
+            this.labelAverageTime.Name = "labelAverageTime";
+            this.labelAverageTime.Size = new System.Drawing.Size(100, 25);
+            this.labelAverageTime.TabIndex = 12;
+            this.labelAverageTime.Text = "0 мин";
             // 
             // progressAverage
             // 
-            progressAverage.Location = new Point(9, 109);
-            progressAverage.Margin = new Padding(3, 2, 3, 2);
-            progressAverage.Name = "progressAverage";
-            progressAverage.Size = new Size(481, 19);
-            progressAverage.TabIndex = 13;
+            this.progressAverage.Location = new System.Drawing.Point(10, 145);
+            this.progressAverage.Name = "progressAverage";
+            this.progressAverage.Size = new System.Drawing.Size(550, 25);
+            this.progressAverage.TabIndex = 13;
+            this.progressAverage.Maximum = 100;
             // 
             // panelCharts
             // 
-            panelCharts.Dock = DockStyle.Fill;
-            panelCharts.Location = new Point(528, 48);
-            panelCharts.Margin = new Padding(3, 2, 3, 2);
-            panelCharts.Name = "panelCharts";
-            panelCharts.Size = new Size(510, 167);
-            panelCharts.TabIndex = 2;
+            this.panelCharts.Controls.Add(this.chartScoreDistribution);
+            this.panelCharts.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.panelCharts.Location = new System.Drawing.Point(593, 63);
+            this.panelCharts.Name = "panelCharts";
+            this.panelCharts.Size = new System.Drawing.Size(594, 199);
+            this.panelCharts.TabIndex = 2;
+            // 
+            // chartScoreDistribution
+            // 
+            this.chartScoreDistribution.Dock = System.Windows.Forms.DockStyle.Fill;
+            chartArea1.Name = "ChartArea1";
+            this.chartScoreDistribution.ChartAreas.Add(chartArea1);
+            this.chartScoreDistribution.Location = new System.Drawing.Point(0, 0);
+            this.chartScoreDistribution.Name = "chartScoreDistribution";
+            series1.ChartArea = "ChartArea1";
+            series1.Name = "Распределение оценок";
+            this.chartScoreDistribution.Series.Add(series1);
+            this.chartScoreDistribution.Size = new System.Drawing.Size(594, 199);
+            this.chartScoreDistribution.TabIndex = 0;
             // 
             // panelQuestions
             // 
-            panelQuestions.BorderStyle = BorderStyle.FixedSingle;
-            panelQuestions.Controls.Add(labelQuestionsTitle);
-            panelQuestions.Controls.Add(listViewQuestions);
-            panelQuestions.Dock = DockStyle.Fill;
-            panelQuestions.Location = new Point(12, 219);
-            panelQuestions.Margin = new Padding(3, 2, 3, 2);
-            panelQuestions.Name = "panelQuestions";
-            panelQuestions.Size = new Size(510, 265);
-            panelQuestions.TabIndex = 3;
+            this.panelQuestions.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panelQuestions.Controls.Add(this.labelQuestionsTitle);
+            this.panelQuestions.Controls.Add(this.listViewQuestions);
+            this.panelQuestions.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.panelQuestions.Location = new System.Drawing.Point(13, 268);
+            this.panelQuestions.Name = "panelQuestions";
+            this.panelQuestions.Size = new System.Drawing.Size(574, 371);
+            this.panelQuestions.TabIndex = 3;
             // 
             // labelQuestionsTitle
             // 
-            labelQuestionsTitle.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
-            labelQuestionsTitle.Location = new Point(9, 8);
-            labelQuestionsTitle.Name = "labelQuestionsTitle";
-            labelQuestionsTitle.Size = new Size(175, 19);
-            labelQuestionsTitle.TabIndex = 0;
-            labelQuestionsTitle.Text = "Самые сложные вопросы";
+            this.labelQuestionsTitle.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
+            this.labelQuestionsTitle.Location = new System.Drawing.Point(10, 10);
+            this.labelQuestionsTitle.Name = "labelQuestionsTitle";
+            this.labelQuestionsTitle.Size = new System.Drawing.Size(200, 25);
+            this.labelQuestionsTitle.TabIndex = 0;
+            this.labelQuestionsTitle.Text = "Самые сложные вопросы";
             // 
             // listViewQuestions
             // 
-            listViewQuestions.Columns.AddRange(new ColumnHeader[] { columnHeaderId, columnHeaderText, columnHeaderPercent, columnHeaderCount });
-            listViewQuestions.Dock = DockStyle.Fill;
-            listViewQuestions.FullRowSelect = true;
-            listViewQuestions.GridLines = true;
-            listViewQuestions.Location = new Point(0, 0);
-            listViewQuestions.Margin = new Padding(3, 2, 3, 2);
-            listViewQuestions.Name = "listViewQuestions";
-            listViewQuestions.Size = new Size(508, 263);
-            listViewQuestions.TabIndex = 1;
-            listViewQuestions.UseCompatibleStateImageBehavior = false;
-            listViewQuestions.View = View.Details;
+            this.listViewQuestions.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.columnHeaderId,
+            this.columnHeaderText,
+            this.columnHeaderPercent,
+            this.columnHeaderCount});
+            this.listViewQuestions.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.listViewQuestions.FullRowSelect = true;
+            this.listViewQuestions.GridLines = true;
+            this.listViewQuestions.Location = new System.Drawing.Point(0, 35);
+            this.listViewQuestions.Name = "listViewQuestions";
+            this.listViewQuestions.Size = new System.Drawing.Size(572, 334);
+            this.listViewQuestions.TabIndex = 1;
+            this.listViewQuestions.UseCompatibleStateImageBehavior = false;
+            this.listViewQuestions.View = System.Windows.Forms.View.Details;
             // 
             // columnHeaderId
             // 
-            columnHeaderId.Text = "ID";
-            columnHeaderId.Width = 50;
+            this.columnHeaderId.Text = "ID";
+            this.columnHeaderId.Width = 50;
             // 
             // columnHeaderText
             // 
-            columnHeaderText.Text = "Текст вопроса";
-            columnHeaderText.Width = 350;
+            this.columnHeaderText.Text = "Текст вопроса";
+            this.columnHeaderText.Width = 350;
             // 
             // columnHeaderPercent
             // 
-            columnHeaderPercent.Text = "Правильно (%)";
-            columnHeaderPercent.Width = 100;
+            this.columnHeaderPercent.Text = "Правильно (%)";
+            this.columnHeaderPercent.Width = 100;
             // 
             // columnHeaderCount
             // 
-            columnHeaderCount.Text = "Правильно/Всего";
-            columnHeaderCount.Width = 100;
+            this.columnHeaderCount.Text = "Правильно/Всего";
+            this.columnHeaderCount.Width = 100;
             // 
             // panelAttempts
             // 
-            panelAttempts.BorderStyle = BorderStyle.FixedSingle;
-            panelAttempts.Controls.Add(labelAttemptsTitle);
-            panelAttempts.Controls.Add(listViewAttempts);
-            panelAttempts.Dock = DockStyle.Fill;
-            panelAttempts.Location = new Point(528, 219);
-            panelAttempts.Margin = new Padding(3, 2, 3, 2);
-            panelAttempts.Name = "panelAttempts";
-            panelAttempts.Size = new Size(510, 265);
-            panelAttempts.TabIndex = 4;
+            this.panelAttempts.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panelAttempts.Controls.Add(this.labelAttemptsTitle);
+            this.panelAttempts.Controls.Add(this.listViewAttempts);
+            this.panelAttempts.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.panelAttempts.Location = new System.Drawing.Point(593, 268);
+            this.panelAttempts.Name = "panelAttempts";
+            this.panelAttempts.Size = new System.Drawing.Size(594, 371);
+            this.panelAttempts.TabIndex = 4;
             // 
             // labelAttemptsTitle
             // 
-            labelAttemptsTitle.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
-            labelAttemptsTitle.Location = new Point(9, 8);
-            labelAttemptsTitle.Name = "labelAttemptsTitle";
-            labelAttemptsTitle.Size = new Size(175, 19);
-            labelAttemptsTitle.TabIndex = 0;
-            labelAttemptsTitle.Text = "Последние попытки";
+            this.labelAttemptsTitle.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
+            this.labelAttemptsTitle.Location = new System.Drawing.Point(10, 10);
+            this.labelAttemptsTitle.Name = "labelAttemptsTitle";
+            this.labelAttemptsTitle.Size = new System.Drawing.Size(200, 25);
+            this.labelAttemptsTitle.TabIndex = 0;
+            this.labelAttemptsTitle.Text = "Последние попытки";
             // 
             // listViewAttempts
             // 
-            listViewAttempts.Columns.AddRange(new ColumnHeader[] { columnHeaderUserName, columnHeaderDate, columnHeaderPoints, columnHeaderPercentResult, columnHeaderTime });
-            listViewAttempts.Dock = DockStyle.Fill;
-            listViewAttempts.FullRowSelect = true;
-            listViewAttempts.GridLines = true;
-            listViewAttempts.Location = new Point(0, 0);
-            listViewAttempts.Margin = new Padding(3, 2, 3, 2);
-            listViewAttempts.Name = "listViewAttempts";
-            listViewAttempts.Size = new Size(508, 263);
-            listViewAttempts.TabIndex = 2;
-            listViewAttempts.UseCompatibleStateImageBehavior = false;
-            listViewAttempts.View = View.Details;
+            this.listViewAttempts.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.columnHeaderUserName,
+            this.columnHeaderDate,
+            this.columnHeaderPoints,
+            this.columnHeaderPercentResult,
+            this.columnHeaderTime});
+            this.listViewAttempts.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.listViewAttempts.FullRowSelect = true;
+            this.listViewAttempts.GridLines = true;
+            this.listViewAttempts.Location = new System.Drawing.Point(0, 35);
+            this.listViewAttempts.Name = "listViewAttempts";
+            this.listViewAttempts.Size = new System.Drawing.Size(592, 334);
+            this.listViewAttempts.TabIndex = 2;
+            this.listViewAttempts.UseCompatibleStateImageBehavior = false;
+            this.listViewAttempts.View = System.Windows.Forms.View.Details;
             // 
             // columnHeaderUserName
             // 
-            columnHeaderUserName.Text = "Пользователь";
-            columnHeaderUserName.Width = 150;
+            this.columnHeaderUserName.Text = "Пользователь";
+            this.columnHeaderUserName.Width = 150;
             // 
             // columnHeaderDate
             // 
-            columnHeaderDate.Text = "Дата";
-            columnHeaderDate.Width = 120;
+            this.columnHeaderDate.Text = "Дата";
+            this.columnHeaderDate.Width = 120;
             // 
             // columnHeaderPoints
             // 
-            columnHeaderPoints.Text = "Баллы";
-            columnHeaderPoints.Width = 80;
+            this.columnHeaderPoints.Text = "Баллы";
+            this.columnHeaderPoints.Width = 80;
             // 
             // columnHeaderPercentResult
             // 
-            columnHeaderPercentResult.Text = "%";
-            columnHeaderPercentResult.Width = 80;
+            this.columnHeaderPercentResult.Text = "%";
+            this.columnHeaderPercentResult.Width = 80;
             // 
             // columnHeaderTime
             // 
-            columnHeaderTime.Text = "Время";
-            columnHeaderTime.Width = 80;
+            this.columnHeaderTime.Text = "Время";
+            this.columnHeaderTime.Width = 80;
             // 
             // labelMessage
             // 
-            tableLayout.SetColumnSpan(labelMessage, 2);
-            labelMessage.ForeColor = Color.Blue;
-            labelMessage.Location = new Point(12, 486);
-            labelMessage.Name = "labelMessage";
-            labelMessage.Size = new Size(1026, 22);
-            labelMessage.TabIndex = 5;
-            labelMessage.TextAlign = ContentAlignment.MiddleCenter;
-            labelMessage.Visible = false;
+            this.tableLayout.SetColumnSpan(this.labelMessage, 2);
+            this.labelMessage.AutoSize = false;
+            this.labelMessage.Location = new System.Drawing.Point(13, 645);
+            this.labelMessage.Name = "labelMessage";
+            this.labelMessage.Size = new System.Drawing.Size(1174, 30);
+            this.labelMessage.TabIndex = 5;
+            this.labelMessage.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.labelMessage.ForeColor = System.Drawing.Color.Blue;
+            this.labelMessage.Visible = false;
             // 
             // StatisticsForm
             // 
-            AutoScaleDimensions = new SizeF(7F, 15F);
-            AutoScaleMode = AutoScaleMode.Font;
-            BackColor = Color.FromArgb(240, 240, 240);
-            ClientSize = new Size(1050, 525);
-            Controls.Add(tableLayout);
-            Margin = new Padding(3, 2, 3, 2);
-            Name = "StatisticsForm";
-            StartPosition = FormStartPosition.CenterParent;
-            Text = "Статистика и аналитика";
-            tableLayout.ResumeLayout(false);
-            panelTop.ResumeLayout(false);
-            panelTop.PerformLayout();
-            panelGeneral.ResumeLayout(false);
-            panelQuestions.ResumeLayout(false);
-            panelAttempts.ResumeLayout(false);
-            ResumeLayout(false);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.BackColor = System.Drawing.Color.FromArgb(240, 240, 240);
+            this.ClientSize = new System.Drawing.Size(1200, 700);
+            this.Controls.Add(this.tableLayout);
+            this.Name = "StatisticsForm";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
+            this.Text = "Статистика и аналитика";
+            this.tableLayout.ResumeLayout(false);
+            this.panelTop.ResumeLayout(false);
+            this.panelTop.PerformLayout();
+            this.panelGeneral.ResumeLayout(false);
+            this.panelCharts.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.chartScoreDistribution)).EndInit();
+            this.panelQuestions.ResumeLayout(false);
+            this.panelAttempts.ResumeLayout(false);
+            this.ResumeLayout(false);
         }
     }
 }
