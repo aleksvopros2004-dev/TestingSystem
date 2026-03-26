@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using System.Diagnostics;
 using TestingSystem.Core.Models;
+using TestingSystem.Data.Repositories;
 using TestingSystem.Services.Interfaces;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
@@ -158,24 +159,11 @@ public partial class TestManagementForm : Form
 
     private void BtnStartTest_Click(object? sender, EventArgs e)
     {
-        var actionStopwatch = Stopwatch.StartNew();
-
-        if (listViewTests.SelectedItems.Count == 0)
-        {
-            MessageBox.Show("Выберите тест для прохождения", "Информация",
-                MessageBoxButtons.OK, MessageBoxIcon.Information);
-            return;
-        }
+        if (listViewTests.SelectedItems.Count == 0) return;
 
         var testId = (int)listViewTests.SelectedItems[0].Tag;
         var test = _tests.FirstOrDefault(t => t.Id == testId);
-
-        if (test == null)
-        {
-            MessageBox.Show("Тест не найден", "Ошибка",
-                MessageBoxButtons.OK, MessageBoxIcon.Error);
-            return;
-        }
+        if (test == null) return;
 
         if (!test.IsActive)
         {
@@ -184,17 +172,12 @@ public partial class TestManagementForm : Form
             return;
         }
 
-        // Открываем форму прохождения теста
-        var testTakingForm = new TestTakingForm(_questionService, test, _currentUser);
-        testTakingForm.ShowDialog();
+        // Получаем IStatisticsRepository
+        var statisticsRepository = Program.ServiceProvider.GetRequiredService<IStatisticsRepository>();
 
-        actionStopwatch.Stop();
-        if (actionStopwatch.ElapsedMilliseconds > 3000)
-        {
-            MessageBox.Show($"Время отклика на действие 'Начать тест': {actionStopwatch.ElapsedMilliseconds} мс\n" +
-                           $"Требование: не более 3000 мс\n" +
-                           $"⚠ Превышено!", "Время отклика UI");
-        }
+        // Создаем форму с 4 параметрами
+        var testTakingForm = new TestTakingForm(_questionService, statisticsRepository, test, _currentUser);
+        testTakingForm.ShowDialog();
     }
 
     private void BtnCreateTest_Click(object? sender, EventArgs e)

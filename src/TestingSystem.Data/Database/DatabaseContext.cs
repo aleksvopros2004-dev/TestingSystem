@@ -33,6 +33,8 @@ namespace TestingSystem.Data.Database
             using var connection = CreateConnection();
             await connection.ExecuteAsync(sql);
 
+            await ExecuteMigrationScriptsAsync(connection);
+
         }
         private string GetEmbeddedSqlScript()
         {
@@ -48,6 +50,26 @@ namespace TestingSystem.Data.Database
                 return GetDefaultSqlScript();
             }
 
+            using var reader = new StreamReader(stream);
+            return reader.ReadToEnd();
+        }
+
+        private async Task ExecuteMigrationScriptsAsync(IDbConnection connection)
+        {
+            // Выполняем скрипт создания новых таблиц
+            var migrationSql = GetEmbeddedSqlScript("add_statistics_tables.sql");
+            if (!string.IsNullOrEmpty(migrationSql))
+            {
+                await connection.ExecuteAsync(migrationSql);
+            }
+        }
+
+        private string GetEmbeddedSqlScript(string scriptName)
+        {
+            var assembly = Assembly.GetExecutingAssembly();
+            var resourceName = $"TestingSystem.Data.Database.Scripts.{scriptName}";
+            using var stream = assembly.GetManifestResourceStream(resourceName);
+            if (stream == null) return string.Empty;
             using var reader = new StreamReader(stream);
             return reader.ReadToEnd();
         }
