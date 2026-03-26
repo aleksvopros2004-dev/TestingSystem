@@ -2,77 +2,125 @@
 using TestingSystem.Core.Models;
 using TestingSystem.Services.Services;
 
-namespace TestingSystem.WindowsForms;
-
-public partial class QuestionStatisticsForm : Form
+namespace TestingSystem.WindowsForms
 {
-    private readonly QuestionStatistics _question;
-    private readonly LemmatizationService _lemmatizationService;
-
-    public QuestionStatisticsForm(QuestionStatistics question, LemmatizationService lemmatizationService)
+    public partial class QuestionStatisticsForm : Form
     {
-        _question = question;
-        _lemmatizationService = lemmatizationService;
-        InitializeComponent();
-        LoadQuestionData();
-    }
+        private readonly QuestionStatistics _question;
+        private readonly LemmatizationService _lemmatizationService;
 
-    private void LoadQuestionData()
-    {
-        lblQuestionText.Text = _question.QuestionText;
-        lblType.Text = _question.QuestionType switch
+        public QuestionStatisticsForm(QuestionStatistics question, LemmatizationService lemmatizationService)
         {
-            "SingleChoice" => "Один вариант",
-            "MultipleChoice" => "Несколько вариантов",
-            "TextAnswer" => "Текстовый ответ",
-            _ => _question.QuestionType
-        };
-        lblStats.Text = $"Всего ответов: {_question.TotalAnswers} | " +
-                        $"Правильных: {_question.CorrectAnswers} | " +
-                        $"Правильных (%): {_question.CorrectPercentage:F1}% | " +
-                        $"Баллов: {_question.Points} | " +
-                        $"Средний балл: {_question.AveragePointsEarned:F1}";
+            _question = question;
+            _lemmatizationService = lemmatizationService;
+            InitializeComponent();
 
-        if (_question.OptionPopularity.Any())
-        {
-            LoadOptionPopularity();
+            // Подписываем событие после InitializeComponent
+            this.btnClose.Click += BtnClose_Click;
+
+            LoadQuestionData();
         }
-        else if (_question.CommonWords.Any())
+
+        private void LoadQuestionData()
         {
-            LoadWordFrequency();
+            // Текст вопроса
+            lblQuestionText.Text = _question.QuestionText;
+
+            // Тип вопроса
+            string questionTypeText = _question.QuestionType switch
+            {
+                "SingleChoice" => "Один вариант",
+                "MultipleChoice" => "Несколько вариантов",
+                "TextAnswer" => "Текстовый ответ",
+                _ => _question.QuestionType ?? "Неизвестный тип"
+            };
+            lblType.Text = questionTypeText;
+
+            // Статистика
+            lblStats.Text = $"Всего ответов: {_question.TotalAnswers} | " +
+                            $"Правильных: {_question.CorrectAnswers} | " +
+                            $"Правильных (%): {_question.CorrectPercentage:F1}% | " +
+                            $"Баллов: {_question.Points} | " +
+                            $"Средний балл: {_question.AveragePointsEarned:F1}";
+
+            // Определяем, какие данные показывать
+            if (_question.OptionPopularity != null && _question.OptionPopularity.Any())
+            {
+                LoadOptionPopularity();
+            }
+            else if (_question.CommonWords != null && _question.CommonWords.Any())
+            {
+                LoadWordFrequency();
+            }
+            else
+            {
+                lblNoData.Visible = true;
+                listViewOptions.Visible = false;
+                listViewWords.Visible = false;
+            }
         }
-        else
+
+        private void LoadOptionPopularity()
         {
-            lblNoData.Visible = true;
+            listViewOptions.Visible = true;
+            listViewWords.Visible = false;
+            lblNoData.Visible = false;
+            listViewOptions.Items.Clear();
+
+            var sortedOptions = _question.OptionPopularity
+                .OrderByDescending(o => o.SelectionCount)
+                .ToList();
+
+            foreach (var option in sortedOptions)
+            {
+                var item = new ListViewItem(option.OptionText);
+                item.SubItems.Add(option.SelectionCount.ToString());
+                item.SubItems.Add($"{option.SelectionPercentage:F1}%");
+                item.SubItems.Add(option.IsCorrect ? "✓ Да" : "✗ Нет");
+
+                if (option.IsCorrect)
+                {
+                    item.BackColor = Color.FromArgb(200, 255, 200);
+                }
+                else if (option.SelectionPercentage > 30)
+                {
+                    item.BackColor = Color.FromArgb(255, 200, 200);
+                }
+
+                listViewOptions.Items.Add(item);
+            }
+
+            // Автоматическая ширина колонок
+            foreach (ColumnHeader col in listViewOptions.Columns)
+            {
+                col.Width = -2;
+            }
         }
-    }
 
-    private void LoadOptionPopularity()
-    {
-        listViewOptions.Visible = true;
-        listViewOptions.Items.Clear();
-
-        foreach (var option in _question.OptionPopularity.OrderByDescending(o => o.SelectionCount))
+        private void LoadWordFrequency()
         {
-            var item = new ListViewItem(option.OptionText);
-            item.SubItems.Add(option.SelectionCount.ToString());
-            item.SubItems.Add($"{option.SelectionPercentage:F1}%");
-            item.SubItems.Add(option.IsCorrect ? "✓" : "");
-            item.BackColor = option.IsCorrect ? Color.FromArgb(200, 255, 200) : Color.White;
-            listViewOptions.Items.Add(item);
+            listViewWords.Visible = true;
+            listViewOptions.Visible = false;
+            lblNoData.Visible = false;
+            listViewWords.Items.Clear();
+
+            foreach (var word in _question.CommonWords.OrderByDescending(w => w.Count))
+            {
+                var item = new ListViewItem(word.NormalizedForm);
+                item.SubItems.Add(word.Count.ToString());
+                listViewWords.Items.Add(item);
+            }
+
+            // Автоматическая ширина колонок
+            foreach (ColumnHeader col in listViewWords.Columns)
+            {
+                col.Width = -2;
+            }
         }
-    }
 
-    private void LoadWordFrequency()
-    {
-        listViewWords.Visible = true;
-        listViewWords.Items.Clear();
-
-        foreach (var word in _question.CommonWords)
+        private void BtnClose_Click(object? sender, EventArgs e)
         {
-            var item = new ListViewItem(word.NormalizedForm);
-            item.SubItems.Add(word.Count.ToString());
-            listViewWords.Items.Add(item);
+            this.Close();
         }
     }
 }
