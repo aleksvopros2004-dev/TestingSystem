@@ -140,6 +140,9 @@ namespace TestingSystem.WindowsForms
                     services.AddTransient<QuestionManagementForm>();
                     services.AddTransient<ChangePasswordForm>();
                     services.AddTransient<EditUserForm>();
+                    services.AddTransient<StatisticsForm>();
+                    services.AddTransient<QuestionStatisticsForm>();
+                    services.AddTransient<TestTakingForm>();  
                 });
         }
     }

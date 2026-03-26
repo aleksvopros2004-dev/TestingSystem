@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics;
 using TestingSystem.Core.Models;
+using TestingSystem.Data.Repositories;
 using TestingSystem.Services.Interfaces;
 
 namespace TestingSystem.WindowsForms
@@ -16,10 +17,17 @@ namespace TestingSystem.WindowsForms
         private int _correctAnswers = 0;
         private int _totalPoints = 0;
         private int _earnedPoints = 0;
+        private readonly IStatisticsRepository _statisticsRepository;
+        private int _sessionId;
 
-        public TestTakingForm(IQuestionService questionService, Test test, User currentUser)
+        public TestTakingForm(
+     IQuestionService questionService,
+     IStatisticsRepository statisticsRepository,  
+     Test test,
+     User currentUser)
         {
             _questionService = questionService;
+            _statisticsRepository = statisticsRepository;  
             _test = test;
             _currentUser = currentUser;
 
@@ -29,16 +37,13 @@ namespace TestingSystem.WindowsForms
             lblTestTitle.Text = _test.Title;
             lblTestDescription.Text = _test.Description ?? "Нет описания";
 
-            // Настройка панели ответов
             pnlAnswers.AutoScroll = true;
             pnlAnswers.HorizontalScroll.Enabled = false;
             pnlAnswers.HorizontalScroll.Visible = false;
             pnlAnswers.AutoScrollMinSize = new Size(0, 0);
-
             panelQuestion.AutoScroll = true;
 
             _testStopwatch = Stopwatch.StartNew();
-
             LoadQuestionsAsync();
         }
 
@@ -287,24 +292,26 @@ namespace TestingSystem.WindowsForms
             }
         }
 
-        private void FinishTest()
+        private async void FinishTest()
         {
             _testStopwatch.Stop();
-
             var timeSpan = _testStopwatch.Elapsed;
             var timeString = $"Время: {timeSpan.Minutes} мин {timeSpan.Seconds} сек";
 
+            // Сначала рассчитываем результаты
+            CalculateResults();
+
+            // Сохраняем сессию с рассчитанными баллами
+            await SaveTestSession();
+
             if (_test.IsScored)
             {
-                CalculateResults();
-
                 var resultForm = new TestResultForm(_test.Title, _questions.Count, _earnedPoints, _totalPoints, timeString);
                 resultForm.ShowDialog();
             }
             else
             {
-                MessageBox.Show(
-                    $"Опрос \"{_test.Title}\" успешно пройден!\n\n" +
+                MessageBox.Show($"Опрос \"{_test.Title}\" успешно пройден!\n\n" +
                     $"Количество вопросов: {_questions.Count}\n" +
                     $"{timeString}\n\n" +
                     $"Спасибо за участие!",
@@ -318,38 +325,42 @@ namespace TestingSystem.WindowsForms
 
         private void CalculateResults()
         {
-            int totalPoints = 0;
-            int earnedPoints = 0;
+            _totalPoints = 0;
+            _earnedPoints = 0;
+
+            Console.WriteLine("=== НАЧАЛО РАСЧЕТА РЕЗУЛЬТАТОВ ===");
+            Console.WriteLine($"Всего вопросов: {_questions.Count}");
 
             foreach (var question in _questions)
             {
-                totalPoints += question.Points;
+                _totalPoints += question.Points;
+                Console.WriteLine($"Вопрос {question.Id}: тип={question.QuestionType}, баллов={question.Points}");
 
                 if (!_userAnswers.ContainsKey(question.Id))
                 {
-                    Console.WriteLine($"Вопрос {question.Id} пропущен");
+                    Console.WriteLine($"  -> Вопрос {question.Id} пропущен");
                     continue;
                 }
 
                 if (question.QuestionType == "SingleChoice")
                 {
-                    // Для одного варианта - сравниваем ID выбранного варианта с правильным
                     var selectedOptionId = _userAnswers[question.Id] as int?;
                     var correctOption = question.AnswerOptions?.FirstOrDefault(o => o.IsCorrect);
 
+                    Console.WriteLine($"  -> Выбран вариант: {selectedOptionId}, правильный: {correctOption?.Id}");
+
                     if (correctOption != null && selectedOptionId == correctOption.Id)
                     {
-                        earnedPoints += question.Points;
-                        Console.WriteLine($"Вопрос {question.Id} (SingleChoice) - правильно, +{question.Points} баллов");
+                        _earnedPoints += question.Points;
+                        Console.WriteLine($"  -> ПРАВИЛЬНО! +{question.Points} баллов");
                     }
                     else
                     {
-                        Console.WriteLine($"Вопрос {question.Id} (SingleChoice) - неправильно");
+                        Console.WriteLine($"  -> НЕПРАВИЛЬНО");
                     }
                 }
                 else if (question.QuestionType == "MultipleChoice")
                 {
-                    // Для нескольких вариантов - сравниваем множества
                     var selectedIds = _userAnswers[question.Id] as List<int> ?? new List<int>();
                     var correctIds = question.AnswerOptions?
                         .Where(o => o.IsCorrect)
@@ -357,38 +368,37 @@ namespace TestingSystem.WindowsForms
                         .OrderBy(id => id)
                         .ToList() ?? new List<int>();
 
-                    var selectedSorted = selectedIds.OrderBy(id => id).ToList();
+                    Console.WriteLine($"  -> Выбрано: [{string.Join(",", selectedIds)}], правильно: [{string.Join(",", correctIds)}]");
 
-                    if (selectedSorted.SequenceEqual(correctIds))
+                    if (selectedIds.OrderBy(id => id).SequenceEqual(correctIds))
                     {
-                        earnedPoints += question.Points;
-                        Console.WriteLine($"Вопрос {question.Id} (MultipleChoice) - правильно, +{question.Points} баллов");
+                        _earnedPoints += question.Points;
+                        Console.WriteLine($"  -> ПРАВИЛЬНО! +{question.Points} баллов");
                     }
                     else
                     {
-                        Console.WriteLine($"Вопрос {question.Id} (MultipleChoice) - неправильно");
+                        Console.WriteLine($"  -> НЕПРАВИЛЬНО");
                     }
                 }
                 else if (question.QuestionType == "TextAnswer")
                 {
-                    // Для текстового ответа - всегда даем максимум баллов, если ответ не пустой
-                    var userText = _userAnswers[question.Id]?.ToString() ?? "";
+                    var answerText = _userAnswers[question.Id]?.ToString() ?? "";
+                    Console.WriteLine($"  -> Ответ: \"{answerText}\"");
 
-                    if (!string.IsNullOrWhiteSpace(userText))
+                    if (!string.IsNullOrWhiteSpace(answerText))
                     {
-                        earnedPoints += question.Points; 
-                        Console.WriteLine($"Вопрос {question.Id} (TextAnswer) - засчитан, +{question.Points} баллов");
+                        _earnedPoints += question.Points;
+                        Console.WriteLine($"  -> ЗАСЧИТАНО! +{question.Points} баллов");
                     }
                     else
                     {
-                        Console.WriteLine($"Вопрос {question.Id} (TextAnswer) - пустой ответ, 0 баллов");
+                        Console.WriteLine($"  -> ПУСТОЙ ОТВЕТ");
                     }
                 }
             }
 
-            _earnedPoints = earnedPoints;
-            _totalPoints = totalPoints;
-
+            Console.WriteLine($"ИТОГО: набрано {_earnedPoints} из {_totalPoints} баллов");
+            Console.WriteLine("=== КОНЕЦ РАСЧЕТА ===");
         }
 
         private void BtnCancel_Click(object? sender, EventArgs e)
@@ -399,6 +409,86 @@ namespace TestingSystem.WindowsForms
             if (result == DialogResult.Yes)
             {
                 this.Close();
+            }
+        }
+
+        private async Task SaveTestSession()
+        {
+            Console.WriteLine($"Сохранение сессии: EarnedPoints={_earnedPoints}, TotalPoints={_totalPoints}");
+
+            var session = new TestSession
+            {
+                UserId = _currentUser.Id,
+                TestId = _test.Id,
+                StartTime = DateTime.UtcNow.Add(-_testStopwatch.Elapsed),
+                EndTime = DateTime.UtcNow,
+                Duration = _testStopwatch.Elapsed,
+                EarnedPoints = _earnedPoints,
+                TotalPoints = _totalPoints,
+                IsCompleted = true
+            };
+
+            await _statisticsRepository.SaveTestSessionAsync(session);
+            Console.WriteLine($"Сохранена сессия ID: {session.Id}");
+
+            // Сохраняем ответы
+            for (int i = 0; i < _questions.Count; i++)
+            {
+                var question = _questions[i];
+                var answer = new UserAnswer
+                {
+                    SessionId = session.Id,
+                    QuestionId = question.Id,
+                    IsCorrect = false,
+                    PointsEarned = 0
+                };
+
+                if (_userAnswers.ContainsKey(question.Id))
+                {
+                    if (question.QuestionType == "SingleChoice")
+                    {
+                        var selectedOptionId = _userAnswers[question.Id] as int?;
+                        var correctOption = question.AnswerOptions?.FirstOrDefault(o => o.IsCorrect);
+
+                        if (correctOption != null && selectedOptionId == correctOption.Id)
+                        {
+                            answer.IsCorrect = true;
+                            answer.PointsEarned = question.Points;
+                        }
+                        answer.SelectedOptionsJson = Newtonsoft.Json.JsonConvert.SerializeObject(new[] { selectedOptionId });
+                        Console.WriteLine($"  Сохранен ответ на вопрос {question.Id}: SingleChoice, правильный={answer.IsCorrect}");
+                    }
+                    else if (question.QuestionType == "MultipleChoice")
+                    {
+                        var selectedIds = _userAnswers[question.Id] as List<int> ?? new List<int>();
+                        var correctIds = question.AnswerOptions?
+                            .Where(o => o.IsCorrect)
+                            .Select(o => o.Id)
+                            .OrderBy(id => id)
+                            .ToList() ?? new List<int>();
+
+                        if (selectedIds.OrderBy(id => id).SequenceEqual(correctIds))
+                        {
+                            answer.IsCorrect = true;
+                            answer.PointsEarned = question.Points;
+                        }
+                        answer.SelectedOptionsJson = Newtonsoft.Json.JsonConvert.SerializeObject(selectedIds);
+                        Console.WriteLine($"  Сохранен ответ на вопрос {question.Id}: MultipleChoice, правильный={answer.IsCorrect}");
+                    }
+                    else if (question.QuestionType == "TextAnswer")
+                    {
+                        var answerText = _userAnswers[question.Id]?.ToString() ?? "";
+                        answer.AnswerText = answerText;
+                        if (!string.IsNullOrWhiteSpace(answerText))
+                        {
+                            answer.IsCorrect = true;
+                            answer.PointsEarned = question.Points;
+                        }
+                        Console.WriteLine($"  Сохранен ответ на вопрос {question.Id}: TextAnswer, текст=\"{answerText}\"");
+                    }
+                }
+
+                await _statisticsRepository.SaveUserAnswerAsync(answer);
             }
         }
     }

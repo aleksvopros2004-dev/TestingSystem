@@ -2,6 +2,7 @@
 using TestingSystem.Core.Models;
 using TestingSystem.Data.Repositories;
 using TestingSystem.Services.Interfaces;
+using TestingSystem.Services.Services;
 
 namespace TestingSystem.WindowsForms
 {
@@ -14,30 +15,29 @@ namespace TestingSystem.WindowsForms
             CurrentUser = user ?? throw new ArgumentNullException(nameof(user));
             InitializeComponent();
             SetupForm();
-            Console.WriteLine($"MainForm created for user: {CurrentUser.FullName}, Role: {CurrentUser.Role}");
         }
 
         private void SetupForm()
         {
             lblWelcome.Text = $"Добро пожаловать, {CurrentUser.FullName} ({CurrentUser.Role})!";
-			
+
+            // Показываем кнопки в зависимости от роли
             btnManageTests.Visible = true;
             btnManageUsers.Visible = CurrentUser.Role == UserRole.Admin;
-			if (CurrentUser?.Role == UserRole.User)
-			{
+            btnStatistics.Visible = CurrentUser.Role == UserRole.Admin;  // ← показываем статистику только админам
+
+            if (CurrentUser?.Role == UserRole.User)
+            {
                 btnManageTests.Text = "Просмотр тестов";
-			}
+            }
             else
             {
-				btnManageTests.Text = "Управление тестами";
-			}
-
-		}
+                btnManageTests.Text = "Управление тестами";
+            }
+        }
 
         private void BtnManageTests_Click(object? sender, EventArgs e)
         {
-            if (CurrentUser == null) return;
-
             var testService = Program.ServiceProvider.GetRequiredService<ITestService>();
             var questionService = Program.ServiceProvider.GetRequiredService<IQuestionService>();
             var testManagementForm = new TestManagementForm(testService, questionService, CurrentUser);
@@ -46,12 +46,22 @@ namespace TestingSystem.WindowsForms
 
         private void BtnManageUsers_Click(object? sender, EventArgs e)
         {
-            if (CurrentUser == null) return;
-
             var authService = Program.ServiceProvider.GetRequiredService<IAuthService>();
             var userRepository = Program.ServiceProvider.GetRequiredService<IUserRepository>();
             var userManagementForm = new UserManagementForm(authService, userRepository, CurrentUser);
             userManagementForm.ShowDialog();
+        }
+
+        // ← ДОБАВЛЯЕМ ОБРАБОТЧИК ДЛЯ СТАТИСТИКИ
+        private void BtnStatistics_Click(object? sender, EventArgs e)
+        {
+            var statisticsForm = new StatisticsForm(
+                Program.ServiceProvider.GetRequiredService<ITestService>(),
+                Program.ServiceProvider.GetRequiredService<IStatisticsRepository>(),
+                Program.ServiceProvider.GetRequiredService<ExcelExportService>(),
+                Program.ServiceProvider.GetRequiredService<LemmatizationService>(),
+                CurrentUser);
+            statisticsForm.ShowDialog();
         }
 
         private void BtnLogout_Click(object? sender, EventArgs e)

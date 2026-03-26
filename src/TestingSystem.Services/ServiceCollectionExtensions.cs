@@ -18,12 +18,15 @@ public static class ServiceCollectionExtensions
         services.AddScoped<ITestRepository, TestRepository>();
         services.AddScoped<IQuestionRepository, QuestionRepository>();
         services.AddScoped<IAnswerOptionRepository, AnswerOptionRepository>();
+        services.AddScoped<IStatisticsRepository, StatisticsRepository>();
 
         // Services
         services.AddScoped<IAuthService, AuthService>();
         services.AddScoped<ITestService, TestService>();
         services.AddScoped<IQuestionService, QuestionService>();
-        services.AddScoped<IImageService, ImageService>(); 
+        services.AddScoped<IImageService, ImageService>();
+        services.AddSingleton<ExcelExportService>();
+        services.AddSingleton<LemmatizationService>();
 
         return services;
     }
