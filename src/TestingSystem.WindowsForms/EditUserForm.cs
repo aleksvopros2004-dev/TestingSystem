@@ -23,7 +23,6 @@ namespace TestingSystem.WindowsForms
             txtLogin.Text = _user.Login;
             txtFullName.Text = _user.FullName;
 
-            // Загружаем роли в комбобокс
             cmbRole.Items.Clear();
             cmbRole.Items.Add(UserRole.Admin);
             cmbRole.Items.Add(UserRole.User);
@@ -47,7 +46,6 @@ namespace TestingSystem.WindowsForms
                 return;
             }
 
-            // Блокируем кнопку
             btnSave.Enabled = false;
             lblMessage.Text = "Сохранение...";
             lblMessage.ForeColor = Color.Blue;

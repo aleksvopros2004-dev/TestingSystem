@@ -8,15 +8,15 @@
 
             lblTestTitle.Text = testTitle;
             lblTotalQuestions.Text = totalQuestions.ToString();
-            lblEarnedPoints.Text = earnedPoints.ToString();
-            lblTotalPoints.Text = totalPoints.ToString();
+
+            lblPointsValue.Text = $"{earnedPoints} из {totalPoints}";
 
             double percentage = totalPoints > 0 ? (double)earnedPoints / totalPoints * 100 : 0;
             lblPercentage.Text = $"{percentage:F1}%";
 
             lblTimeSpent.Text = timeSpent;
 
-            // Оцениваем результат
+            // Определяем текстовую оценку
             string grade;
             Color gradeColor;
 
@@ -41,8 +41,11 @@
                 gradeColor = Color.FromArgb(244, 67, 54);
             }
 
-            lblGrade.Text = grade;
-            lblGrade.ForeColor = gradeColor;
+            lblGradeText.Text = grade;
+            lblGradeText.ForeColor = gradeColor;
+
+            lblGradeText.AutoSize = false;
+            lblGradeText.AutoEllipsis = false;
         }
 
         private void BtnOk_Click(object? sender, EventArgs e)

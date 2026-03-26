@@ -25,7 +25,13 @@ namespace TestingSystem.WindowsForms
 
             lblTitle.Text = $"Добавление вопроса к тесту: {test?.Title ?? "Неизвестный тест"}";
 
+            // Устанавливаем значение по умолчанию для баллов
             numPoints.Value = 1;
+
+            // Устанавливаем тип вопроса по умолчанию
+            cmbType.SelectedIndex = 0;
+
+            UpdateAnswerPanel();
 
             AddInitialAnswerOptions();
         }
@@ -33,8 +39,7 @@ namespace TestingSystem.WindowsForms
         private void AddInitialAnswerOptions()
         {
             // Добавляем начальные варианты ответов только если это не текстовый вопрос
-            var questionType = cmbType.SelectedIndex;
-            if (questionType != 2) 
+            if (cmbType.SelectedIndex != 2)
             {
                 AddAnswerOption();
                 AddAnswerOption();
@@ -68,13 +73,11 @@ namespace TestingSystem.WindowsForms
             UpdateOptionsCounter();
         }
 
-        /// <summary>
-        /// Сохраняет текущие изменения из текстовых полей в _answerOptions
-        /// </summary>
         private void SaveCurrentAnswerOptions()
         {
             var questionType = cmbType.SelectedIndex;
 
+            // Если текстовый ответ или нет панели, выходим
             if (questionType == 2 || pnlAnswers.Controls.Count == 0)
                 return;
 
@@ -85,14 +88,13 @@ namespace TestingSystem.WindowsForms
                 {
                     _answerOptions[i].OptionText = txtOption.Text;
 
-                    // Сохраняем состояние правильности
-                    if (questionType == 0) 
+                    if (questionType == 0)
                     {
                         var rdo = pnlAnswers.Controls.Find($"rdoCorrect_{i}", true).FirstOrDefault() as RadioButton;
                         if (rdo != null)
                             _answerOptions[i].IsCorrect = rdo.Checked;
                     }
-                    else if (questionType == 1) 
+                    else if (questionType == 1)
                     {
                         var chk = pnlAnswers.Controls.Find($"chkCorrect_{i}", true).FirstOrDefault() as CheckBox;
                         if (chk != null)
@@ -106,23 +108,23 @@ namespace TestingSystem.WindowsForms
         {
             pnlAnswers.Controls.Clear();
 
+            var questionType = cmbType.SelectedIndex;
+
+            if (questionType == 2)
+            {
+                pnlAnswers.Visible = false;
+                return;
+            }
+
+            pnlAnswers.Visible = true;
+
             for (int i = 0; i < _answerOptions.Count; i++)
             {
                 var option = _answerOptions[i];
                 var yPos = 10 + (i * 35);
 
-                var questionType = cmbType.SelectedIndex;
-
-                if (questionType == 2)
-                {
-                    pnlAnswers.Visible = false;
-                    return;
-                }
-
-                pnlAnswers.Visible = true;
-
                 Control correctControl;
-                if (questionType == 0) 
+                if (questionType == 0)
                 {
                     correctControl = new RadioButton
                     {
@@ -133,7 +135,7 @@ namespace TestingSystem.WindowsForms
                         Name = $"rdoCorrect_{i}"
                     };
                 }
-                else 
+                else
                 {
                     correctControl = new CheckBox
                     {
@@ -148,8 +150,8 @@ namespace TestingSystem.WindowsForms
                 var txtOption = new TextBox
                 {
                     Location = new Point(40, yPos),
-                    Size = new Size(520, 25),
-                    Text = option.OptionText, 
+                    Size = new Size(420, 25),
+                    Text = option.OptionText,
                     Tag = i,
                     Name = $"txtOption_{i}"
                 };
@@ -157,10 +159,10 @@ namespace TestingSystem.WindowsForms
                 var btnDelete = new Button
                 {
                     Text = "×",
-                    Location = new Point(570, yPos),
+                    Location = new Point(470, yPos),
                     Size = new Size(30, 25),
                     ForeColor = Color.Red,
-                    Font = new Font("Arial", 10, FontStyle.Bold),
+                    Font = new Font("Segoe UI", 10, FontStyle.Bold),
                     Tag = i,
                     Name = $"btnDelete_{i}"
                 };
@@ -168,7 +170,6 @@ namespace TestingSystem.WindowsForms
                 btnDelete.Click += (s, e) =>
                 {
                     SaveCurrentAnswerOptions();
-
                     if (btnDelete.Tag is int idx && idx < _answerOptions.Count)
                     {
                         _answerOptions.RemoveAt(idx);
@@ -205,22 +206,19 @@ namespace TestingSystem.WindowsForms
         {
             var questionType = cmbType.SelectedIndex;
 
-            if (questionType == 2) 
+            if (questionType == 2)
             {
                 pnlAnswers.Visible = false;
-                btnAddOption.Enabled = false;
                 btnAddOption.Visible = false;
-                lblOptionsCounter.Visible = false; 
-                lblPoints.Visible = true; 
+                lblOptionsCounter.Visible = false;
+                lblAnswers.Visible = false;
             }
             else
             {
                 pnlAnswers.Visible = true;
-                btnAddOption.Enabled = true;
                 btnAddOption.Visible = true;
-                lblOptionsCounter.Visible = true; 
-                lblPoints.Visible = true;
-
+                lblOptionsCounter.Visible = true;
+                lblAnswers.Visible = true;
                 LoadAnswerOptions();
             }
         }
@@ -284,6 +282,7 @@ namespace TestingSystem.WindowsForms
                 var sizeKB = _imageService.GetImageSizeInKB(_selectedImageData);
                 lblMessage.Text = $"Изображение загружено ({sizeKB} KB)";
                 lblMessage.ForeColor = Color.Green;
+                lblMessage.Visible = true;
             }
             catch (Exception ex)
             {
@@ -297,7 +296,7 @@ namespace TestingSystem.WindowsForms
             try
             {
                 using var ms = new MemoryStream(imageData);
-                pictureBox.Image = System.Drawing.Image.FromStream(ms);
+                pictureBox.Image = Image.FromStream(ms);
                 pictureBox.Visible = true;
             }
             catch
@@ -308,17 +307,19 @@ namespace TestingSystem.WindowsForms
 
         private async void BtnSave_Click(object? sender, EventArgs e)
         {
-            // Валидация
             if (string.IsNullOrWhiteSpace(txtQuestion.Text))
             {
                 lblMessage.Text = "Введите текст вопроса";
+                lblMessage.ForeColor = Color.Red;
+                lblMessage.Visible = true;
                 return;
             }
 
-            // Проверка баллов
             if (numPoints.Value < 1 || numPoints.Value > 10)
             {
                 lblMessage.Text = "Количество баллов должно быть от 1 до 10";
+                lblMessage.ForeColor = Color.Red;
+                lblMessage.Visible = true;
                 return;
             }
 
@@ -326,6 +327,8 @@ namespace TestingSystem.WindowsForms
             if (questions.Count() >= 50)
             {
                 lblMessage.Text = "В тесте уже максимальное количество вопросов (50)";
+                lblMessage.ForeColor = Color.Red;
+                lblMessage.Visible = true;
                 return;
             }
 
@@ -341,9 +344,13 @@ namespace TestingSystem.WindowsForms
 
             if (questionType != "TextAnswer")
             {
+                SaveCurrentAnswerOptions();
+
                 if (_answerOptions.Count > 10)
                 {
                     lblMessage.Text = "Максимальное количество вариантов ответов - 10";
+                    lblMessage.ForeColor = Color.Red;
+                    lblMessage.Visible = true;
                     return;
                 }
 
@@ -375,6 +382,8 @@ namespace TestingSystem.WindowsForms
                 if (answerOptions.Count == 0)
                 {
                     lblMessage.Text = "Добавьте хотя бы один вариант ответа";
+                    lblMessage.ForeColor = Color.Red;
+                    lblMessage.Visible = true;
                     return;
                 }
 
@@ -382,12 +391,16 @@ namespace TestingSystem.WindowsForms
                 if (correctCount == 0)
                 {
                     lblMessage.Text = "Укажите хотя бы один правильный вариант";
+                    lblMessage.ForeColor = Color.Red;
+                    lblMessage.Visible = true;
                     return;
                 }
 
                 if (questionType == "SingleChoice" && correctCount > 1)
                 {
                     lblMessage.Text = "Для вопроса с одним вариантом можно выбрать только один правильный ответ";
+                    lblMessage.ForeColor = Color.Red;
+                    lblMessage.Visible = true;
                     return;
                 }
             }
@@ -409,6 +422,7 @@ namespace TestingSystem.WindowsForms
             btnSave.Enabled = false;
             lblMessage.Text = "Создание вопроса...";
             lblMessage.ForeColor = Color.Blue;
+            lblMessage.Visible = true;
 
             try
             {
@@ -451,11 +465,6 @@ namespace TestingSystem.WindowsForms
         private void BtnAddOption_Click(object sender, EventArgs e)
         {
             AddAnswerOption();
-        }
-
-        private void lblImageInfo_Click(object sender, EventArgs e)
-        {
-
         }
     }
 }

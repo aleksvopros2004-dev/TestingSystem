@@ -36,11 +36,9 @@ public class ImageService : IImageService
             var newWidth = (int)(image.Width * ratio);
             var newHeight = (int)(image.Height * ratio);
 
-            // Если изображение меньше максимальных размеров, возвращаем оригинал
             if (newWidth >= image.Width && newHeight >= image.Height)
                 return imageData;
 
-            // Создаем новое изображение с нужными размерами
             using var newImage = new Bitmap(newWidth, newHeight);
             using var graphics = Graphics.FromImage(newImage);
 
@@ -63,7 +61,7 @@ public class ImageService : IImageService
         try
         {
             using var ms = new MemoryStream(imageData);
-            using var image = System.Drawing.Image.FromStream(ms); // Явно указываем пространство имен
+            using var image = System.Drawing.Image.FromStream(ms); 
             return true;
         }
         catch
@@ -77,7 +75,7 @@ public class ImageService : IImageService
         try
         {
             using var ms = new MemoryStream(imageData);
-            using var image = System.Drawing.Image.FromStream(ms); // Явно указываем пространство имен
+            using var image = System.Drawing.Image.FromStream(ms); 
 
             if (ImageFormat.Jpeg.Equals(image.RawFormat))
                 return "image/jpeg";
@@ -88,7 +86,7 @@ public class ImageService : IImageService
             else if (ImageFormat.Bmp.Equals(image.RawFormat))
                 return "image/bmp";
             else
-                return "image/jpeg"; // По умолчанию
+                return "image/jpeg"; 
         }
         catch
         {

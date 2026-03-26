@@ -34,18 +34,6 @@ public class TestRepository : ITestRepository
 
             var results = await connection.QueryAsync<dynamic>(sql, new { AuthorId = authorId });
 
-            // ОТЛАДКА: Сырые данные из БД
-            foreach (var result in results)
-            {
-                Console.WriteLine($"=== ОТЛАДКА: Сырые данные из БД ===");
-                Console.WriteLine($"ID: {result.id}");
-                Console.WriteLine($"Title: {result.title}");
-                Console.WriteLine($"is_scored: {result.is_scored}");
-                Console.WriteLine($"Тип поля is_scored: {result.is_scored.GetType()}");
-                Console.WriteLine($"Значение: {(result.is_scored == true ? "true" : "false")}");
-                Console.WriteLine("================================");
-            }
-
             var tests = results.Select(result => {
                 // ОТЛАБАКА: Значение is_scored перед созданием объекта
                 bool isScoredValue = result.is_scored == true;
@@ -66,23 +54,12 @@ public class TestRepository : ITestRepository
                     IsActive = result.is_active,
                     QuestionsOrderRandom = result.questions_order_random,
                     AnswerOptionsRandom = result.answer_options_random,
-                    IsScored = result.is_scored, // Просто присваиваем, без проверок
+                    IsScored = result.is_scored, 
                     TimeLimit = result.timelimitseconds != null && result.timelimitseconds > 0
                         ? TimeSpan.FromSeconds((double)result.timelimitseconds)
                         : null
                 };
             }).ToList();
-
-            // ОТЛАДКА: Проверяем созданные объекты
-            foreach (var test in tests)
-            {
-                Console.WriteLine($">>> Созданный объект Test <<<");
-                Console.WriteLine($"ID: {test.Id}");
-                Console.WriteLine($"Название: {test.Title}");
-                Console.WriteLine($"IsScored: {test.IsScored}");
-                Console.WriteLine($"Тип: {(test.IsScored ? "Тест с баллами" : "Опрос")}");
-                Console.WriteLine($"================================");
-            }
 
             // Загружаем вопросы для каждого теста
             foreach (var test in tests)
@@ -121,17 +98,6 @@ public class TestRepository : ITestRepository
 
             var results = await connection.QueryAsync<dynamic>(sql);
 
-            // ОТЛАДКА: Проверяем сырые данные
-            foreach (var result in results)
-            {
-                Console.WriteLine($"=== Активные тесты из БД ===");
-                Console.WriteLine($"ID: {result.id}");
-                Console.WriteLine($"Title: {result.title}");
-                Console.WriteLine($"is_scored: {result.is_scored}");
-                Console.WriteLine($"Значение: {(result.is_scored == true ? "true" : "false")}");
-                Console.WriteLine($"==============================");
-            }
-
             var tests = results.Select(result => new Test
             {
                 Id = result.id,
@@ -147,16 +113,6 @@ public class TestRepository : ITestRepository
                     ? TimeSpan.FromSeconds((double)result.timelimitseconds)
                     : null
             }).ToList();
-
-            // ОТЛАДКА: Проверяем созданные объекты
-            foreach (var test in tests)
-            {
-                Console.WriteLine($">>> Созданный объект активного теста <<<");
-                Console.WriteLine($"ID: {test.Id}");
-                Console.WriteLine($"Название: {test.Title}");
-                Console.WriteLine($"IsScored: {test.IsScored}");
-                Console.WriteLine($"======================================");
-            }
 
             // Загружаем вопросы для каждого теста
             foreach (var test in tests)
@@ -186,13 +142,6 @@ public class TestRepository : ITestRepository
 
         if (test == null) return null;
 
-        // ОТЛАДКА: Проверяем загруженный тест
-        Console.WriteLine($"=== Загрузка теста по ID {id} ===");
-        Console.WriteLine($"ID: {test.Id}");
-        Console.WriteLine($"Название: {test.Title}");
-        Console.WriteLine($"IsScored: {test.IsScored}");
-        Console.WriteLine($"==================================");
-
         // Отдельно получаем вопросы
         const string questionsSql = "SELECT * FROM questions WHERE test_id = @TestId ORDER BY order_index";
         var questions = await connection.QueryAsync<Question>(questionsSql, new { TestId = id });
@@ -209,7 +158,6 @@ public class TestRepository : ITestRepository
         return test;
     }
 
-    // Остальные методы без изменений...
     public async Task<IEnumerable<Test>> GetAllTestsAsync()
     {
         using var connection = _context.CreateConnection();

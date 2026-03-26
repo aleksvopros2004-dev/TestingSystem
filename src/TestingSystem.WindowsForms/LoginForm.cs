@@ -46,7 +46,6 @@ namespace TestingSystem.WindowsForms
                 return;
             }
 
-            // Блокируем кнопку во время выполнения
             btnLogin.Enabled = false;
             lblMessage.Text = "Проверка...";
             lblMessage.ForeColor = Color.Blue;
@@ -62,10 +61,8 @@ namespace TestingSystem.WindowsForms
                     lblMessage.Text = "Успешный вход!";
                     lblMessage.ForeColor = Color.Green;
 
-                    // Задержка для отображения сообщения
                     await Task.Delay(500);
 
-                    // Открываем главную форму
                     OpenMainForm();
                 }
                 else

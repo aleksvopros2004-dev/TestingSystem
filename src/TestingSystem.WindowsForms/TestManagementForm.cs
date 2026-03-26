@@ -21,7 +21,6 @@ public partial class TestManagementForm : Form
 
         InitializeComponent();
 
-        // Замеряем время загрузки формы
         var loadStopwatch = Stopwatch.StartNew();
 
         if (_currentUser.Role == UserRole.User)
@@ -35,7 +34,7 @@ public partial class TestManagementForm : Form
 
             // Показываем кнопки для прохождения тестов
             btnStartTest.Visible = true;
-            btnStartTest.Enabled = false; // По умолчанию неактивна, пока не выбран тест
+            btnStartTest.Enabled = false; 
 
             // Добавляем обработчик выбора теста
             listViewTests.SelectedIndexChanged += ListViewTests_SelectedIndexChanged;
@@ -51,7 +50,6 @@ public partial class TestManagementForm : Form
             btnStartTest.Visible = false;
         }
 
-        // Загружаем тесты и замеряем время
         LoadTestsWithTiming();
 
         loadStopwatch.Stop();

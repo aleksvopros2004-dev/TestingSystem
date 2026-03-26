@@ -48,7 +48,7 @@ public partial class CreateTestForm : Form
                 IsActive = chkActive?.Checked ?? false,
                 QuestionsOrderRandom = chkRandomQuestions?.Checked ?? true,
                 AnswerOptionsRandom = chkRandomAnswers?.Checked ?? true,
-                IsScored = chkIsScored?.Checked ?? true 
+                IsScored = chkIsScored?.Checked ?? true
             };
 
             var (success, message, testId) = await _testService.CreateTestAsync(test);
@@ -85,5 +85,15 @@ public partial class CreateTestForm : Form
         var minutes = (int)(numMinutes?.Value ?? 0);
         if (hours == 0 && minutes == 0) return null;
         return new TimeSpan(hours, minutes, 0);
+    }
+
+    private void lblLimitsInfo_Click(object sender, EventArgs e)
+    {
+
+    }
+
+    private void lblMessage_Click(object sender, EventArgs e)
+    {
+
     }
 }
