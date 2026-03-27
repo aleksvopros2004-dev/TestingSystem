@@ -123,7 +123,6 @@ namespace TestingSystem.Data.Repositories
         {
             using var connection = _context.CreateConnection();
 
-            // Явный SQL с алиасами для правильного маппинга
             var questions = await connection.QueryAsync<dynamic>(@"
         SELECT 
             id,
@@ -141,7 +140,6 @@ namespace TestingSystem.Data.Repositories
 
             foreach (var q in questions)
             {
-                // Создаем статистику с явным заполнением из полей
                 var stats = new QuestionStatistics
                 {
                     QuestionId = q.id,
@@ -153,16 +151,18 @@ namespace TestingSystem.Data.Repositories
                     CorrectPercentage = 0,
                     AveragePointsEarned = 0,
                     OptionPopularity = new List<OptionPopularity>(),
-                    CommonWords = new List<WordFrequency>()
+                    CommonWords = new List<WordFrequency>(),
+                    UserAnswers = new List<UserTextAnswer>()  
                 };
 
-                // Получаем ответы пользователей на этот вопрос
+                // Получаем ответы пользователей
                 var answers = await connection.QueryAsync<dynamic>(@"
             SELECT 
                 ua.is_correct,
                 ua.points_earned,
                 ua.answer_text,
-                ua.selected_options_json
+                ua.selected_options_json,
+                ua.session_id
             FROM user_answers ua
             JOIN test_sessions ts ON ua.session_id = ts.id
             WHERE ua.question_id = @QuestionId 
@@ -179,10 +179,41 @@ namespace TestingSystem.Data.Repositories
                     stats.AveragePointsEarned = Math.Round(answersList.Average(a => (int)a.points_earned), 1);
                 }
 
-                // Для вопросов с вариантами ответов
-                if (stats.QuestionType != "TextAnswer")
+                // Для текстовых вопросов - собираем ответы пользователей
+                if (stats.QuestionType == "TextAnswer")
                 {
-                    // Получаем варианты ответов
+                    foreach (var answer in answersList)
+                    {
+                        if (answer.answer_text != null)
+                        {
+                            // Получаем имя пользователя
+                            var userName = await connection.QueryFirstOrDefaultAsync<string>(@"
+                        SELECT u.full_name 
+                        FROM users u
+                        WHERE u.id = (SELECT user_id FROM test_sessions WHERE id = @SessionId)",
+                                new { SessionId = answer.session_id });
+
+                            stats.UserAnswers.Add(new UserTextAnswer
+                            {
+                                UserName = userName ?? "Неизвестный",
+                                AnswerText = (string)answer.answer_text,
+                                AnswerDate = DateTime.UtcNow,
+                                PointsEarned = answer.points_earned
+                            });
+                        }
+                    }
+
+                    // Собираем все тексты для анализа частоты слов
+                    var allTexts = stats.UserAnswers.Select(a => a.AnswerText).ToList();
+                    if (allTexts.Any())
+                    {
+                        stats.CommonWords = _lemmatizationService.GetWordFrequencies(allTexts, 30);
+                    }
+                }
+
+                // Для вопросов с вариантами ответов
+                else
+                {
                     var options = await connection.QueryAsync<dynamic>(@"
                 SELECT 
                     id,
@@ -197,7 +228,6 @@ namespace TestingSystem.Data.Repositories
                     {
                         int selectionCount = 0;
 
-                        // Считаем, сколько раз выбран этот вариант
                         foreach (var answer in answersList)
                         {
                             if (answer.selected_options_json != null)
@@ -225,19 +255,6 @@ namespace TestingSystem.Data.Repositories
                                 ? Math.Round(selectionCount * 100.0 / stats.TotalAnswers, 1)
                                 : 0
                         });
-                    }
-                }
-                else
-                {
-                    // Для текстовых ответов
-                    var textAnswers = answersList
-                        .Where(a => a.answer_text != null)
-                        .Select(a => (string)a.answer_text)
-                        .ToList();
-
-                    if (textAnswers.Any())
-                    {
-                        stats.CommonWords = _lemmatizationService.GetWordFrequencies(textAnswers, 30);
                     }
                 }
 

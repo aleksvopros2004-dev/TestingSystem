@@ -29,6 +29,7 @@
         private System.Windows.Forms.Label lblNoData;
         private System.Windows.Forms.Panel panelBottom;
         private System.Windows.Forms.Button btnClose;
+        private System.Windows.Forms.Button btnViewAnswers;
 
         protected override void Dispose(bool disposing)
         {
@@ -262,6 +263,7 @@
             panelRight.Controls.Add(lblWordsTitle);
             panelRight.Controls.Add(listViewWords);
             panelRight.Controls.Add(lblNoData);
+            panelRight.Controls.Add(btnViewAnswers);
             panelRight.Dock = DockStyle.Fill;
             panelRight.Location = new Point(0, 0);
             panelRight.Margin = new Padding(3, 2, 3, 2);
@@ -269,6 +271,21 @@
             panelRight.Padding = new Padding(9, 8, 9, 8);
             panelRight.Size = new Size(800, 177);
             panelRight.TabIndex = 0;
+            //
+            // btnViewAnswers
+            //
+            btnViewAnswers = new Button();
+            btnViewAnswers.BackColor = Color.FromArgb(0, 120, 215);
+            btnViewAnswers.FlatAppearance.BorderSize = 0;
+            btnViewAnswers.FlatStyle = FlatStyle.Flat;
+            btnViewAnswers.ForeColor = Color.White;
+            btnViewAnswers.Location = new Point(620, 8);
+            btnViewAnswers.Size = new Size(150, 30);
+            btnViewAnswers.Text = "📋 Все ответы";
+            btnViewAnswers.UseVisualStyleBackColor = false;
+            btnViewAnswers.Visible = false;
+            btnViewAnswers.Click += BtnViewAnswers_Click;
+            panelRight.Controls.Add(btnViewAnswers);
             // 
             // lblWordsTitle
             // 

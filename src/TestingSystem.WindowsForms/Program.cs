@@ -142,7 +142,8 @@ namespace TestingSystem.WindowsForms
                     services.AddTransient<EditUserForm>();
                     services.AddTransient<StatisticsForm>();
                     services.AddTransient<QuestionStatisticsForm>();
-                    services.AddTransient<TestTakingForm>();  
+                    services.AddTransient<TestTakingForm>();
+                    services.AddTransient<TextAnswersViewForm>();
                 });
         }
     }
