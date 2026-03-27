@@ -46,6 +46,7 @@ namespace TestingSystem.Core.Models
 
         public List<OptionPopularity> OptionPopularity { get; set; } = new();
         public List<WordFrequency> CommonWords { get; set; } = new();
+        public List<UserTextAnswer> UserAnswers { get; set; } = new();
     }
 
     public class OptionPopularity
@@ -73,5 +74,13 @@ namespace TestingSystem.Core.Models
         public int TotalPoints { get; set; }
         public double Percentage { get; set; }
         public TimeSpan TimeSpent { get; set; }
+    }
+
+    public class UserTextAnswer
+    {
+        public string UserName { get; set; } = string.Empty;
+        public string AnswerText { get; set; } = string.Empty;
+        public DateTime AnswerDate { get; set; }
+        public int PointsEarned { get; set; }
     }
 }

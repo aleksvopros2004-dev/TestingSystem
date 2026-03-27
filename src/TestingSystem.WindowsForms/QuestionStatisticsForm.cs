@@ -66,6 +66,7 @@ namespace TestingSystem.WindowsForms
                 lblOptionsTitle.Visible = true;
                 listViewOptions.Visible = true;
                 lblNoData.Visible = false;
+                btnViewAnswers.Visible = false;  
             }
             else if (_question.CommonWords != null && _question.CommonWords.Any())
             {
@@ -75,6 +76,7 @@ namespace TestingSystem.WindowsForms
                 lblWordsTitle.Visible = true;
                 listViewWords.Visible = true;
                 lblNoData.Visible = false;
+                btnViewAnswers.Visible = true;  
             }
             else
             {
@@ -83,7 +85,7 @@ namespace TestingSystem.WindowsForms
                 lblWordsTitle.Visible = false;
                 listViewWords.Visible = false;
                 lblNoData.Visible = true;
-                lblNoData.Text = "Нет данных для анализа (возможно, нет ответов на этот вопрос)";
+                btnViewAnswers.Visible = false;
             }
         }
 
@@ -141,6 +143,20 @@ namespace TestingSystem.WindowsForms
         private void BtnClose_Click(object? sender, EventArgs e)
         {
             this.Close();
+        }
+
+        private void BtnViewAnswers_Click(object? sender, EventArgs e)
+        {
+            if (_question.UserAnswers != null && _question.UserAnswers.Any())
+            {
+                var viewForm = new TextAnswersViewForm(_question.UserAnswers, _question.QuestionText);
+                viewForm.ShowDialog();
+            }
+            else
+            {
+                MessageBox.Show("Нет текстовых ответов для этого вопроса", "Информация",
+                    MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
         }
     }
 }
