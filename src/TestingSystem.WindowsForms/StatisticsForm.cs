@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics;
 using System.Windows.Forms.DataVisualization.Charting;
+using TestingSystem.Core.Interfaces;
 using TestingSystem.Core.Models;
 using TestingSystem.Data.Repositories;
 using TestingSystem.Services.Interfaces;
@@ -12,7 +13,7 @@ namespace TestingSystem.WindowsForms
         private readonly ITestService _testService;
         private readonly IStatisticsRepository _statisticsRepository;
         private readonly ExcelExportService _exportService;
-        private readonly LemmatizationService _lemmatizationService;
+        private readonly ILemmatizationService _lemmatizationService; 
         private readonly User _currentUser;
         private TestStatistics? _currentStats;
         private List<Test> _tests = new();
@@ -21,7 +22,7 @@ namespace TestingSystem.WindowsForms
             ITestService testService,
             IStatisticsRepository statisticsRepository,
             ExcelExportService exportService,
-            LemmatizationService lemmatizationService,
+            ILemmatizationService lemmatizationService,  
             User currentUser)
         {
             _testService = testService;
@@ -33,7 +34,6 @@ namespace TestingSystem.WindowsForms
             InitializeComponent();
             LoadTests();
 
-            // Подписываем события
             this.comboBoxTests.SelectedIndexChanged += ComboBoxTests_SelectedIndexChanged;
             this.buttonRefresh.Click += ButtonRefresh_Click;
             this.buttonExportExcel.Click += ButtonExportExcel_Click;
@@ -170,7 +170,6 @@ namespace TestingSystem.WindowsForms
             {
                 foreach (var item in data)
                 {
-                    // Просто добавляем точки, не используя Label
                     series.Points.AddXY(item.Range, item.Value);
                 }
                 chartScoreDistribution.ChartAreas[0].AxisX.Title = "Результат";
@@ -320,6 +319,22 @@ namespace TestingSystem.WindowsForms
             var question = listViewQuestions.SelectedItems[0].Tag as QuestionStatistics;
             if (question != null)
             {
+                var msg = $"ID: {question.QuestionId}\n" +
+                          $"Текст: {question.QuestionText}\n" +
+                          $"Тип: {question.QuestionType}\n" +
+                          $"Баллов: {question.Points}\n" +
+                          $"Вариантов: {question.OptionPopularity?.Count ?? 0}\n";
+
+                if (question.OptionPopularity != null && question.OptionPopularity.Any())
+                {
+                    msg += "\nВарианты:\n";
+                    foreach (var opt in question.OptionPopularity)
+                    {
+                        msg += $"- {opt.OptionText} (прав={opt.IsCorrect}, выборов={opt.SelectionCount})\n";
+                    }
+                }
+
+
                 var detailsForm = new QuestionStatisticsForm(question, _lemmatizationService);
                 detailsForm.ShowDialog();
             }

@@ -1,6 +1,5 @@
 ﻿using Dapper;
 using System.Data;
-using System.Diagnostics;
 using TestingSystem.Core.Models;
 using TestingSystem.Data.Database;
 
@@ -17,7 +16,6 @@ public class QuestionRepository : IQuestionRepository
 
     public async Task<Question?> GetByIdAsync(int id)
     {
-        var stopwatch = Stopwatch.StartNew();
 
         try
         {
@@ -39,8 +37,6 @@ public class QuestionRepository : IQuestionRepository
 
             if (question == null)
             {
-                stopwatch.Stop();
-                Console.WriteLine($"Время выполнения GetByIdAsync (Question): {stopwatch.ElapsedMilliseconds} мс");
                 return null;
             }
 
@@ -49,15 +45,13 @@ public class QuestionRepository : IQuestionRepository
             var options = await connection.QueryAsync<AnswerOption>(optionsSql, new { QuestionId = id });
             question.AnswerOptions = options.ToList();
 
-            stopwatch.Stop();
-            Console.WriteLine($"Время выполнения GetByIdAsync (Question): {stopwatch.ElapsedMilliseconds} мс, баллы: {question.Points}");
+           
 
             return question;
         }
         catch
         {
-            stopwatch.Stop();
-            Console.WriteLine($"Ошибка GetByIdAsync (Question): {stopwatch.ElapsedMilliseconds} мс");
+            
             throw;
         }
     }

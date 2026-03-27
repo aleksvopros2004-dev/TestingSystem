@@ -4,7 +4,6 @@
     {
         private System.ComponentModel.IContainer components = null;
 
-        // Объявляем все контролы
         private System.Windows.Forms.TableLayoutPanel tableLayout;
         private System.Windows.Forms.Panel panelTop;
         private System.Windows.Forms.Label labelTestSelect;
