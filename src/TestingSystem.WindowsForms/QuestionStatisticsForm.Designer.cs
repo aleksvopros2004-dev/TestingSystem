@@ -88,7 +88,7 @@
             panelTop.Margin = new Padding(3, 2, 3, 2);
             panelTop.Name = "panelTop";
             panelTop.Padding = new Padding(13, 8, 13, 8);
-            panelTop.Size = new Size(788, 60);
+            panelTop.Size = new Size(800, 70);
             panelTop.TabIndex = 0;
             // 
             // lblQuestionTitle
@@ -119,18 +119,18 @@
             panelType.Controls.Add(lblTypeTitle);
             panelType.Controls.Add(lblType);
             panelType.Dock = DockStyle.Top;
-            panelType.Location = new Point(0, 60);
+            panelType.Location = new Point(0, 70);
             panelType.Margin = new Padding(3, 2, 3, 2);
             panelType.Name = "panelType";
             panelType.Padding = new Padding(13, 6, 13, 6);
-            panelType.Size = new Size(788, 34);
+            panelType.Size = new Size(800, 40);
             panelType.TabIndex = 1;
             // 
             // lblTypeTitle
             // 
             lblTypeTitle.AutoSize = true;
             lblTypeTitle.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            lblTypeTitle.Location = new Point(13, 8);
+            lblTypeTitle.Location = new Point(13, 10);
             lblTypeTitle.Name = "lblTypeTitle";
             lblTypeTitle.Size = new Size(31, 15);
             lblTypeTitle.TabIndex = 0;
@@ -140,7 +140,7 @@
             // 
             lblType.AutoSize = true;
             lblType.Font = new Font("Segoe UI", 9F);
-            lblType.Location = new Point(54, 8);
+            lblType.Location = new Point(54, 10);
             lblType.Name = "lblType";
             lblType.Size = new Size(76, 15);
             lblType.TabIndex = 1;
@@ -152,18 +152,18 @@
             panelStats.Controls.Add(lblStatsTitle);
             panelStats.Controls.Add(lblStats);
             panelStats.Dock = DockStyle.Top;
-            panelStats.Location = new Point(0, 94);
+            panelStats.Location = new Point(0, 110);
             panelStats.Margin = new Padding(3, 2, 3, 2);
             panelStats.Name = "panelStats";
             panelStats.Padding = new Padding(13, 6, 13, 6);
-            panelStats.Size = new Size(788, 41);
+            panelStats.Size = new Size(800, 50);
             panelStats.TabIndex = 2;
             // 
             // lblStatsTitle
             // 
             lblStatsTitle.AutoSize = true;
             lblStatsTitle.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            lblStatsTitle.Location = new Point(13, 8);
+            lblStatsTitle.Location = new Point(13, 12);
             lblStatsTitle.Name = "lblStatsTitle";
             lblStatsTitle.Size = new Size(73, 15);
             lblStatsTitle.TabIndex = 0;
@@ -173,7 +173,7 @@
             // 
             lblStats.AutoSize = true;
             lblStats.Font = new Font("Segoe UI", 9F);
-            lblStats.Location = new Point(91, 8);
+            lblStats.Location = new Point(91, 12);
             lblStats.Name = "lblStats";
             lblStats.Size = new Size(211, 15);
             lblStats.TabIndex = 1;
@@ -182,7 +182,7 @@
             // splitContainer
             // 
             splitContainer.Dock = DockStyle.Fill;
-            splitContainer.Location = new Point(0, 135);
+            splitContainer.Location = new Point(0, 160);
             splitContainer.Margin = new Padding(3, 2, 3, 2);
             splitContainer.Name = "splitContainer";
             splitContainer.Orientation = Orientation.Horizontal;
@@ -190,12 +190,13 @@
             // splitContainer.Panel1
             // 
             splitContainer.Panel1.Controls.Add(panelLeft);
-            splitContainer.Panel1MinSize = 250;
+            splitContainer.Panel1MinSize = 200;
             // 
             // splitContainer.Panel2
             // 
             splitContainer.Panel2.Controls.Add(panelRight);
-            splitContainer.Size = new Size(788, 315);
+            splitContainer.Panel2MinSize = 150;
+            splitContainer.Size = new Size(800, 430);
             splitContainer.SplitterDistance = 250;
             splitContainer.SplitterWidth = 3;
             splitContainer.TabIndex = 3;
@@ -209,7 +210,7 @@
             panelLeft.Margin = new Padding(3, 2, 3, 2);
             panelLeft.Name = "panelLeft";
             panelLeft.Padding = new Padding(9, 8, 9, 8);
-            panelLeft.Size = new Size(788, 250);
+            panelLeft.Size = new Size(800, 250);
             panelLeft.TabIndex = 0;
             // 
             // lblOptionsTitle
@@ -228,10 +229,10 @@
             listViewOptions.Columns.AddRange(new ColumnHeader[] { colOptionText, colCount, colPercent, colCorrect });
             listViewOptions.FullRowSelect = true;
             listViewOptions.GridLines = true;
-            listViewOptions.Location = new Point(9, 30);
+            listViewOptions.Location = new Point(9, 35);
             listViewOptions.Margin = new Padding(3, 2, 3, 2);
             listViewOptions.Name = "listViewOptions";
-            listViewOptions.Size = new Size(770, 213);
+            listViewOptions.Size = new Size(782, 205);
             listViewOptions.TabIndex = 1;
             listViewOptions.UseCompatibleStateImageBehavior = false;
             listViewOptions.View = View.Details;
@@ -266,7 +267,7 @@
             panelRight.Margin = new Padding(3, 2, 3, 2);
             panelRight.Name = "panelRight";
             panelRight.Padding = new Padding(9, 8, 9, 8);
-            panelRight.Size = new Size(788, 62);
+            panelRight.Size = new Size(800, 177);
             panelRight.TabIndex = 0;
             // 
             // lblWordsTitle
@@ -285,10 +286,10 @@
             listViewWords.Columns.AddRange(new ColumnHeader[] { colWord, colWordCount });
             listViewWords.FullRowSelect = true;
             listViewWords.GridLines = true;
-            listViewWords.Location = new Point(9, 30);
+            listViewWords.Location = new Point(9, 35);
             listViewWords.Margin = new Padding(3, 2, 3, 2);
             listViewWords.Name = "listViewWords";
-            listViewWords.Size = new Size(770, 26);
+            listViewWords.Size = new Size(782, 132);
             listViewWords.TabIndex = 1;
             listViewWords.UseCompatibleStateImageBehavior = false;
             listViewWords.View = View.Details;
@@ -309,7 +310,7 @@
             lblNoData.Anchor = AnchorStyles.None;
             lblNoData.AutoSize = true;
             lblNoData.ForeColor = Color.Gray;
-            lblNoData.Location = new Point(306, 10);
+            lblNoData.Location = new Point(311, 80);
             lblNoData.Name = "lblNoData";
             lblNoData.Size = new Size(140, 15);
             lblNoData.TabIndex = 2;
@@ -322,11 +323,11 @@
             panelBottom.BackColor = Color.FromArgb(240, 240, 240);
             panelBottom.Controls.Add(btnClose);
             panelBottom.Dock = DockStyle.Bottom;
-            panelBottom.Location = new Point(0, 450);
+            panelBottom.Location = new Point(0, 590);
             panelBottom.Margin = new Padding(3, 2, 3, 2);
             panelBottom.Name = "panelBottom";
             panelBottom.Padding = new Padding(9, 8, 9, 8);
-            panelBottom.Size = new Size(788, 45);
+            panelBottom.Size = new Size(800, 50);
             panelBottom.TabIndex = 4;
             // 
             // btnClose
@@ -336,7 +337,7 @@
             btnClose.FlatAppearance.BorderSize = 0;
             btnClose.FlatStyle = FlatStyle.Flat;
             btnClose.ForeColor = Color.White;
-            btnClose.Location = new Point(350, 9);
+            btnClose.Location = new Point(356, 12);
             btnClose.Margin = new Padding(3, 2, 3, 2);
             btnClose.Name = "btnClose";
             btnClose.Size = new Size(88, 26);
@@ -349,7 +350,7 @@
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.White;
-            ClientSize = new Size(788, 495);
+            ClientSize = new Size(800, 640);
             Controls.Add(splitContainer);
             Controls.Add(panelStats);
             Controls.Add(panelType);
@@ -358,7 +359,7 @@
             FormBorderStyle = FormBorderStyle.FixedDialog;
             Margin = new Padding(3, 2, 3, 2);
             MaximizeBox = false;
-            MinimumSize = new Size(702, 460);
+            MinimumSize = new Size(800, 640);
             Name = "QuestionStatisticsForm";
             StartPosition = FormStartPosition.CenterParent;
             Text = "Детальная статистика вопроса";

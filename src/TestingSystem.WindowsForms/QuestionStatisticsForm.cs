@@ -1,4 +1,4 @@
-﻿using TestingSystem.Core.Interfaces;  // ← добавляем using
+﻿using TestingSystem.Core.Interfaces; 
 using TestingSystem.Core.Models;
 
 namespace TestingSystem.WindowsForms
@@ -6,7 +6,7 @@ namespace TestingSystem.WindowsForms
     public partial class QuestionStatisticsForm : Form
     {
         private readonly QuestionStatistics _question;
-        private readonly ILemmatizationService _lemmatizationService;  // ← интерфейс
+        private readonly ILemmatizationService _lemmatizationService;  
 
         public QuestionStatisticsForm(QuestionStatistics question, ILemmatizationService lemmatizationService)
         {
@@ -14,22 +14,39 @@ namespace TestingSystem.WindowsForms
             _lemmatizationService = lemmatizationService;
 
             InitializeComponent();
+
             this.btnClose.Click += BtnClose_Click;
+
             LoadQuestionData();
         }
 
         private void LoadQuestionData()
         {
-            // Текст вопроса
-            lblQuestionText.Text = _question.QuestionText;
+            // Проверяем, что данные переданы
+            if (_question == null)
+            {
+                MessageBox.Show("Данные вопроса не переданы!", "Ошибка",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
 
-            // Тип вопроса
+            if (!string.IsNullOrEmpty(_question.QuestionText))
+            {
+                lblQuestionText.Text = _question.QuestionText;
+            }
+            else
+            {
+                lblQuestionText.Text = "(Текст вопроса отсутствует)";
+                MessageBox.Show($"Текст вопроса пуст! ID={_question.QuestionId}", "Предупреждение");
+            }
+
             string questionTypeText = _question.QuestionType switch
             {
                 "SingleChoice" => "Один вариант",
                 "MultipleChoice" => "Несколько вариантов",
                 "TextAnswer" => "Текстовый ответ",
-                _ => _question.QuestionType ?? "Неизвестный тип"
+                null => "Неизвестный тип",
+                _ => _question.QuestionType
             };
             lblType.Text = questionTypeText;
 
@@ -66,11 +83,13 @@ namespace TestingSystem.WindowsForms
                 lblWordsTitle.Visible = false;
                 listViewWords.Visible = false;
                 lblNoData.Visible = true;
+                lblNoData.Text = "Нет данных для анализа (возможно, нет ответов на этот вопрос)";
             }
         }
 
         private void LoadOptionPopularity()
         {
+
             listViewOptions.Items.Clear();
 
             var sortedOptions = _question.OptionPopularity
@@ -96,7 +115,6 @@ namespace TestingSystem.WindowsForms
                 listViewOptions.Items.Add(item);
             }
 
-            // Автоматическая ширина колонок
             foreach (ColumnHeader col in listViewOptions.Columns)
             {
                 col.Width = -2;
@@ -114,7 +132,6 @@ namespace TestingSystem.WindowsForms
                 listViewWords.Items.Add(item);
             }
 
-            // Автоматическая ширина колонок
             foreach (ColumnHeader col in listViewWords.Columns)
             {
                 col.Width = -2;

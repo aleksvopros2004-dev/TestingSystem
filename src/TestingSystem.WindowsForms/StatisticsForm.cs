@@ -13,7 +13,7 @@ namespace TestingSystem.WindowsForms
         private readonly ITestService _testService;
         private readonly IStatisticsRepository _statisticsRepository;
         private readonly ExcelExportService _exportService;
-        private readonly ILemmatizationService _lemmatizationService;  // ← интерфейс
+        private readonly ILemmatizationService _lemmatizationService; 
         private readonly User _currentUser;
         private TestStatistics? _currentStats;
         private List<Test> _tests = new();
@@ -22,7 +22,7 @@ namespace TestingSystem.WindowsForms
             ITestService testService,
             IStatisticsRepository statisticsRepository,
             ExcelExportService exportService,
-            ILemmatizationService lemmatizationService,  // ← интерфейс
+            ILemmatizationService lemmatizationService,  
             User currentUser)
         {
             _testService = testService;
@@ -170,7 +170,6 @@ namespace TestingSystem.WindowsForms
             {
                 foreach (var item in data)
                 {
-                    // Просто добавляем точки, не используя Label
                     series.Points.AddXY(item.Range, item.Value);
                 }
                 chartScoreDistribution.ChartAreas[0].AxisX.Title = "Результат";
@@ -320,12 +319,21 @@ namespace TestingSystem.WindowsForms
             var question = listViewQuestions.SelectedItems[0].Tag as QuestionStatistics;
             if (question != null)
             {
-                // Отладочный вывод
-                Console.WriteLine($"=== Выбран вопрос ===");
-                Console.WriteLine($"ID: {question.QuestionId}");
-                Console.WriteLine($"Текст: {question.QuestionText}");
-                Console.WriteLine($"Тип: {question.QuestionType}");
-                Console.WriteLine($"Вариантов: {question.OptionPopularity?.Count ?? 0}");
+                var msg = $"ID: {question.QuestionId}\n" +
+                          $"Текст: {question.QuestionText}\n" +
+                          $"Тип: {question.QuestionType}\n" +
+                          $"Баллов: {question.Points}\n" +
+                          $"Вариантов: {question.OptionPopularity?.Count ?? 0}\n";
+
+                if (question.OptionPopularity != null && question.OptionPopularity.Any())
+                {
+                    msg += "\nВарианты:\n";
+                    foreach (var opt in question.OptionPopularity)
+                    {
+                        msg += $"- {opt.OptionText} (прав={opt.IsCorrect}, выборов={opt.SelectionCount})\n";
+                    }
+                }
+
 
                 var detailsForm = new QuestionStatisticsForm(question, _lemmatizationService);
                 detailsForm.ShowDialog();

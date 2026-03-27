@@ -1,6 +1,6 @@
 ﻿using Dapper;
 using Newtonsoft.Json;
-using TestingSystem.Core.Interfaces;  // ← добавляем using
+using TestingSystem.Core.Interfaces;  
 using TestingSystem.Core.Models;
 using TestingSystem.Data.Database;
 
@@ -9,7 +9,7 @@ namespace TestingSystem.Data.Repositories
     public class StatisticsRepository : IStatisticsRepository
     {
         private readonly IDatabaseContext _context;
-        private readonly ILemmatizationService _lemmatizationService;  // ← используем интерфейс
+        private readonly ILemmatizationService _lemmatizationService;  
 
         public StatisticsRepository(IDatabaseContext context, ILemmatizationService lemmatizationService)
         {
@@ -33,7 +33,6 @@ namespace TestingSystem.Data.Repositories
             stats.TestId = test.Id;
             stats.TestTitle = test.Title;
 
-            // Получаем статистику по сессиям - ПРЯМОЙ ЗАПРОС без AVG
             var sessions = await connection.QueryAsync<dynamic>(@"
         SELECT 
             id,
@@ -103,14 +102,6 @@ namespace TestingSystem.Data.Repositories
             // Получаем последние попытки
             stats.RecentAttempts = (await GetUserAttemptsAsync(testId, 20)).ToList();
 
-            // Отладочный вывод
-            Console.WriteLine($"=== Статистика для теста {test.Title} ===");
-            Console.WriteLine($"Всего попыток: {stats.TotalAttempts}");
-            Console.WriteLine($"Средний балл: {stats.AverageScore}%");
-            Console.WriteLine($"Макс: {stats.MaxScore}%, Мин: {stats.MinScore}%");
-            Console.WriteLine($"0-20%: {stats.Score0_20}, 20-40%: {stats.Score20_40}, 40-60%: {stats.Score40_60}, 60-80%: {stats.Score60_80}, 80-100%: {stats.Score80_100}");
-            Console.WriteLine($"Вопросов со статистикой: {stats.QuestionStats.Count(q => q.TotalAnswers > 0)}");
-
             return stats;
         }
 
@@ -132,37 +123,51 @@ namespace TestingSystem.Data.Repositories
         {
             using var connection = _context.CreateConnection();
 
-            var questions = await connection.QueryAsync<Question>(@"
-                SELECT * FROM questions 
-                WHERE test_id = @TestId 
-                ORDER BY order_index",
+            // Явный SQL с алиасами для правильного маппинга
+            var questions = await connection.QueryAsync<dynamic>(@"
+        SELECT 
+            id,
+            question_text,
+            question_type,
+            points,
+            test_id,
+            order_index
+        FROM questions 
+        WHERE test_id = @TestId 
+        ORDER BY order_index",
                 new { TestId = testId });
 
             var questionStats = new List<QuestionStatistics>();
 
-            foreach (var question in questions)
+            foreach (var q in questions)
             {
+                // Создаем статистику с явным заполнением из полей
                 var stats = new QuestionStatistics
                 {
-                    QuestionId = question.Id,
-                    QuestionText = question.QuestionText,
-                    QuestionType = question.QuestionType,
-                    Points = question.Points,
+                    QuestionId = q.id,
+                    QuestionText = q.question_text ?? string.Empty,
+                    QuestionType = q.question_type ?? string.Empty,
+                    Points = q.points,
+                    TotalAnswers = 0,
+                    CorrectAnswers = 0,
+                    CorrectPercentage = 0,
+                    AveragePointsEarned = 0,
                     OptionPopularity = new List<OptionPopularity>(),
                     CommonWords = new List<WordFrequency>()
                 };
 
+                // Получаем ответы пользователей на этот вопрос
                 var answers = await connection.QueryAsync<dynamic>(@"
-                    SELECT 
-                        ua.is_correct,
-                        ua.points_earned,
-                        ua.answer_text,
-                        ua.selected_options_json
-                    FROM user_answers ua
-                    JOIN test_sessions ts ON ua.session_id = ts.id
-                    WHERE ua.question_id = @QuestionId 
-                      AND ts.is_completed = true",
-                    new { QuestionId = question.Id });
+            SELECT 
+                ua.is_correct,
+                ua.points_earned,
+                ua.answer_text,
+                ua.selected_options_json
+            FROM user_answers ua
+            JOIN test_sessions ts ON ua.session_id = ts.id
+            WHERE ua.question_id = @QuestionId 
+              AND ts.is_completed = true",
+                    new { QuestionId = q.id });
 
                 var answersList = answers.ToList();
                 stats.TotalAnswers = answersList.Count;
@@ -175,18 +180,24 @@ namespace TestingSystem.Data.Repositories
                 }
 
                 // Для вопросов с вариантами ответов
-                if (question.QuestionType != "TextAnswer")
+                if (stats.QuestionType != "TextAnswer")
                 {
-                    var options = await connection.QueryAsync<AnswerOption>(@"
-                        SELECT * FROM answer_options 
-                        WHERE question_id = @QuestionId 
-                        ORDER BY id",
-                        new { QuestionId = question.Id });
+                    // Получаем варианты ответов
+                    var options = await connection.QueryAsync<dynamic>(@"
+                SELECT 
+                    id,
+                    option_text,
+                    is_correct
+                FROM answer_options 
+                WHERE question_id = @QuestionId 
+                ORDER BY id",
+                        new { QuestionId = q.id });
 
                     foreach (var option in options)
                     {
                         int selectionCount = 0;
 
+                        // Считаем, сколько раз выбран этот вариант
                         foreach (var answer in answersList)
                         {
                             if (answer.selected_options_json != null)
@@ -195,7 +206,7 @@ namespace TestingSystem.Data.Repositories
                                 {
                                     var selectedIds = JsonConvert
                                         .DeserializeObject<List<int>>(answer.selected_options_json);
-                                    if (selectedIds != null && selectedIds.Contains(option.Id))
+                                    if (selectedIds != null && selectedIds.Contains(option.id))
                                     {
                                         selectionCount++;
                                     }
@@ -206,9 +217,9 @@ namespace TestingSystem.Data.Repositories
 
                         stats.OptionPopularity.Add(new OptionPopularity
                         {
-                            OptionId = option.Id,
-                            OptionText = option.OptionText,
-                            IsCorrect = option.IsCorrect,
+                            OptionId = option.id,
+                            OptionText = option.option_text ?? string.Empty,
+                            IsCorrect = option.is_correct,
                             SelectionCount = selectionCount,
                             SelectionPercentage = stats.TotalAnswers > 0
                                 ? Math.Round(selectionCount * 100.0 / stats.TotalAnswers, 1)
@@ -218,7 +229,7 @@ namespace TestingSystem.Data.Repositories
                 }
                 else
                 {
-                    // Для текстовых ответов - используем интерфейс
+                    // Для текстовых ответов
                     var textAnswers = answersList
                         .Where(a => a.answer_text != null)
                         .Select(a => (string)a.answer_text)
@@ -309,7 +320,6 @@ namespace TestingSystem.Data.Repositories
 
             foreach (var attempt in attempts)
             {
-                // Проверка на деление на ноль
                 if (attempt.TotalPoints > 0)
                 {
                     attempt.Percentage = Math.Round(attempt.EarnedPoints * 100.0 / attempt.TotalPoints, 1);
