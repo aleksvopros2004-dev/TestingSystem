@@ -1,105 +1,148 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <ClassDiagram MajorVersion="1" MinorVersion="1">
-  <Class Name="TestingSystem.WindowsForms.ChangePasswordForm">
-    <Position X="0.5" Y="2" Width="2" />
+  <Class Name="TestingSystem.WindowsForms.ChangePasswordForm" Collapsed="true">
+    <Position X="0.5" Y="6.5" Width="2" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAACAAAAAAAACAAAAiACAAAIAAAAAEAAAAAAA=</HashCode>
+      <HashCode>AAAAAAACACAAAAEAAQCIAAEiAIAgAIAAQAAEAEEAAAA=</HashCode>
       <FileName>ChangePasswordForm.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="TestingSystem.WindowsForms.CreateQuestionForm">
-    <Position X="2.75" Y="0.75" Width="3" />
+  <Class Name="TestingSystem.WindowsForms.CreateQuestionForm" Collapsed="true">
+    <Position X="4" Y="11.5" Width="2.5" />
     <TypeIdentifier>
-      <HashCode>EgAwAAAAACAAAQAAAQCAAAACACAAAAAABAAAAAAkAAA=</HashCode>
+      <HashCode>AgAQAAAABCAEEQEAgRGgIAECBKSiACgADAAlAMqFQCE=</HashCode>
       <FileName>CreateQuestionForm.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="TestingSystem.WindowsForms.CreateTestForm">
-    <Position X="6.25" Y="1.5" Width="1.75" />
+  <Class Name="TestingSystem.WindowsForms.CreateTestForm" Collapsed="true">
+    <Position X="4" Y="6.5" Width="2" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAACAAAAAAAECAIAACACAAAAAAQAAABAAAgAA=</HashCode>
+      <HashCode>BAAAIIAACCAAAgEAAEGQIE0CBIQwAIAAxhAABEABhIA=</HashCode>
       <FileName>CreateTestForm.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="TestingSystem.WindowsForms.CreateUserForm">
-    <Position X="8.5" Y="1" Width="1.75" />
+  <Class Name="TestingSystem.WindowsForms.CreateUserForm" Collapsed="true">
+    <Position X="4" Y="10.5" Width="2" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAACAAAAgAAACAAAAiBCAAAAAAQAAAAAAAAAA=</HashCode>
+      <HashCode>AAgQAAECACAgAEkAQAGMAAEiBIAkAAAAQgAgAEABAAA=</HashCode>
       <FileName>CreateUserForm.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="TestingSystem.WindowsForms.EditQuestionForm">
-    <Position X="13.5" Y="1.25" Width="1.75" />
+  <Class Name="TestingSystem.WindowsForms.EditQuestionForm" Collapsed="true">
+    <Position X="0.5" Y="7.5" Width="2.5" />
     <TypeIdentifier>
-      <HashCode>AgAwAAAAACAAAQBAAACAAAACACAIAAAAAAAAQAAEAAA=</HashCode>
+      <HashCode>AgAQAAAABCQEEQFAgFGgIgECBKQqACgADAAFQEoFUCE=</HashCode>
       <FileName>EditQuestionForm.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="TestingSystem.WindowsForms.EditTestForm">
-    <Position X="0.75" Y="6.5" Width="1.75" />
+  <Class Name="TestingSystem.WindowsForms.EditTestForm" Collapsed="true">
+    <Position X="0.5" Y="11.5" Width="2" />
     <TypeIdentifier>
-      <HashCode>AAgQAAAAACAAABAAAACAAAACACAAAAAABAAABAAAgAA=</HashCode>
+      <HashCode>AAgQIIAACCAAABEAAACQAE0CBIQwAIAAhhAABEIBgIA=</HashCode>
       <FileName>EditTestForm.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="TestingSystem.WindowsForms.EditUserForm">
-    <Position X="5.25" Y="6" Width="1.75" />
+  <Class Name="TestingSystem.WindowsForms.EditUserForm" Collapsed="true">
+    <Position X="4" Y="12.5" Width="1.75" />
     <TypeIdentifier>
-      <HashCode>AAAQAAAgAKAAAAAAQACAAAACACAAAIAAAAAAAAAAAAA=</HashCode>
+      <HashCode>AAAQAAEgAKAgAEEAQACAAAECAIQgAIAAAAAgAEIBAAA=</HashCode>
       <FileName>EditUserForm.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="TestingSystem.WindowsForms.LoginForm">
-    <Position X="11" Y="0.75" Width="1.75" />
+  <Class Name="TestingSystem.WindowsForms.LoginForm" Collapsed="true">
+    <Position X="4" Y="5.5" Width="1.75" />
     <TypeIdentifier>
-      <HashCode>AAgAAAQAAKAAAAAAAACAAAAiQCAAAAACAAAAAAAACAA=</HashCode>
+      <HashCode>AAgAAAUAAKAAAEAAAACAAAkiQKAgAAACAgAQAABBCEA=</HashCode>
       <FileName>LoginForm.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="TestingSystem.WindowsForms.MainForm">
-    <Position X="14" Y="7.25" Width="2" />
+  <Class Name="TestingSystem.WindowsForms.MainForm" Collapsed="true">
+    <Position X="0.5" Y="4.5" Width="2" />
     <TypeIdentifier>
-      <HashCode>EAAAAAAEAKAAAAAAAACAAAACAAAAAAAAAAAAAAACAAA=</HashCode>
+      <HashCode>EAAAgIAEAKAAAAAAAACBAAICAAAhAIAAAAAAACACAAA=</HashCode>
       <FileName>MainForm.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="TestingSystem.WindowsForms.Program">
-    <Position X="16" Y="0.5" Width="2.75" />
+  <Class Name="TestingSystem.WindowsForms.QuestionManagementForm" Collapsed="true">
+    <Position X="0.5" Y="5.5" Width="2.25" />
     <TypeIdentifier>
-      <HashCode>AAAAAIAAAAAEAAAACAAAAAAAAAAAAAAAAQAABAABAAA=</HashCode>
-      <FileName>Program.cs</FileName>
-    </TypeIdentifier>
-  </Class>
-  <Class Name="TestingSystem.WindowsForms.QuestionManagementForm">
-    <Position X="7.75" Y="5.5" Width="2.25" />
-    <TypeIdentifier>
-      <HashCode>AACAAAEECCAAAAEAAACIAAADCDAAAAAABAAAAAAEAAA=</HashCode>
+      <HashCode>AACggAEAACgEAAEACkCAAAHiCxBggAAABAAIGAAkAAQ=</HashCode>
       <FileName>QuestionManagementForm.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="TestingSystem.WindowsForms.RegisterForm">
-    <Position X="3" Y="7.25" Width="1.75" />
+  <Class Name="TestingSystem.WindowsForms.QuestionStatisticsForm" Collapsed="true">
+    <Position X="0.5" Y="9.5" Width="2" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAACAAAAAAAACAAAAiACAAAAEAAAAAAAAACAA=</HashCode>
+      <HashCode>AEAEBAAAhCAAAABACQGBDBAmBhAAAQCBIsIQwAABAIg=</HashCode>
+      <FileName>QuestionStatisticsForm.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TestingSystem.WindowsForms.RegisterForm" Collapsed="true">
+    <Position X="4" Y="7.5" Width="1.75" />
+    <InheritanceLine Type="System.Windows.Forms.Form" FixedToPoint="true">
+      <Path>
+        <Point X="3.5" Y="3.941" />
+        <Point X="3.5" Y="7.346" />
+        <Point X="4" Y="7.346" />
+        <Point X="4" Y="7.5" />
+      </Path>
+    </InheritanceLine>
+    <TypeIdentifier>
+      <HashCode>AAgAAAECACAgAEEAAACKAAEiAIAgAAEAAgAgAFABCEA=</HashCode>
       <FileName>RegisterForm.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="TestingSystem.WindowsForms.TestManagementForm">
-    <Position X="10.75" Y="5.75" Width="2.25" />
+  <Class Name="TestingSystem.WindowsForms.StatisticsForm" Collapsed="true">
+    <Position X="4" Y="8.5" Width="3" />
     <TypeIdentifier>
-      <HashCode>ACAAAAEEACAAAAEAAECAAQADACAAAAAABAAAAAAEiAA=</HashCode>
+      <HashCode>KGQAVATEgKAGVAFAJECFAgASABF0iEgARAKINEAAwII=</HashCode>
+      <FileName>StatisticsForm.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TestingSystem.WindowsForms.TestManagementForm" Collapsed="true">
+    <Position X="0.5" Y="8.5" Width="2.75" />
+    <TypeIdentifier>
+      <HashCode>AiAggAEFACAAAAEQAmCAARHyCwAgAAAgBEAAAAQEgAQ=</HashCode>
       <FileName>TestManagementForm.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="TestingSystem.WindowsForms.UserManagementForm">
-    <Position X="16.5" Y="3.25" Width="2.5" />
+  <Class Name="TestingSystem.WindowsForms.TestResultForm" Collapsed="true">
+    <Position X="4" Y="9.5" Width="1.75" />
     <TypeIdentifier>
-      <HashCode>AmAAAAkgACEAAAgAAACAAAAiACAAAIAAAAAAAAAAAAA=</HashCode>
+      <HashCode>CAAAAhAAkCCAABCAACCAAAASAIAghAAAAAaABAABAAg=</HashCode>
+      <FileName>TestResultForm.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TestingSystem.WindowsForms.TestTakingForm" Collapsed="true">
+    <Position X="0.5" Y="10.5" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AACIgBAAACEAABGAAECIIAEGComgEQIAFAIBANAkAGg=</HashCode>
+      <FileName>TestTakingForm.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TestingSystem.WindowsForms.TextAnswersViewForm" Collapsed="true">
+    <Position X="0.5" Y="12.5" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AEAAAAACADAAkAAABACIACACAAAAAAEAAIIAAEQCAAg=</HashCode>
+      <FileName>TextAnswersViewForm.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TestingSystem.WindowsForms.UserManagementForm" Collapsed="true">
+    <Position X="4" Y="4.5" Width="2.75" />
+    <TypeIdentifier>
+      <HashCode>AmAggIEgACEAAAgAAgCAAAHyCwAgAIgAAUAAAAAgAAA=</HashCode>
       <FileName>UserManagementForm.cs</FileName>
     </TypeIdentifier>
   </Class>
+  <Class Name="TestingSystem.WindowsForms.Program" Collapsed="true">
+    <Position X="0.5" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQAAIAgAAAAACAAAAIAAAAAAAAAAAAIQQAADAAAAAA=</HashCode>
+      <FileName>Program.cs</FileName>
+    </TypeIdentifier>
+  </Class>
   <Class Name="System.Windows.Forms.Form" Collapsed="true">
-    <Position X="0.75" Y="0.75" Width="1.5" />
+    <Position X="2.75" Y="3.25" Width="1.5" />
     <NestedTypes>
       <Class Name="System.Windows.Forms.Form.ControlCollection" Collapsed="true">
         <TypeIdentifier />
