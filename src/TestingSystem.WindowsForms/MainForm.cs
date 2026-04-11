@@ -9,7 +9,7 @@ namespace TestingSystem.WindowsForms
 {
     public partial class MainForm : Form
     {
-        public User CurrentUser { get; }
+        public User CurrentUser { get; set; }
 
         public MainForm(User user)
         {
@@ -25,7 +25,7 @@ namespace TestingSystem.WindowsForms
             // Показываем кнопки в зависимости от роли
             btnManageTests.Visible = true;
             btnManageUsers.Visible = CurrentUser.Role == UserRole.Admin;
-            btnStatistics.Visible = CurrentUser.Role == UserRole.Admin;  // ← показываем статистику только админам
+            btnStatistics.Visible = CurrentUser.Role == UserRole.Admin;  
 
             if (CurrentUser?.Role == UserRole.User)
             {
@@ -53,14 +53,13 @@ namespace TestingSystem.WindowsForms
             userManagementForm.ShowDialog();
         }
 
-        // ← ДОБАВЛЯЕМ ОБРАБОТЧИК ДЛЯ СТАТИСТИКИ
         private void BtnStatistics_Click(object? sender, EventArgs e)
         {
             var statisticsForm = new StatisticsForm(
                 Program.ServiceProvider.GetRequiredService<ITestService>(),
                 Program.ServiceProvider.GetRequiredService<IStatisticsRepository>(),
                 Program.ServiceProvider.GetRequiredService<ExcelExportService>(),
-                Program.ServiceProvider.GetRequiredService<ILemmatizationService>(),  // ← интерфейс
+                Program.ServiceProvider.GetRequiredService<ILemmatizationService>(),  
                 CurrentUser);
             statisticsForm.ShowDialog();
         }
