@@ -29,6 +29,8 @@
             lblPointsInfo = new Label();
             lblOrder = new Label();
             txtOrder = new TextBox();
+            lblRecommendation = new Label();
+            txtRecommendation = new TextBox();
             lblImage = new Label();
             btnLoadImage = new Button();
             btnRemoveImage = new Button();
@@ -49,9 +51,9 @@
             // tableLayout
             // 
             tableLayout.ColumnCount = 3;
-            tableLayout.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 120F));
+            tableLayout.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 130F));
             tableLayout.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
-            tableLayout.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 120F));
+            tableLayout.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 140F));
             tableLayout.Controls.Add(lblTitle, 0, 0);
             tableLayout.Controls.Add(lblType, 0, 1);
             tableLayout.Controls.Add(txtTypeDisplay, 1, 1);
@@ -63,30 +65,33 @@
             tableLayout.Controls.Add(lblPointsInfo, 2, 3);
             tableLayout.Controls.Add(lblOrder, 0, 4);
             tableLayout.Controls.Add(txtOrder, 1, 4);
-            tableLayout.Controls.Add(lblImage, 0, 5);
-            tableLayout.Controls.Add(btnLoadImage, 1, 5);
-            tableLayout.Controls.Add(btnRemoveImage, 2, 5);
-            tableLayout.Controls.Add(pictureBox, 1, 6);
-            tableLayout.Controls.Add(pnlAnswers, 1, 7);
-            tableLayout.Controls.Add(lblAnswers, 0, 7);
-            tableLayout.Controls.Add(buttonPanel, 0, 8);
-            tableLayout.Controls.Add(lblMessage, 0, 9);
+            tableLayout.Controls.Add(lblRecommendation, 0, 5);
+            tableLayout.Controls.Add(txtRecommendation, 1, 5);
+            tableLayout.Controls.Add(lblImage, 0, 6);
+            tableLayout.Controls.Add(btnLoadImage, 1, 6);
+            tableLayout.Controls.Add(btnRemoveImage, 2, 6);
+            tableLayout.Controls.Add(pictureBox, 1, 7);
+            tableLayout.Controls.Add(pnlAnswers, 1, 8);
+            tableLayout.Controls.Add(lblAnswers, 0, 8);
+            tableLayout.Controls.Add(buttonPanel, 0, 9);
+            tableLayout.Controls.Add(lblMessage, 0, 10);
             tableLayout.Dock = DockStyle.Fill;
             tableLayout.Location = new Point(0, 0);
             tableLayout.Name = "tableLayout";
             tableLayout.Padding = new Padding(20);
-            tableLayout.RowCount = 10;
+            tableLayout.RowCount = 11;
             tableLayout.RowStyles.Add(new RowStyle(SizeType.Absolute, 50F));
             tableLayout.RowStyles.Add(new RowStyle(SizeType.Absolute, 40F));
             tableLayout.RowStyles.Add(new RowStyle(SizeType.Absolute, 100F));
             tableLayout.RowStyles.Add(new RowStyle(SizeType.Absolute, 40F));
             tableLayout.RowStyles.Add(new RowStyle(SizeType.Absolute, 40F));
+            tableLayout.RowStyles.Add(new RowStyle(SizeType.Absolute, 90F));
             tableLayout.RowStyles.Add(new RowStyle(SizeType.Absolute, 40F));
             tableLayout.RowStyles.Add(new RowStyle(SizeType.Absolute, 160F));
             tableLayout.RowStyles.Add(new RowStyle(SizeType.Absolute, 240F));
             tableLayout.RowStyles.Add(new RowStyle(SizeType.Absolute, 50F));
-            tableLayout.RowStyles.Add(new RowStyle(SizeType.Absolute, 50F));
-            tableLayout.Size = new Size(900, 850);
+            tableLayout.RowStyles.Add(new RowStyle(SizeType.Absolute, 60F));
+            tableLayout.Size = new Size(950, 950);
             tableLayout.TabIndex = 0;
             // 
             // lblTitle
@@ -96,7 +101,7 @@
             lblTitle.Font = new Font("Segoe UI", 12F, FontStyle.Bold);
             lblTitle.Location = new Point(23, 20);
             lblTitle.Name = "lblTitle";
-            lblTitle.Size = new Size(854, 50);
+            lblTitle.Size = new Size(904, 50);
             lblTitle.TabIndex = 0;
             lblTitle.Text = "Редактирование вопроса";
             lblTitle.TextAlign = ContentAlignment.MiddleLeft;
@@ -106,7 +111,7 @@
             lblType.Dock = DockStyle.Fill;
             lblType.Location = new Point(23, 70);
             lblType.Name = "lblType";
-            lblType.Size = new Size(114, 40);
+            lblType.Size = new Size(124, 40);
             lblType.TabIndex = 1;
             lblType.Text = "Тип вопроса:";
             lblType.TextAlign = ContentAlignment.MiddleLeft;
@@ -115,22 +120,23 @@
             // 
             txtTypeDisplay.BackColor = SystemColors.Control;
             txtTypeDisplay.Dock = DockStyle.Fill;
-            txtTypeDisplay.Location = new Point(763, 73);
+            txtTypeDisplay.Location = new Point(23, 113);
             txtTypeDisplay.Name = "txtTypeDisplay";
             txtTypeDisplay.ReadOnly = true;
-            txtTypeDisplay.Size = new Size(114, 25);
+            txtTypeDisplay.Size = new Size(124, 25);
             txtTypeDisplay.TabIndex = 2;
             txtTypeDisplay.Visible = false;
             // 
             // cmbType
             // 
+            tableLayout.SetColumnSpan(cmbType, 2);
             cmbType.Dock = DockStyle.Fill;
             cmbType.DropDownStyle = ComboBoxStyle.DropDownList;
             cmbType.FormattingEnabled = true;
             cmbType.Items.AddRange(new object[] { "Один вариант", "Несколько вариантов", "Текстовый ответ" });
-            cmbType.Location = new Point(143, 73);
+            cmbType.Location = new Point(153, 73);
             cmbType.Name = "cmbType";
-            cmbType.Size = new Size(614, 25);
+            cmbType.Size = new Size(774, 25);
             cmbType.TabIndex = 3;
             cmbType.Visible = false;
             cmbType.SelectedIndexChanged += CmbType_SelectedIndexChanged;
@@ -138,29 +144,30 @@
             // lblText
             // 
             lblText.Dock = DockStyle.Fill;
-            lblText.Location = new Point(23, 110);
+            lblText.Location = new Point(153, 110);
             lblText.Name = "lblText";
-            lblText.Size = new Size(114, 100);
+            lblText.Size = new Size(634, 100);
             lblText.TabIndex = 4;
             lblText.Text = "Текст вопроса:";
             lblText.TextAlign = ContentAlignment.MiddleLeft;
             // 
             // txtQuestion
             // 
+            tableLayout.SetColumnSpan(txtQuestion, 2);
             txtQuestion.Dock = DockStyle.Fill;
-            txtQuestion.Location = new Point(143, 113);
+            txtQuestion.Location = new Point(23, 213);
             txtQuestion.Multiline = true;
             txtQuestion.Name = "txtQuestion";
             txtQuestion.ScrollBars = ScrollBars.Vertical;
-            txtQuestion.Size = new Size(614, 94);
+            txtQuestion.Size = new Size(764, 34);
             txtQuestion.TabIndex = 5;
             // 
             // lblPoints
             // 
             lblPoints.Dock = DockStyle.Fill;
-            lblPoints.Location = new Point(23, 210);
+            lblPoints.Location = new Point(793, 210);
             lblPoints.Name = "lblPoints";
-            lblPoints.Size = new Size(114, 40);
+            lblPoints.Size = new Size(134, 40);
             lblPoints.TabIndex = 6;
             lblPoints.Text = "Баллы (1-10):";
             lblPoints.TextAlign = ContentAlignment.MiddleLeft;
@@ -168,11 +175,11 @@
             // numPoints
             // 
             numPoints.Dock = DockStyle.Fill;
-            numPoints.Location = new Point(143, 213);
+            numPoints.Location = new Point(23, 253);
             numPoints.Maximum = new decimal(new int[] { 10, 0, 0, 0 });
             numPoints.Minimum = new decimal(new int[] { 1, 0, 0, 0 });
             numPoints.Name = "numPoints";
-            numPoints.Size = new Size(614, 25);
+            numPoints.Size = new Size(124, 25);
             numPoints.TabIndex = 7;
             numPoints.Value = new decimal(new int[] { 1, 0, 0, 0 });
             // 
@@ -180,19 +187,19 @@
             // 
             lblPointsInfo.Dock = DockStyle.Fill;
             lblPointsInfo.ForeColor = Color.Gray;
-            lblPointsInfo.Location = new Point(763, 210);
+            lblPointsInfo.Location = new Point(153, 250);
             lblPointsInfo.Name = "lblPointsInfo";
-            lblPointsInfo.Size = new Size(114, 40);
+            lblPointsInfo.Size = new Size(634, 40);
             lblPointsInfo.TabIndex = 8;
-            lblPointsInfo.Text = "Количество баллов за правильный ответ";
+            lblPointsInfo.Text = "Кол-во баллов";
             lblPointsInfo.TextAlign = ContentAlignment.MiddleLeft;
             // 
             // lblOrder
             // 
             lblOrder.Dock = DockStyle.Fill;
-            lblOrder.Location = new Point(23, 250);
+            lblOrder.Location = new Point(793, 250);
             lblOrder.Name = "lblOrder";
-            lblOrder.Size = new Size(114, 40);
+            lblOrder.Size = new Size(134, 40);
             lblOrder.TabIndex = 9;
             lblOrder.Text = "Порядковый номер:";
             lblOrder.TextAlign = ContentAlignment.MiddleLeft;
@@ -201,18 +208,39 @@
             // 
             txtOrder.BackColor = SystemColors.Control;
             txtOrder.Dock = DockStyle.Fill;
-            txtOrder.Location = new Point(143, 253);
+            txtOrder.Location = new Point(23, 293);
             txtOrder.Name = "txtOrder";
             txtOrder.ReadOnly = true;
-            txtOrder.Size = new Size(614, 25);
+            txtOrder.Size = new Size(124, 25);
             txtOrder.TabIndex = 10;
+            // 
+            // lblRecommendation
+            // 
+            lblRecommendation.Dock = DockStyle.Fill;
+            lblRecommendation.Location = new Point(153, 290);
+            lblRecommendation.Name = "lblRecommendation";
+            lblRecommendation.Size = new Size(634, 90);
+            lblRecommendation.TabIndex = 20;
+            lblRecommendation.Text = "Рекомендация при ошибке:";
+            lblRecommendation.TextAlign = ContentAlignment.MiddleLeft;
+            // 
+            // txtRecommendation
+            // 
+            tableLayout.SetColumnSpan(txtRecommendation, 2);
+            txtRecommendation.Dock = DockStyle.Fill;
+            txtRecommendation.Location = new Point(23, 383);
+            txtRecommendation.Multiline = true;
+            txtRecommendation.Name = "txtRecommendation";
+            txtRecommendation.ScrollBars = ScrollBars.Vertical;
+            txtRecommendation.Size = new Size(764, 34);
+            txtRecommendation.TabIndex = 21;
             // 
             // lblImage
             // 
             lblImage.Dock = DockStyle.Fill;
-            lblImage.Location = new Point(23, 290);
+            lblImage.Location = new Point(793, 380);
             lblImage.Name = "lblImage";
-            lblImage.Size = new Size(114, 40);
+            lblImage.Size = new Size(134, 40);
             lblImage.TabIndex = 11;
             lblImage.Text = "Изображение:";
             lblImage.TextAlign = ContentAlignment.MiddleLeft;
@@ -220,9 +248,9 @@
             // btnLoadImage
             // 
             btnLoadImage.Dock = DockStyle.Fill;
-            btnLoadImage.Location = new Point(143, 293);
+            btnLoadImage.Location = new Point(23, 423);
             btnLoadImage.Name = "btnLoadImage";
-            btnLoadImage.Size = new Size(614, 34);
+            btnLoadImage.Size = new Size(124, 154);
             btnLoadImage.TabIndex = 12;
             btnLoadImage.Text = "Загрузить изображение";
             btnLoadImage.UseVisualStyleBackColor = true;
@@ -232,9 +260,9 @@
             // 
             btnRemoveImage.Dock = DockStyle.Fill;
             btnRemoveImage.Enabled = false;
-            btnRemoveImage.Location = new Point(763, 293);
+            btnRemoveImage.Location = new Point(153, 423);
             btnRemoveImage.Name = "btnRemoveImage";
-            btnRemoveImage.Size = new Size(114, 34);
+            btnRemoveImage.Size = new Size(634, 154);
             btnRemoveImage.TabIndex = 13;
             btnRemoveImage.Text = "Удалить";
             btnRemoveImage.UseVisualStyleBackColor = true;
@@ -244,9 +272,9 @@
             // 
             pictureBox.BorderStyle = BorderStyle.FixedSingle;
             pictureBox.Dock = DockStyle.Fill;
-            pictureBox.Location = new Point(143, 333);
+            pictureBox.Location = new Point(793, 423);
             pictureBox.Name = "pictureBox";
-            pictureBox.Size = new Size(614, 154);
+            pictureBox.Size = new Size(134, 154);
             pictureBox.SizeMode = PictureBoxSizeMode.Zoom;
             pictureBox.TabIndex = 14;
             pictureBox.TabStop = false;
@@ -257,18 +285,18 @@
             pnlAnswers.AutoScroll = true;
             pnlAnswers.BorderStyle = BorderStyle.FixedSingle;
             pnlAnswers.Dock = DockStyle.Fill;
-            pnlAnswers.Location = new Point(143, 493);
+            pnlAnswers.Location = new Point(153, 583);
             pnlAnswers.Name = "pnlAnswers";
-            pnlAnswers.Size = new Size(614, 234);
+            pnlAnswers.Size = new Size(634, 234);
             pnlAnswers.TabIndex = 16;
             // 
             // lblAnswers
             // 
             lblAnswers.Dock = DockStyle.Fill;
             lblAnswers.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            lblAnswers.Location = new Point(23, 490);
+            lblAnswers.Location = new Point(23, 580);
             lblAnswers.Name = "lblAnswers";
-            lblAnswers.Size = new Size(114, 240);
+            lblAnswers.Size = new Size(124, 240);
             lblAnswers.TabIndex = 15;
             lblAnswers.Text = "Варианты ответов:";
             lblAnswers.TextAlign = ContentAlignment.MiddleLeft;
@@ -281,21 +309,20 @@
             buttonPanel.Controls.Add(btnCancel);
             buttonPanel.Dock = DockStyle.Fill;
             buttonPanel.FlowDirection = FlowDirection.RightToLeft;
-            buttonPanel.Location = new Point(23, 733);
+            buttonPanel.Location = new Point(23, 823);
             buttonPanel.Name = "buttonPanel";
-            buttonPanel.Size = new Size(854, 44);
+            buttonPanel.Size = new Size(904, 44);
             buttonPanel.TabIndex = 17;
             // 
             // btnAddOption
             // 
             btnAddOption.AutoSize = true;
-            btnAddOption.Location = new Point(716, 3);
+            btnAddOption.Location = new Point(766, 3);
             btnAddOption.Name = "btnAddOption";
             btnAddOption.Size = new Size(135, 29);
             btnAddOption.TabIndex = 2;
             btnAddOption.Text = "Добавить вариант";
             btnAddOption.UseVisualStyleBackColor = true;
-            btnAddOption.Visible = false;
             btnAddOption.Click += BtnAddOption_Click;
             // 
             // btnSave
@@ -305,7 +332,7 @@
             btnSave.FlatAppearance.BorderSize = 0;
             btnSave.FlatStyle = FlatStyle.Flat;
             btnSave.ForeColor = Color.White;
-            btnSave.Location = new Point(624, 3);
+            btnSave.Location = new Point(674, 3);
             btnSave.Name = "btnSave";
             btnSave.Size = new Size(86, 29);
             btnSave.TabIndex = 0;
@@ -316,7 +343,7 @@
             // btnCancel
             // 
             btnCancel.AutoSize = true;
-            btnCancel.Location = new Point(543, 3);
+            btnCancel.Location = new Point(593, 3);
             btnCancel.Name = "btnCancel";
             btnCancel.Size = new Size(75, 29);
             btnCancel.TabIndex = 1;
@@ -328,20 +355,21 @@
             tableLayout.SetColumnSpan(lblMessage, 3);
             lblMessage.Dock = DockStyle.Fill;
             lblMessage.ForeColor = Color.Red;
-            lblMessage.Location = new Point(23, 780);
+            lblMessage.Location = new Point(23, 870);
             lblMessage.Name = "lblMessage";
-            lblMessage.Size = new Size(854, 50);
+            lblMessage.Size = new Size(904, 60);
             lblMessage.TabIndex = 18;
             lblMessage.TextAlign = ContentAlignment.MiddleCenter;
             // 
             // EditQuestionForm
             // 
             BackColor = Color.White;
-            ClientSize = new Size(900, 850);
+            ClientSize = new Size(950, 950);
             Controls.Add(tableLayout);
             Font = new Font("Segoe UI", 10F);
             FormBorderStyle = FormBorderStyle.FixedDialog;
             MaximizeBox = false;
+            MinimumSize = new Size(950, 950);
             Name = "EditQuestionForm";
             StartPosition = FormStartPosition.CenterParent;
             Text = "Редактирование вопроса";
@@ -368,6 +396,8 @@
         private Label lblPointsInfo;
         private Label lblOrder;
         private TextBox txtOrder;
+        private Label lblRecommendation;
+        private TextBox txtRecommendation;
         private Label lblImage;
         private Button btnLoadImage;
         private Button btnRemoveImage;

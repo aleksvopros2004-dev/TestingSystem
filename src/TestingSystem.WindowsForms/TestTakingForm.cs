@@ -368,7 +368,6 @@ namespace TestingSystem.WindowsForms
 
         private async void FinishTest()
         {
-            // Останавливаем таймер обратного отсчёта
             if (_countdownTimer != null)
             {
                 _countdownTimer.Stop();
@@ -377,22 +376,33 @@ namespace TestingSystem.WindowsForms
 
             _testStopwatch.Stop();
             var timeSpan = _testStopwatch.Elapsed;
-            var timeString = $"Время: {timeSpan.Minutes} мин {timeSpan.Seconds} сек";
+            var timeString = $"{timeSpan.Minutes:D2}:{timeSpan.Seconds:D2}";
 
+            var questionResults = BuildQuestionResults();
+
+            // Рассчитываем баллы
             CalculateResults();
 
             await SaveTestSession();
 
             if (_test.IsScored)
             {
-                var resultForm = new TestResultForm(_test.Title, _questions.Count, _earnedPoints, _totalPoints, timeString);
+                var resultForm = new TestResultForm(
+                    _test.Title,
+                    _questions.Count,
+                    _earnedPoints,
+                    _totalPoints,
+                    timeString,
+                    questionResults
+                );
                 resultForm.ShowDialog();
             }
             else
             {
-                MessageBox.Show($"Опрос \"{_test.Title}\" успешно пройден!\n\n" +
+                MessageBox.Show(
+                    $"Опрос \"{_test.Title}\" успешно пройден!\n\n" +
                     $"Количество вопросов: {_questions.Count}\n" +
-                    $"{timeString}\n\n" +
+                    $"Время: {timeString}\n\n" +
                     $"Спасибо за участие!",
                     "Опрос завершен",
                     MessageBoxButtons.OK,
@@ -400,6 +410,70 @@ namespace TestingSystem.WindowsForms
             }
 
             this.Close();
+        }
+
+        private List<QuestionResult> BuildQuestionResults()
+        {
+            var results = new List<QuestionResult>();
+
+            foreach (var question in _questions)
+            {
+                bool isCorrect = false;
+                int earnedPoints = 0;
+
+                if (_userAnswers.ContainsKey(question.Id))
+                {
+                    if (question.QuestionType == "SingleChoice")
+                    {
+                        var selectedOptionId = _userAnswers[question.Id] as int?;
+                        var correctOption = question.AnswerOptions?.FirstOrDefault(o => o.IsCorrect);
+                        isCorrect = correctOption != null && selectedOptionId == correctOption.Id;
+                        earnedPoints = isCorrect ? question.Points : 0;
+                    }
+                    else if (question.QuestionType == "MultipleChoice")
+                    {
+                        var selectedIds = _userAnswers[question.Id] as List<int> ?? new List<int>();
+                        var correctIds = question.AnswerOptions?
+                            .Where(o => o.IsCorrect)
+                            .Select(o => o.Id)
+                            .OrderBy(id => id)
+                            .ToList() ?? new List<int>();
+
+                        if (correctIds.Count > 0)
+                        {
+                            int correctSelected = selectedIds.Count(id => correctIds.Contains(id));
+                            isCorrect = selectedIds.OrderBy(id => id).SequenceEqual(correctIds);
+
+                            if (correctSelected > 0)
+                            {
+                                double ratio = (double)correctSelected / correctIds.Count;
+                                earnedPoints = (int)Math.Round(question.Points * ratio);
+                                if (earnedPoints < 1) earnedPoints = 1;
+                            }
+                        }
+                    }
+                    else if (question.QuestionType == "TextAnswer")
+                    {
+                        var answerText = _userAnswers[question.Id]?.ToString() ?? "";
+                        isCorrect = !string.IsNullOrWhiteSpace(answerText);
+                        earnedPoints = isCorrect ? question.Points : 0;
+                    }
+                }
+
+                // рекомендация показывается только при неправильном ответе
+                string? recommendation = !isCorrect ? question.Recommendation : null;
+
+                results.Add(new QuestionResult
+                {
+                    QuestionText = question.QuestionText,
+                    IsCorrect = isCorrect,
+                    Recommendation = recommendation,
+                    EarnedPoints = earnedPoints,
+                    TotalPoints = question.Points
+                });
+            }
+
+            return results;
         }
 
         private void CalculateResults()

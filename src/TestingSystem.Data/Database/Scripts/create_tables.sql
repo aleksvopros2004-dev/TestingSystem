@@ -32,7 +32,8 @@ CREATE TABLE IF NOT EXISTS questions (
     order_index INTEGER NOT NULL DEFAULT 0,
     points INTEGER NOT NULL DEFAULT 1, -- Поле для баллов
     image_data BYTEA NULL,                -- Новое поле для хранения изображения
-    image_content_type VARCHAR(50) NULL   -- Новое поле для типа контента (image/jpeg, image/png и т.д.)
+    image_content_type VARCHAR(50) NULL,   -- Новое поле для типа контента (image/jpeg, image/png и т.д.)
+    recommendation TEXT NULL
 );
 
 -- Таблица вариантов ответов

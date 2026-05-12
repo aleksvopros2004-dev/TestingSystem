@@ -43,6 +43,7 @@
         private System.Windows.Forms.ColumnHeader columnHeaderPercentResult;
         private System.Windows.Forms.ColumnHeader columnHeaderTime;
         private System.Windows.Forms.Label labelMessage;
+        private System.Windows.Forms.Button buttonClose;
 
         protected override void Dispose(bool disposing)
         {
@@ -63,6 +64,7 @@
             comboBoxTests = new System.Windows.Forms.ComboBox();
             buttonRefresh = new System.Windows.Forms.Button();
             buttonExportExcel = new System.Windows.Forms.Button();
+            buttonClose = new System.Windows.Forms.Button();
             panelGeneral = new System.Windows.Forms.Panel();
             labelGeneralTitle = new System.Windows.Forms.Label();
             labelAttempts = new System.Windows.Forms.Label();
@@ -134,11 +136,13 @@
             panelTop.Controls.Add(comboBoxTests);
             panelTop.Controls.Add(buttonRefresh);
             panelTop.Controls.Add(buttonExportExcel);
+            panelTop.Controls.Add(buttonClose);
             panelTop.Dock = System.Windows.Forms.DockStyle.Fill;
             panelTop.Location = new System.Drawing.Point(13, 13);
             panelTop.Name = "panelTop";
             panelTop.Size = new System.Drawing.Size(1174, 44);
             panelTop.TabIndex = 0;
+
             // 
             // labelTestSelect
             // 
@@ -148,23 +152,26 @@
             labelTestSelect.Size = new System.Drawing.Size(43, 20);
             labelTestSelect.TabIndex = 0;
             labelTestSelect.Text = "Тест:";
+
             // 
             // comboBoxTests
             // 
             comboBoxTests.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            comboBoxTests.Location = new System.Drawing.Point(60, 9);
+            comboBoxTests.Location = new System.Drawing.Point(55, 9);
             comboBoxTests.Name = "comboBoxTests";
-            comboBoxTests.Size = new System.Drawing.Size(300, 28);
+            comboBoxTests.Size = new System.Drawing.Size(200, 28);
             comboBoxTests.TabIndex = 1;
+
             // 
             // buttonRefresh
             // 
-            buttonRefresh.Location = new System.Drawing.Point(380, 8);
+            buttonRefresh.Location = new System.Drawing.Point(265, 8);
             buttonRefresh.Name = "buttonRefresh";
-            buttonRefresh.Size = new System.Drawing.Size(100, 30);
+            buttonRefresh.Size = new System.Drawing.Size(90, 30);
             buttonRefresh.TabIndex = 2;
             buttonRefresh.Text = "Обновить";
             buttonRefresh.UseVisualStyleBackColor = true;
+
             // 
             // buttonExportExcel
             // 
@@ -172,12 +179,23 @@
             buttonExportExcel.FlatAppearance.BorderSize = 0;
             buttonExportExcel.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             buttonExportExcel.ForeColor = System.Drawing.Color.White;
-            buttonExportExcel.Location = new System.Drawing.Point(490, 8);
+            buttonExportExcel.Location = new System.Drawing.Point(365, 8);
             buttonExportExcel.Name = "buttonExportExcel";
             buttonExportExcel.Size = new System.Drawing.Size(80, 30);
             buttonExportExcel.TabIndex = 3;
             buttonExportExcel.Text = "Экспорт";
             buttonExportExcel.UseVisualStyleBackColor = false;
+
+            // 
+            // buttonClose
+            // 
+            buttonClose.Location = new System.Drawing.Point(455, 8);
+            buttonClose.Name = "buttonClose";
+            buttonClose.Size = new System.Drawing.Size(80, 30);
+            buttonClose.TabIndex = 4;
+            buttonClose.Text = "Закрыть";
+            buttonClose.UseVisualStyleBackColor = true;
+            buttonClose.Click += ButtonClose_Click;
             // 
             // panelGeneral
             // 

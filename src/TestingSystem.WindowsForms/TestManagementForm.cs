@@ -364,4 +364,9 @@ public partial class TestManagementForm : Form
                        $"{(actionStopwatch.ElapsedMilliseconds <= 3000 ? "✓ Успешно" : "✗ Превышено")}",
                        "Время отклика UI");
     }
+
+    private void BtnClose_Click(object? sender, EventArgs e)
+    {
+        this.Close();
+    }
 }
