@@ -35,6 +35,7 @@ namespace TestingSystem.Data.Database
 
             await ExecuteMigrationScriptsAsync(connection);
 
+            await SeedDefaultAdminAsync(connection);
         }
         private string GetEmbeddedSqlScript()
         {
@@ -97,6 +98,37 @@ CREATE TABLE IF NOT EXISTS tests (
     answer_options_random BOOLEAN DEFAULT FALSE,
     is_scored BOOLEAN DEFAULT TRUE  -- поле: TRUE - тест с баллами, FALSE - опрос
 );";
+        }
+
+        private async Task SeedDefaultAdminAsync(IDbConnection connection)
+        {
+            const string checkSql = "SELECT COUNT(*) FROM users WHERE login = @Login";
+            var exists = await connection.ExecuteScalarAsync<int>(checkSql, new { Login = "admin123" });
+
+            if (exists == 0)
+            {
+                var passwordHash = BCrypt.Net.BCrypt.HashPassword("admin123");
+
+                const string insertSql = @"
+                    INSERT INTO users (login, password_hash, full_name, role, is_active, created_date)
+                    VALUES (@Login, @PasswordHash, @FullName, @Role, @IsActive, @CreatedDate)";
+
+                await connection.ExecuteAsync(insertSql, new
+                {
+                    Login = "admin123",
+                    PasswordHash = passwordHash,
+                    FullName = "Системный администратор",
+                    Role = "Admin",
+                    IsActive = true,
+                    CreatedDate = DateTime.UtcNow
+                });
+
+                Console.WriteLine("Администратор по умолчанию (admin123) создан");
+            }
+            else
+            {
+                Console.WriteLine("Администратор admin123 уже существует");
+            }
         }
     }
 }

@@ -15,7 +15,6 @@ public partial class CreateTestForm : Form
         _testService = testService;
         _currentUser = currentUser;
         InitializeComponent();
-
     }
 
     private void BtnCancel_Click(object? sender, EventArgs e)
@@ -57,7 +56,9 @@ public partial class CreateTestForm : Form
             {
                 lblMessage.Text = $"Успешно создано (ID: {testId})!";
                 lblMessage.ForeColor = Color.Green;
+
                 await Task.Delay(1500);
+
                 TestCreated?.Invoke(this, EventArgs.Empty);
                 this.Close();
             }
@@ -81,19 +82,32 @@ public partial class CreateTestForm : Form
 
     private TimeSpan? GetTimeLimit()
     {
-        var hours = (int)(numHours?.Value ?? 0);
         var minutes = (int)(numMinutes?.Value ?? 0);
-        if (hours == 0 && minutes == 0) return null;
-        return new TimeSpan(hours, minutes, 0);
+        var seconds = (int)(numSeconds?.Value ?? 0);
+
+        if (minutes == 0 && seconds == 0)
+            return null;
+
+        return new TimeSpan(0, minutes, seconds);
     }
 
-    private void lblLimitsInfo_Click(object sender, EventArgs e)
+    private void chkEnableTimeLimit_CheckedChanged(object? sender, EventArgs e)
     {
+        bool hasTimeLimit = chkEnableTimeLimit.Checked;
+        numMinutes.Enabled = hasTimeLimit;
+        numSeconds.Enabled = hasTimeLimit;
+        lblMinutes.Enabled = hasTimeLimit;
+        lblSeconds.Enabled = hasTimeLimit;
 
-    }
-
-    private void lblMessage_Click(object sender, EventArgs e)
-    {
-
+        if (!hasTimeLimit)
+        {
+            numMinutes.Value = 0;
+            numSeconds.Value = 0;
+        }
+        else
+        {
+            numMinutes.Value = 15;
+            numSeconds.Value = 0;
+        }
     }
 }

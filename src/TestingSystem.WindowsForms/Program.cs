@@ -143,7 +143,10 @@ namespace TestingSystem.WindowsForms
         private static void RunNormal()
         {
             var host = CreateHostBuilder().Build();
-            ServiceProvider = host.Services;  
+            ServiceProvider = host.Services;
+
+            var dbContext = ServiceProvider.GetRequiredService<IDatabaseContext>();
+            dbContext.InitializeDatabaseAsync().GetAwaiter().GetResult();
 
             var loginForm = ServiceProvider.GetRequiredService<LoginForm>();
             Application.Run(loginForm);
