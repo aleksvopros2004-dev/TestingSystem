@@ -22,15 +22,22 @@
             txtTitle = new TextBox();
             lblDescription = new Label();
             txtDescription = new TextBox();
+
+            // 👇 ПЕРЕИМЕНОВАННЫЕ КОМПОНЕНТЫ ВРЕМЕНИ
             lblTimeLimit = new Label();
-            numHours = new NumericUpDown();
-            lblHours = new Label();
+            chkEnableTimeLimit = new CheckBox();
             numMinutes = new NumericUpDown();
             lblMinutes = new Label();
+            lblTimeSeparator = new Label();
+            numSeconds = new NumericUpDown();
+            lblSeconds = new Label();
+            lblTimeInfo = new Label();
+
             chkRandomQuestions = new CheckBox();
             chkRandomAnswers = new CheckBox();
             chkActive = new CheckBox();
             chkIsScored = new CheckBox();
+
             lblSettings = new Label();
             tableLayout = new TableLayoutPanel();
             timePanel = new FlowLayoutPanel();
@@ -39,16 +46,16 @@
             btnSave = new Button();
             lblMessage = new Label();
             settingsPanel = new FlowLayoutPanel();
-            ((System.ComponentModel.ISupportInitialize)numHours).BeginInit();
+
             ((System.ComponentModel.ISupportInitialize)numMinutes).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)numSeconds).BeginInit();
             tableLayout.SuspendLayout();
             timePanel.SuspendLayout();
             buttonPanel.SuspendLayout();
             settingsPanel.SuspendLayout();
             SuspendLayout();
-            // 
+
             // lblTitle
-            // 
             tableLayout.SetColumnSpan(lblTitle, 2);
             lblTitle.Dock = DockStyle.Fill;
             lblTitle.Font = new Font("Segoe UI", 12F, FontStyle.Bold);
@@ -58,117 +65,137 @@
             lblTitle.TabIndex = 0;
             lblTitle.Text = "Редактирование теста";
             lblTitle.TextAlign = ContentAlignment.MiddleLeft;
-            // 
+
             // lblTitleField
-            // 
             lblTitleField.Location = new Point(23, 60);
             lblTitleField.Name = "lblTitleField";
-            lblTitleField.Size = new Size(100, 23);
+            lblTitleField.Size = new Size(100, 25);
             lblTitleField.TabIndex = 1;
             lblTitleField.Text = "Название:";
             lblTitleField.TextAlign = ContentAlignment.MiddleLeft;
-            // 
+
             // txtTitle
-            // 
             txtTitle.Dock = DockStyle.Fill;
-            txtTitle.Location = new Point(184, 63);
+            txtTitle.Location = new Point(184, 62);
             txtTitle.Name = "txtTitle";
             txtTitle.Size = new Size(293, 25);
             txtTitle.TabIndex = 2;
-            // 
+
             // lblDescription
-            // 
             lblDescription.Location = new Point(23, 100);
             lblDescription.Name = "lblDescription";
-            lblDescription.Size = new Size(100, 23);
+            lblDescription.Size = new Size(100, 25);
             lblDescription.TabIndex = 3;
             lblDescription.Text = "Описание:";
             lblDescription.TextAlign = ContentAlignment.MiddleLeft;
-            // 
+
             // txtDescription
-            // 
             txtDescription.Dock = DockStyle.Fill;
-            txtDescription.Location = new Point(184, 103);
+            txtDescription.Location = new Point(184, 102);
             txtDescription.Multiline = true;
             txtDescription.Name = "txtDescription";
             txtDescription.Size = new Size(293, 74);
             txtDescription.TabIndex = 4;
-            // 
+
+            // 👇 НОВЫЙ ДИЗАЙН ВРЕМЕНИ
             // lblTimeLimit
-            // 
             lblTimeLimit.Location = new Point(23, 180);
             lblTimeLimit.Name = "lblTimeLimit";
-            lblTimeLimit.Size = new Size(100, 23);
+            lblTimeLimit.Size = new Size(100, 25);
             lblTimeLimit.TabIndex = 5;
             lblTimeLimit.Text = "Время:";
             lblTimeLimit.TextAlign = ContentAlignment.MiddleLeft;
-            // 
-            // numHours
-            // 
-            numHours.Location = new Point(3, 3);
-            numHours.Maximum = new decimal(new int[] { 5, 0, 0, 0 });
-            numHours.Name = "numHours";
-            numHours.Size = new Size(50, 25);
-            numHours.TabIndex = 0;
-            // 
-            // lblHours
-            // 
-            lblHours.Location = new Point(59, 0);
-            lblHours.Name = "lblHours";
-            lblHours.Size = new Size(100, 23);
-            lblHours.TabIndex = 1;
-            lblHours.Text = "ч";
-            // 
+
+            // chkEnableTimeLimit
+            chkEnableTimeLimit.AutoSize = true;
+            chkEnableTimeLimit.Location = new Point(3, 3);
+            chkEnableTimeLimit.Name = "chkEnableTimeLimit";
+            chkEnableTimeLimit.Size = new Size(150, 23);
+            chkEnableTimeLimit.TabIndex = 0;
+            chkEnableTimeLimit.Text = "Ограничить";
+            chkEnableTimeLimit.CheckedChanged += chkEnableTimeLimit_CheckedChanged;
+
             // numMinutes
-            // 
-            numMinutes.Location = new Point(165, 3);
-            numMinutes.Maximum = new decimal(new int[] { 59, 0, 0, 0 });
+            numMinutes.Enabled = false;
+            numMinutes.Location = new Point(3, 32);
+            numMinutes.Maximum = new decimal(new int[] { 120, 0, 0, 0 });
             numMinutes.Name = "numMinutes";
-            numMinutes.Size = new Size(50, 25);
-            numMinutes.TabIndex = 2;
-            numMinutes.Value = new decimal(new int[] { 30, 0, 0, 0 });
-            // 
+            numMinutes.Size = new Size(55, 25);
+            numMinutes.TabIndex = 1;
+
             // lblMinutes
-            // 
-            lblMinutes.Location = new Point(3, 31);
+            lblMinutes.Enabled = false;
+            lblMinutes.Location = new Point(64, 29);
             lblMinutes.Name = "lblMinutes";
-            lblMinutes.Size = new Size(100, 23);
-            lblMinutes.TabIndex = 3;
+            lblMinutes.Size = new Size(40, 25);
+            lblMinutes.TabIndex = 2;
             lblMinutes.Text = "мин";
-            // 
+            lblMinutes.TextAlign = ContentAlignment.MiddleLeft;
+
+            // lblTimeSeparator
+            lblTimeSeparator.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
+            lblTimeSeparator.Location = new Point(110, 29);
+            lblTimeSeparator.Name = "lblTimeSeparator";
+            lblTimeSeparator.Size = new Size(15, 25);
+            lblTimeSeparator.TabIndex = 3;
+            lblTimeSeparator.Text = ":";
+            lblTimeSeparator.TextAlign = ContentAlignment.MiddleCenter;
+
+            // numSeconds
+            numSeconds.Enabled = false;
+            numSeconds.Location = new Point(131, 32);
+            numSeconds.Maximum = new decimal(new int[] { 59, 0, 0, 0 });
+            numSeconds.Name = "numSeconds";
+            numSeconds.Size = new Size(55, 25);
+            numSeconds.TabIndex = 4;
+
+            // lblSeconds
+            lblSeconds.Enabled = false;
+            lblSeconds.Location = new Point(192, 29);
+            lblSeconds.Name = "lblSeconds";
+            lblSeconds.Size = new Size(40, 25);
+            lblSeconds.TabIndex = 5;
+            lblSeconds.Text = "сек";
+            lblSeconds.TextAlign = ContentAlignment.MiddleLeft;
+
+            // lblTimeInfo
+            lblTimeInfo.ForeColor = Color.Gray;
+            lblTimeInfo.Location = new Point(3, 60);
+            lblTimeInfo.Name = "lblTimeInfo";
+            lblTimeInfo.Size = new Size(250, 20);
+            lblTimeInfo.TabIndex = 6;
+            lblTimeInfo.Text = "Максимум: 120 минут (2 часа)";
+            lblTimeInfo.Font = new Font("Segoe UI", 8F);
+
             // chkRandomQuestions
-            // 
             chkRandomQuestions.AutoSize = true;
             chkRandomQuestions.Checked = true;
             chkRandomQuestions.CheckState = CheckState.Checked;
             chkRandomQuestions.Location = new Point(13, 3);
             chkRandomQuestions.Name = "chkRandomQuestions";
-            chkRandomQuestions.Size = new Size(222, 23);
+            chkRandomQuestions.Size = new Size(230, 23);
             chkRandomQuestions.TabIndex = 0;
             chkRandomQuestions.Text = "Случайный порядок вопросов";
-            // 
+
             // chkRandomAnswers
-            // 
             chkRandomAnswers.AutoSize = true;
             chkRandomAnswers.Checked = true;
             chkRandomAnswers.CheckState = CheckState.Checked;
             chkRandomAnswers.Location = new Point(13, 32);
             chkRandomAnswers.Name = "chkRandomAnswers";
-            chkRandomAnswers.Size = new Size(211, 23);
+            chkRandomAnswers.Size = new Size(230, 23);
             chkRandomAnswers.TabIndex = 1;
             chkRandomAnswers.Text = "Случайный порядок ответов";
-            // 
+
             // chkActive
-            // 
             chkActive.AutoSize = true;
             chkActive.Location = new Point(13, 61);
             chkActive.Name = "chkActive";
             chkActive.Size = new Size(154, 23);
             chkActive.TabIndex = 2;
             chkActive.Text = "Активировать";
-            // 
+
             // chkIsScored
-            // 
             chkIsScored.AutoSize = true;
             chkIsScored.Checked = true;
             chkIsScored.CheckState = CheckState.Checked;
@@ -177,21 +204,19 @@
             chkIsScored.Size = new Size(187, 23);
             chkIsScored.TabIndex = 3;
             chkIsScored.Text = "С оценкой (иначе опрос)";
-            // 
+
             // lblSettings
-            // 
             tableLayout.SetColumnSpan(lblSettings, 2);
             lblSettings.Dock = DockStyle.Fill;
             lblSettings.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
-            lblSettings.Location = new Point(23, 220);
+            lblSettings.Location = new Point(23, 285);
             lblSettings.Name = "lblSettings";
             lblSettings.Size = new Size(454, 30);
             lblSettings.TabIndex = 11;
             lblSettings.Text = "Настройки теста";
             lblSettings.TextAlign = ContentAlignment.MiddleLeft;
-            // 
+
             // tableLayout
-            // 
             tableLayout.ColumnCount = 2;
             tableLayout.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 35F));
             tableLayout.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 65F));
@@ -202,52 +227,54 @@
             tableLayout.Controls.Add(txtDescription, 1, 2);
             tableLayout.Controls.Add(lblTimeLimit, 0, 3);
             tableLayout.Controls.Add(timePanel, 1, 3);
-            tableLayout.Controls.Add(buttonPanel, 0, 6);
-            tableLayout.Controls.Add(lblMessage, 0, 7);
             tableLayout.Controls.Add(lblSettings, 0, 4);
             tableLayout.Controls.Add(settingsPanel, 0, 5);
+            tableLayout.Controls.Add(buttonPanel, 0, 6);
+            tableLayout.Controls.Add(lblMessage, 0, 7);
             tableLayout.Dock = DockStyle.Fill;
             tableLayout.Location = new Point(0, 0);
             tableLayout.Name = "tableLayout";
             tableLayout.Padding = new Padding(20);
-            tableLayout.RowCount = 7;
+            tableLayout.RowCount = 8;
             tableLayout.RowStyles.Add(new RowStyle(SizeType.Absolute, 40F));
             tableLayout.RowStyles.Add(new RowStyle(SizeType.Absolute, 40F));
             tableLayout.RowStyles.Add(new RowStyle(SizeType.Absolute, 80F));
-            tableLayout.RowStyles.Add(new RowStyle(SizeType.Absolute, 40F));
+            tableLayout.RowStyles.Add(new RowStyle(SizeType.Absolute, 95F));
             tableLayout.RowStyles.Add(new RowStyle(SizeType.Absolute, 30F));
             tableLayout.RowStyles.Add(new RowStyle());
             tableLayout.RowStyles.Add(new RowStyle(SizeType.Absolute, 50F));
             tableLayout.RowStyles.Add(new RowStyle(SizeType.Absolute, 30F));
-            tableLayout.Size = new Size(500, 493);
+            tableLayout.Size = new Size(500, 583);
             tableLayout.TabIndex = 0;
-            // 
+
             // timePanel
-            // 
-            timePanel.Controls.Add(numHours);
-            timePanel.Controls.Add(lblHours);
+            timePanel.Controls.Add(chkEnableTimeLimit);
             timePanel.Controls.Add(numMinutes);
             timePanel.Controls.Add(lblMinutes);
+            timePanel.Controls.Add(lblTimeSeparator);
+            timePanel.Controls.Add(numSeconds);
+            timePanel.Controls.Add(lblSeconds);
+            timePanel.Controls.Add(lblTimeInfo);
             timePanel.Dock = DockStyle.Fill;
-            timePanel.Location = new Point(184, 183);
+            timePanel.FlowDirection = FlowDirection.TopDown;
+            timePanel.Location = new Point(184, 182);
             timePanel.Name = "timePanel";
-            timePanel.Size = new Size(293, 34);
+            timePanel.Size = new Size(293, 89);
             timePanel.TabIndex = 6;
-            // 
+            timePanel.WrapContents = false;
+
             // buttonPanel
-            // 
             tableLayout.SetColumnSpan(buttonPanel, 2);
             buttonPanel.Controls.Add(btnCancel);
             buttonPanel.Controls.Add(btnSave);
             buttonPanel.Dock = DockStyle.Fill;
             buttonPanel.FlowDirection = FlowDirection.RightToLeft;
-            buttonPanel.Location = new Point(23, 412);
+            buttonPanel.Location = new Point(23, 483);
             buttonPanel.Name = "buttonPanel";
             buttonPanel.Size = new Size(454, 44);
             buttonPanel.TabIndex = 9;
-            // 
+
             // btnCancel
-            // 
             btnCancel.AutoSize = true;
             btnCancel.Location = new Point(376, 3);
             btnCancel.Name = "btnCancel";
@@ -255,9 +282,8 @@
             btnCancel.TabIndex = 0;
             btnCancel.Text = "Отмена";
             btnCancel.Click += BtnCancel_Click;
-            // 
+
             // btnSave
-            // 
             btnSave.AutoSize = true;
             btnSave.BackColor = Color.FromArgb(0, 120, 215);
             btnSave.FlatAppearance.BorderSize = 0;
@@ -270,20 +296,18 @@
             btnSave.Text = "Сохранить";
             btnSave.UseVisualStyleBackColor = false;
             btnSave.Click += BtnSave_Click;
-            // 
+
             // lblMessage
-            // 
             tableLayout.SetColumnSpan(lblMessage, 2);
             lblMessage.Dock = DockStyle.Fill;
             lblMessage.ForeColor = Color.Red;
-            lblMessage.Location = new Point(23, 459);
+            lblMessage.Location = new Point(23, 530);
             lblMessage.Name = "lblMessage";
-            lblMessage.Size = new Size(454, 30);
+            lblMessage.Size = new Size(454, 33);
             lblMessage.TabIndex = 10;
             lblMessage.TextAlign = ContentAlignment.MiddleCenter;
-            // 
+
             // settingsPanel
-            // 
             settingsPanel.AutoSize = true;
             settingsPanel.AutoSizeMode = AutoSizeMode.GrowAndShrink;
             tableLayout.SetColumnSpan(settingsPanel, 2);
@@ -293,17 +317,16 @@
             settingsPanel.Controls.Add(chkIsScored);
             settingsPanel.Dock = DockStyle.Fill;
             settingsPanel.FlowDirection = FlowDirection.TopDown;
-            settingsPanel.Location = new Point(23, 253);
+            settingsPanel.Location = new Point(23, 318);
             settingsPanel.Name = "settingsPanel";
             settingsPanel.Padding = new Padding(10, 0, 0, 0);
-            settingsPanel.Size = new Size(454, 156);
+            settingsPanel.Size = new Size(454, 159);
             settingsPanel.TabIndex = 7;
             settingsPanel.WrapContents = false;
-            // 
+
             // EditTestForm
-            // 
             BackColor = Color.White;
-            ClientSize = new Size(500, 493);
+            ClientSize = new Size(500, 583);
             Controls.Add(tableLayout);
             Font = new Font("Segoe UI", 10F);
             FormBorderStyle = FormBorderStyle.FixedDialog;
@@ -311,11 +334,13 @@
             Name = "EditTestForm";
             StartPosition = FormStartPosition.CenterParent;
             Text = "Редактирование теста";
-            ((System.ComponentModel.ISupportInitialize)numHours).EndInit();
+
             ((System.ComponentModel.ISupportInitialize)numMinutes).EndInit();
+            ((System.ComponentModel.ISupportInitialize)numSeconds).EndInit();
             tableLayout.ResumeLayout(false);
             tableLayout.PerformLayout();
             timePanel.ResumeLayout(false);
+            timePanel.PerformLayout();
             buttonPanel.ResumeLayout(false);
             buttonPanel.PerformLayout();
             settingsPanel.ResumeLayout(false);
@@ -330,11 +355,17 @@
         private TextBox txtTitle;
         private Label lblDescription;
         private TextBox txtDescription;
+
+        // 👇 ПЕРЕИМЕНОВАННЫЕ КОМПОНЕНТЫ
         private Label lblTimeLimit;
-        private NumericUpDown numHours;
-        private Label lblHours;
+        private CheckBox chkEnableTimeLimit;
         private NumericUpDown numMinutes;
         private Label lblMinutes;
+        private Label lblTimeSeparator;
+        private NumericUpDown numSeconds;
+        private Label lblSeconds;
+        private Label lblTimeInfo;
+
         private CheckBox chkRandomQuestions;
         private CheckBox chkRandomAnswers;
         private CheckBox chkActive;

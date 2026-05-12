@@ -22,6 +22,13 @@
             flowLayoutTop = new FlowLayoutPanel();
             lblTestTitle = new Label();
             lblTestDescription = new Label();
+
+            panelTimer = new Panel();
+            tableLayoutTimer = new TableLayoutPanel();
+            lblTimerLabel = new Label();
+            lblTimer = new Label();
+            lblTimerIcon = new Label();
+
             panelQuestion = new Panel();
             lblQuestionCounter = new Label();
             lblQuestionText = new Label();
@@ -32,17 +39,19 @@
             btnPrevious = new Button();
             btnNext = new Button();
             btnCancel = new Button();
+
             tableLayout.SuspendLayout();
             panelTop.SuspendLayout();
             flowLayoutTop.SuspendLayout();
+            panelTimer.SuspendLayout();
+            tableLayoutTimer.SuspendLayout();
             panelQuestion.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)pictureBoxQuestion).BeginInit();
             panelBottom.SuspendLayout();
             buttonPanel.SuspendLayout();
             SuspendLayout();
-            // 
+
             // tableLayout
-            // 
             tableLayout.ColumnCount = 1;
             tableLayout.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
             tableLayout.Controls.Add(panelTop, 0, 0);
@@ -57,31 +66,29 @@
             tableLayout.RowStyles.Add(new RowStyle(SizeType.Absolute, 70F));
             tableLayout.Size = new Size(900, 650);
             tableLayout.TabIndex = 0;
-            // 
+
             // panelTop
-            // 
             panelTop.BackColor = SystemColors.Highlight;
             panelTop.Controls.Add(flowLayoutTop);
+            panelTop.Controls.Add(panelTimer);
             panelTop.Dock = DockStyle.Fill;
             panelTop.Location = new Point(3, 3);
             panelTop.Name = "panelTop";
             panelTop.Padding = new Padding(20, 10, 20, 10);
             panelTop.Size = new Size(894, 84);
             panelTop.TabIndex = 0;
-            // 
+
             // flowLayoutTop
-            // 
             flowLayoutTop.Controls.Add(lblTestTitle);
             flowLayoutTop.Controls.Add(lblTestDescription);
-            flowLayoutTop.Dock = DockStyle.Fill;
+            flowLayoutTop.Dock = DockStyle.Left;
             flowLayoutTop.FlowDirection = FlowDirection.TopDown;
             flowLayoutTop.Location = new Point(20, 10);
             flowLayoutTop.Name = "flowLayoutTop";
-            flowLayoutTop.Size = new Size(854, 64);
+            flowLayoutTop.Size = new Size(600, 64);
             flowLayoutTop.TabIndex = 0;
-            // 
+
             // lblTestTitle
-            // 
             lblTestTitle.AutoSize = true;
             lblTestTitle.Font = new Font("Segoe UI", 16F, FontStyle.Bold);
             lblTestTitle.ForeColor = Color.White;
@@ -90,9 +97,8 @@
             lblTestTitle.Size = new Size(178, 30);
             lblTestTitle.TabIndex = 0;
             lblTestTitle.Text = "Название теста";
-            // 
+
             // lblTestDescription
-            // 
             lblTestDescription.AutoSize = true;
             lblTestDescription.Font = new Font("Segoe UI", 10F);
             lblTestDescription.ForeColor = Color.White;
@@ -101,9 +107,70 @@
             lblTestDescription.Size = new Size(108, 19);
             lblTestDescription.TabIndex = 1;
             lblTestDescription.Text = "Описание теста";
-            // 
+
+            // panelTimer
+            panelTimer.BackColor = Color.FromArgb(0, 90, 160);
+            panelTimer.Controls.Add(tableLayoutTimer);
+            panelTimer.Dock = DockStyle.Right;
+            panelTimer.Location = new Point(694, 10);
+            panelTimer.Name = "panelTimer";
+            panelTimer.Size = new Size(180, 64);
+            panelTimer.TabIndex = 1;
+            panelTimer.Visible = false;
+
+            // tableLayoutTimer
+            tableLayoutTimer.ColumnCount = 2;
+            tableLayoutTimer.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 30F));
+            tableLayoutTimer.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
+            tableLayoutTimer.Controls.Add(lblTimerIcon, 0, 0);
+            tableLayoutTimer.Controls.Add(lblTimer, 1, 0);
+            tableLayoutTimer.Controls.Add(lblTimerLabel, 1, 1);
+            tableLayoutTimer.Dock = DockStyle.Fill;
+            tableLayoutTimer.Location = new Point(0, 0);
+            tableLayoutTimer.Name = "tableLayoutTimer";
+            tableLayoutTimer.RowCount = 2;
+            tableLayoutTimer.RowStyles.Add(new RowStyle(SizeType.Percent, 60F));
+            tableLayoutTimer.RowStyles.Add(new RowStyle(SizeType.Percent, 40F));
+            tableLayoutTimer.Size = new Size(180, 64);
+            tableLayoutTimer.TabIndex = 0;
+
+            // lblTimerIcon
+            lblTimerIcon.AutoSize = true;
+            lblTimerIcon.Dock = DockStyle.Fill;
+            lblTimerIcon.Font = new Font("Segoe UI", 16F, FontStyle.Bold);
+            lblTimerIcon.ForeColor = Color.White;
+            lblTimerIcon.Location = new Point(3, 0);
+            lblTimerIcon.Name = "lblTimerIcon";
+            lblTimerIcon.Size = new Size(24, 38);
+            lblTimerIcon.TabIndex = 0;
+            lblTimerIcon.Text = "⏱";
+            lblTimerIcon.TextAlign = ContentAlignment.MiddleCenter;
+
+            // lblTimer
+            lblTimer.AutoSize = true;
+            lblTimer.Dock = DockStyle.Fill;
+            lblTimer.Font = new Font("Segoe UI", 16F, FontStyle.Bold);
+            lblTimer.ForeColor = Color.White;
+            lblTimer.Location = new Point(33, 0);
+            lblTimer.Name = "lblTimer";
+            lblTimer.Size = new Size(144, 38);
+            lblTimer.TabIndex = 1;
+            lblTimer.Text = "00:00";
+            lblTimer.TextAlign = ContentAlignment.MiddleLeft;
+
+            // lblTimerLabel
+            lblTimerLabel.AutoSize = true;
+            lblTimerLabel.Dock = DockStyle.Fill;
+            lblTimerLabel.Font = new Font("Segoe UI", 8F, FontStyle.Regular);
+            lblTimerLabel.ForeColor = Color.FromArgb(200, 200, 200);
+            lblTimerLabel.Location = new Point(33, 38);
+            lblTimerLabel.Name = "lblTimerLabel";
+            lblTimerLabel.Size = new Size(144, 26);
+            lblTimerLabel.TabIndex = 2;
+            lblTimerLabel.Text = "Осталось времени:";
+            lblTimerLabel.TextAlign = ContentAlignment.TopLeft;
+
             // panelQuestion
-            // 
             panelQuestion.AutoScroll = true;
             panelQuestion.BackColor = Color.White;
             panelQuestion.Controls.Add(lblQuestionCounter);
@@ -116,9 +183,8 @@
             panelQuestion.Padding = new Padding(20);
             panelQuestion.Size = new Size(894, 484);
             panelQuestion.TabIndex = 1;
-            // 
+
             // lblQuestionCounter
-            // 
             lblQuestionCounter.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
             lblQuestionCounter.ForeColor = Color.Gray;
             lblQuestionCounter.Location = new Point(20, 20);
@@ -127,18 +193,16 @@
             lblQuestionCounter.TabIndex = 0;
             lblQuestionCounter.Text = "Вопрос 0 из 0";
             lblQuestionCounter.TextAlign = ContentAlignment.MiddleLeft;
-            // 
+
             // lblQuestionText
-            // 
             lblQuestionText.Font = new Font("Segoe UI", 12F);
             lblQuestionText.Location = new Point(20, 55);
             lblQuestionText.Name = "lblQuestionText";
             lblQuestionText.Size = new Size(860, 70);
             lblQuestionText.TabIndex = 1;
             lblQuestionText.Text = "Текст вопроса";
-            // 
+
             // pictureBoxQuestion
-            // 
             pictureBoxQuestion.BorderStyle = BorderStyle.FixedSingle;
             pictureBoxQuestion.Location = new Point(20, 135);
             pictureBoxQuestion.Name = "pictureBoxQuestion";
@@ -147,18 +211,16 @@
             pictureBoxQuestion.TabIndex = 2;
             pictureBoxQuestion.TabStop = false;
             pictureBoxQuestion.Visible = false;
-            // 
+
             // pnlAnswers
-            // 
             pnlAnswers.AutoScroll = true;
             pnlAnswers.BorderStyle = BorderStyle.FixedSingle;
             pnlAnswers.Location = new Point(20, 360);
             pnlAnswers.Name = "pnlAnswers";
             pnlAnswers.Size = new Size(800, 280);
             pnlAnswers.TabIndex = 3;
-            // 
+
             // panelBottom
-            // 
             panelBottom.BackColor = Color.FromArgb(240, 240, 240);
             panelBottom.Controls.Add(buttonPanel);
             panelBottom.Dock = DockStyle.Fill;
@@ -167,9 +229,8 @@
             panelBottom.Padding = new Padding(20, 15, 20, 15);
             panelBottom.Size = new Size(894, 64);
             panelBottom.TabIndex = 2;
-            // 
+
             // buttonPanel
-            // 
             buttonPanel.Controls.Add(btnPrevious);
             buttonPanel.Controls.Add(btnNext);
             buttonPanel.Controls.Add(btnCancel);
@@ -179,9 +240,8 @@
             buttonPanel.Name = "buttonPanel";
             buttonPanel.Size = new Size(854, 34);
             buttonPanel.TabIndex = 0;
-            // 
+
             // btnPrevious
-            // 
             btnPrevious.AutoSize = true;
             btnPrevious.Location = new Point(776, 3);
             btnPrevious.Name = "btnPrevious";
@@ -190,9 +250,8 @@
             btnPrevious.Text = "← Назад";
             btnPrevious.UseVisualStyleBackColor = true;
             btnPrevious.Click += BtnPrevious_Click;
-            // 
+
             // btnNext
-            // 
             btnNext.AutoSize = true;
             btnNext.BackColor = SystemColors.Highlight;
             btnNext.FlatAppearance.BorderSize = 0;
@@ -205,9 +264,8 @@
             btnNext.Text = "Далее →";
             btnNext.UseVisualStyleBackColor = false;
             btnNext.Click += BtnNext_Click;
-            // 
+
             // btnCancel
-            // 
             btnCancel.AutoSize = true;
             btnCancel.Location = new Point(610, 3);
             btnCancel.Name = "btnCancel";
@@ -216,9 +274,8 @@
             btnCancel.Text = "Прервать";
             btnCancel.UseVisualStyleBackColor = true;
             btnCancel.Click += BtnCancel_Click;
-            // 
+
             // TestTakingForm
-            // 
             BackColor = Color.White;
             ClientSize = new Size(900, 650);
             Controls.Add(tableLayout);
@@ -228,10 +285,14 @@
             Name = "TestTakingForm";
             StartPosition = FormStartPosition.CenterParent;
             Text = "Прохождение теста";
+
             tableLayout.ResumeLayout(false);
             panelTop.ResumeLayout(false);
             flowLayoutTop.ResumeLayout(false);
             flowLayoutTop.PerformLayout();
+            panelTimer.ResumeLayout(false);
+            tableLayoutTimer.ResumeLayout(false);
+            tableLayoutTimer.PerformLayout();
             panelQuestion.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)pictureBoxQuestion).EndInit();
             panelBottom.ResumeLayout(false);
@@ -247,6 +308,13 @@
         private FlowLayoutPanel flowLayoutTop;
         private Label lblTestTitle;
         private Label lblTestDescription;
+
+        private Panel panelTimer;
+        private TableLayoutPanel tableLayoutTimer;
+        private Label lblTimerLabel;
+        private Label lblTimer;
+        private Label lblTimerIcon;
+
         private Panel panelQuestion;
         private Label lblQuestionCounter;
         private Label lblQuestionText;

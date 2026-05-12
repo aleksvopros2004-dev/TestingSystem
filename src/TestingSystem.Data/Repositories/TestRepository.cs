@@ -208,11 +208,11 @@ public class TestRepository : ITestRepository
         }
 
         var sql = $@"
-            INSERT INTO tests (title, description, author_id, time_limit, is_active,
+        INSERT INTO tests (title, description, author_id, time_limit, is_active,
             questions_order_random, answer_options_random, is_scored)
-            VALUES (@Title, @Description, @AuthorId, {timeLimitExpression}, @IsActive,
+        VALUES (@Title, @Description, @AuthorId, {timeLimitExpression}, @IsActive,
             @QuestionsOrderRandom, @AnswerOptionsRandom, @IsScored)
-            RETURNING id";
+        RETURNING id";
 
         return await connection.ExecuteScalarAsync<int>(sql, new
         {
@@ -238,15 +238,15 @@ public class TestRepository : ITestRepository
         }
 
         var sql = $@"
-            UPDATE tests
-            SET title = @Title,
-                description = @Description,
-                time_limit = {timeLimitExpression},
-                is_active = @IsActive,
-                questions_order_random = @QuestionsOrderRandom,
-                answer_options_random = @AnswerOptionsRandom,
-                is_scored = @IsScored
-            WHERE id = @Id";
+        UPDATE tests
+        SET title = @Title,
+            description = @Description,
+            time_limit = {timeLimitExpression},
+            is_active = @IsActive,
+            questions_order_random = @QuestionsOrderRandom,
+            answer_options_random = @AnswerOptionsRandom,
+            is_scored = @IsScored
+        WHERE id = @Id";
 
         var affectedRows = await connection.ExecuteAsync(sql, new
         {

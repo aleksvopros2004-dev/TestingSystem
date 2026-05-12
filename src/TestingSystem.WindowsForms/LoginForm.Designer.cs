@@ -179,6 +179,7 @@
             lblTestInfo.TabIndex = 7;
             lblTestInfo.Text = "Тестовый аккаунт: admin / admin123";
             lblTestInfo.TextAlign = ContentAlignment.MiddleCenter;
+            lblTestInfo.Visible = false;
             // 
             // LoginForm
             // 

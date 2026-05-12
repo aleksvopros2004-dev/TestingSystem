@@ -20,19 +20,22 @@ namespace TestingSystem.WindowsForms
         private readonly IStatisticsRepository _statisticsRepository;
         private int _sessionId;
 
+        private System.Windows.Forms.Timer _countdownTimer;
+        private TimeSpan _remainingTime;
+        private DateTime _testStartTime;
+        private bool _isTimerExpired = false;
+
         public TestTakingForm(
-     IQuestionService questionService,
-     IStatisticsRepository statisticsRepository,  
-     Test test,
-     User currentUser)
+            IQuestionService questionService,
+            IStatisticsRepository statisticsRepository,
+            Test test,
+            User currentUser)
         {
             _questionService = questionService;
-            _statisticsRepository = statisticsRepository;  
+            _statisticsRepository = statisticsRepository;
             _test = test;
             _currentUser = currentUser;
-
             InitializeComponent();
-
             this.Text = $"Прохождение теста: {_test.Title}";
             lblTestTitle.Text = _test.Title;
             lblTestDescription.Text = _test.Description ?? "Нет описания";
@@ -44,7 +47,84 @@ namespace TestingSystem.WindowsForms
             panelQuestion.AutoScroll = true;
 
             _testStopwatch = Stopwatch.StartNew();
+            _testStartTime = DateTime.UtcNow;
+
+            InitializeTimer();
+
             LoadQuestionsAsync();
+        }
+
+        private void InitializeTimer()
+        {
+            // Проверяем, есть ли ограничение по времени
+            if (_test.TimeLimit.HasValue && _test.TimeLimit.Value.TotalSeconds > 0)
+            {
+                _remainingTime = _test.TimeLimit.Value;
+
+                _countdownTimer = new System.Windows.Forms.Timer();
+                _countdownTimer.Interval = 1000; 
+                _countdownTimer.Tick += CountdownTimer_Tick;
+                _countdownTimer.Start();
+
+                panelTimer.Visible = true;
+                UpdateTimerDisplay();
+            }
+            else
+            {
+                panelTimer.Visible = false;
+            }
+        }
+        private void CountdownTimer_Tick(object? sender, EventArgs e)
+        {
+            _remainingTime = _remainingTime.Subtract(TimeSpan.FromSeconds(1));
+
+            if (_remainingTime.TotalSeconds <= 0)
+            {
+                _remainingTime = TimeSpan.Zero;
+                _countdownTimer.Stop();
+                _isTimerExpired = true;
+                UpdateTimerDisplay();
+
+                // Принудительно завершаем тест
+                MessageBox.Show("Время вышло! Тест будет завершён автоматически.",
+                    "Время истекло",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning);
+
+                FinishTest();
+            }
+            else
+            {
+                UpdateTimerDisplay();
+
+                // Предупреждение, когда осталось меньше 1 минуты
+                if (_remainingTime.TotalSeconds <= 60 && _remainingTime.TotalSeconds > 0)
+                {
+                    lblTimer.ForeColor = Color.Red;
+                    lblTimer.Font = new Font("Segoe UI", 14F, FontStyle.Bold);
+                }
+
+                // Предупреждение, когда осталось меньше 5 минут
+                if (_remainingTime.TotalSeconds <= 300 && _remainingTime.TotalSeconds > 60)
+                {
+                    lblTimer.ForeColor = Color.OrangeRed;
+                    lblTimer.Font = new Font("Segoe UI", 14F, FontStyle.Bold);
+                }
+            }
+        }
+
+        private void UpdateTimerDisplay()
+        {
+            if (_remainingTime.TotalHours >= 1)
+            {
+                lblTimer.Text = $"{(int)_remainingTime.TotalHours:00}:{_remainingTime.Minutes:00}:{_remainingTime.Seconds:00}";
+            }
+            else
+            {
+                lblTimer.Text = $"{_remainingTime.Minutes:00}:{_remainingTime.Seconds:00}";
+            }
+
+            lblTimerLabel.Text = _remainingTime.TotalSeconds <= 60 ? "Осталось:" : "Осталось времени:";
         }
 
         private async Task LoadQuestionsAsync()
@@ -95,9 +175,7 @@ namespace TestingSystem.WindowsForms
                 return;
 
             var question = _questions[_currentQuestionIndex];
-
             pnlAnswers.Controls.Clear();
-
             lblQuestionText.Text = question.QuestionText;
 
             // Проверяем наличие изображения
@@ -125,9 +203,7 @@ namespace TestingSystem.WindowsForms
                 pnlAnswers.Location = new Point(20, 135);
             }
 
-            // Устанавливаем размер панели 
             pnlAnswers.Size = new Size(800, 280);
-
             int yPos = 10;
 
             if (question.QuestionType == "TextAnswer")
@@ -163,6 +239,7 @@ namespace TestingSystem.WindowsForms
                     ForeColor = Color.Gray,
                     Font = new Font("Segoe UI", 8F, FontStyle.Italic)
                 };
+
                 pnlAnswers.Controls.Add(lblInfo);
             }
             else
@@ -244,7 +321,6 @@ namespace TestingSystem.WindowsForms
         private void UpdateMultipleChoiceAnswer(int questionId)
         {
             var selectedIds = new List<int>();
-
             foreach (Control control in pnlAnswers.Controls)
             {
                 if (control is CheckBox chk && chk.Checked && chk.Tag is int optionId)
@@ -252,13 +328,11 @@ namespace TestingSystem.WindowsForms
                     selectedIds.Add(optionId);
                 }
             }
-
             _userAnswers[questionId] = selectedIds;
         }
 
         private void BtnNext_Click(object? sender, EventArgs e)
         {
-            // Проверяем, ответил ли пользователь на текущий вопрос
             var currentQuestion = _questions[_currentQuestionIndex];
 
             if (!_userAnswers.ContainsKey(currentQuestion.Id))
@@ -294,14 +368,19 @@ namespace TestingSystem.WindowsForms
 
         private async void FinishTest()
         {
+            // Останавливаем таймер обратного отсчёта
+            if (_countdownTimer != null)
+            {
+                _countdownTimer.Stop();
+                _countdownTimer.Dispose();
+            }
+
             _testStopwatch.Stop();
             var timeSpan = _testStopwatch.Elapsed;
             var timeString = $"Время: {timeSpan.Minutes} мин {timeSpan.Seconds} сек";
 
-            // Сначала рассчитываем результаты
             CalculateResults();
 
-            // Сохраняем сессию с рассчитанными баллами
             await SaveTestSession();
 
             if (_test.IsScored)
@@ -338,7 +417,7 @@ namespace TestingSystem.WindowsForms
 
                 if (!_userAnswers.ContainsKey(question.Id))
                 {
-                    Console.WriteLine($"  -> Вопрос {question.Id} пропущен");
+                    Console.WriteLine($" -> Вопрос {question.Id} пропущен");
                     continue;
                 }
 
@@ -346,17 +425,16 @@ namespace TestingSystem.WindowsForms
                 {
                     var selectedOptionId = _userAnswers[question.Id] as int?;
                     var correctOption = question.AnswerOptions?.FirstOrDefault(o => o.IsCorrect);
-
-                    Console.WriteLine($"  -> Выбран вариант: {selectedOptionId}, правильный: {correctOption?.Id}");
+                    Console.WriteLine($" -> Выбран вариант: {selectedOptionId}, правильный: {correctOption?.Id}");
 
                     if (correctOption != null && selectedOptionId == correctOption.Id)
                     {
                         _earnedPoints += question.Points;
-                        Console.WriteLine($"  -> ПРАВИЛЬНО! +{question.Points} баллов");
+                        Console.WriteLine($" -> ПРАВИЛЬНО! +{question.Points} баллов");
                     }
                     else
                     {
-                        Console.WriteLine($"  -> НЕПРАВИЛЬНО");
+                        Console.WriteLine($" -> НЕПРАВИЛЬНО");
                     }
                 }
                 else if (question.QuestionType == "MultipleChoice")
@@ -365,34 +443,46 @@ namespace TestingSystem.WindowsForms
                     var correctIds = question.AnswerOptions?
                         .Where(o => o.IsCorrect)
                         .Select(o => o.Id)
-                        .OrderBy(id => id)
                         .ToList() ?? new List<int>();
 
-                    Console.WriteLine($"  -> Выбрано: [{string.Join(",", selectedIds)}], правильно: [{string.Join(",", correctIds)}]");
+                    Console.WriteLine($" -> Выбрано: [{string.Join(",", selectedIds)}], правильно: [{string.Join(",", correctIds)}]");
 
-                    if (selectedIds.OrderBy(id => id).SequenceEqual(correctIds))
+                    if (correctIds.Count > 0)
                     {
-                        _earnedPoints += question.Points;
-                        Console.WriteLine($"  -> ПРАВИЛЬНО! +{question.Points} баллов");
-                    }
-                    else
-                    {
-                        Console.WriteLine($"  -> НЕПРАВИЛЬНО");
+                        int correctSelected = selectedIds.Count(id => correctIds.Contains(id));
+
+                        // Начисляем пропорциональную часть баллов
+                        if (correctSelected > 0)
+                        {
+                            double ratio = (double)correctSelected / correctIds.Count;
+                            int pointsForThisQuestion = (int)Math.Round(question.Points * ratio);
+
+                            // Минимум 1 балл, если хоть что-то правильно
+                            if (pointsForThisQuestion < 1) pointsForThisQuestion = 1;
+
+                            _earnedPoints += pointsForThisQuestion;
+
+                            Console.WriteLine($" -> Частично правильно! Выбрано {correctSelected} из {correctIds.Count} правильных. +{pointsForThisQuestion} баллов (из {question.Points})");
+                        }
+                        else
+                        {
+                            Console.WriteLine($" -> НЕПРАВИЛЬНО");
+                        }
                     }
                 }
                 else if (question.QuestionType == "TextAnswer")
                 {
                     var answerText = _userAnswers[question.Id]?.ToString() ?? "";
-                    Console.WriteLine($"  -> Ответ: \"{answerText}\"");
+                    Console.WriteLine($" -> Ответ: \"{answerText}\"");
 
                     if (!string.IsNullOrWhiteSpace(answerText))
                     {
                         _earnedPoints += question.Points;
-                        Console.WriteLine($"  -> ЗАСЧИТАНО! +{question.Points} баллов");
+                        Console.WriteLine($" -> ЗАСЧИТАНО! +{question.Points} баллов");
                     }
                     else
                     {
-                        Console.WriteLine($"  -> ПУСТОЙ ОТВЕТ");
+                        Console.WriteLine($" -> ПУСТОЙ ОТВЕТ");
                     }
                 }
             }
@@ -408,6 +498,12 @@ namespace TestingSystem.WindowsForms
 
             if (result == DialogResult.Yes)
             {
+                // Останавливаем таймер при выходе
+                if (_countdownTimer != null)
+                {
+                    _countdownTimer.Stop();
+                    _countdownTimer.Dispose();
+                }
                 this.Close();
             }
         }
@@ -420,7 +516,7 @@ namespace TestingSystem.WindowsForms
             {
                 UserId = _currentUser.Id,
                 TestId = _test.Id,
-                StartTime = DateTime.UtcNow.Add(-_testStopwatch.Elapsed),
+                StartTime = _testStartTime,
                 EndTime = DateTime.UtcNow,
                 Duration = _testStopwatch.Elapsed,
                 EarnedPoints = _earnedPoints,
@@ -455,8 +551,9 @@ namespace TestingSystem.WindowsForms
                             answer.IsCorrect = true;
                             answer.PointsEarned = question.Points;
                         }
+
                         answer.SelectedOptionsJson = Newtonsoft.Json.JsonConvert.SerializeObject(new[] { selectedOptionId });
-                        Console.WriteLine($"  Сохранен ответ на вопрос {question.Id}: SingleChoice, правильный={answer.IsCorrect}");
+                        Console.WriteLine($" Сохранен ответ на вопрос {question.Id}: SingleChoice, правильный={answer.IsCorrect}");
                     }
                     else if (question.QuestionType == "MultipleChoice")
                     {
@@ -464,32 +561,56 @@ namespace TestingSystem.WindowsForms
                         var correctIds = question.AnswerOptions?
                             .Where(o => o.IsCorrect)
                             .Select(o => o.Id)
-                            .OrderBy(id => id)
                             .ToList() ?? new List<int>();
 
-                        if (selectedIds.OrderBy(id => id).SequenceEqual(correctIds))
+                        if (correctIds.Count > 0)
                         {
-                            answer.IsCorrect = true;
-                            answer.PointsEarned = question.Points;
+                            int correctSelected = selectedIds.Count(id => correctIds.Contains(id));
+
+                            if (correctSelected > 0)
+                            {
+                                // Частично правильный ответ
+                                answer.IsCorrect = correctSelected == correctIds.Count;
+                                double ratio = (double)correctSelected / correctIds.Count;
+                                answer.PointsEarned = (int)Math.Round(question.Points * ratio);
+                                if (answer.PointsEarned < 1) answer.PointsEarned = 1;
+                            }
+                            else
+                            {
+                                answer.IsCorrect = false;
+                                answer.PointsEarned = 0;
+                            }
                         }
+
                         answer.SelectedOptionsJson = Newtonsoft.Json.JsonConvert.SerializeObject(selectedIds);
-                        Console.WriteLine($"  Сохранен ответ на вопрос {question.Id}: MultipleChoice, правильный={answer.IsCorrect}");
+                        
                     }
                     else if (question.QuestionType == "TextAnswer")
                     {
                         var answerText = _userAnswers[question.Id]?.ToString() ?? "";
                         answer.AnswerText = answerText;
+
                         if (!string.IsNullOrWhiteSpace(answerText))
                         {
                             answer.IsCorrect = true;
                             answer.PointsEarned = question.Points;
                         }
-                        Console.WriteLine($"  Сохранен ответ на вопрос {question.Id}: TextAnswer, текст=\"{answerText}\"");
+
+                        Console.WriteLine($" Сохранен ответ на вопрос {question.Id}: TextAnswer, текст=\"{answerText}\"");
                     }
                 }
 
                 await _statisticsRepository.SaveUserAnswerAsync(answer);
             }
+        }
+        protected override void OnFormClosing(FormClosingEventArgs e)
+        {
+            if (_countdownTimer != null)
+            {
+                _countdownTimer.Stop();
+                _countdownTimer.Dispose();
+            }
+            base.OnFormClosing(e);
         }
     }
 }

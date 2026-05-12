@@ -7,7 +7,7 @@
         private Label lblWelcome;
         private Button btnManageTests;
         private Button btnManageUsers;
-        private Button btnStatistics;  // ← добавили кнопку
+        private Button btnStatistics;  
         private Button btnLogout;
 
         protected override void Dispose(bool disposing)
@@ -25,7 +25,7 @@
             lblWelcome = new Label();
             btnManageTests = new Button();
             btnManageUsers = new Button();
-            btnStatistics = new Button();  // ← добавили кнопку
+            btnStatistics = new Button();  
             btnLogout = new Button();
             tableLayout.SuspendLayout();
             SuspendLayout();
@@ -36,7 +36,7 @@
             tableLayout.Controls.Add(lblWelcome, 0, 0);
             tableLayout.Controls.Add(btnManageTests, 0, 1);
             tableLayout.Controls.Add(btnManageUsers, 0, 2);
-            tableLayout.Controls.Add(btnStatistics, 0, 3);  // ← добавили
+            tableLayout.Controls.Add(btnStatistics, 0, 3);  
             tableLayout.Controls.Add(btnLogout, 0, 4);
             tableLayout.Dock = DockStyle.Fill;
             tableLayout.Location = new Point(0, 0);
@@ -46,7 +46,7 @@
             tableLayout.RowStyles.Add(new RowStyle(SizeType.Absolute, 50F));
             tableLayout.RowStyles.Add(new RowStyle(SizeType.Absolute, 60F));
             tableLayout.RowStyles.Add(new RowStyle(SizeType.Absolute, 60F));
-            tableLayout.RowStyles.Add(new RowStyle(SizeType.Absolute, 60F));  // ← добавили строку
+            tableLayout.RowStyles.Add(new RowStyle(SizeType.Absolute, 60F));  
             tableLayout.RowStyles.Add(new RowStyle(SizeType.Absolute, 50F));
             tableLayout.Size = new Size(700, 300);
             tableLayout.TabIndex = 0;
@@ -91,7 +91,7 @@
             btnManageUsers.Visible = false;
             btnManageUsers.Click += BtnManageUsers_Click;
 
-            // btnStatistics - НОВАЯ КНОПКА
+            // btnStatistics 
             btnStatistics.BackColor = Color.FromArgb(76, 175, 80);
             btnStatistics.FlatAppearance.BorderSize = 0;
             btnStatistics.FlatStyle = FlatStyle.Flat;
@@ -101,7 +101,7 @@
             btnStatistics.Name = "btnStatistics";
             btnStatistics.Size = new Size(654, 50);
             btnStatistics.TabIndex = 3;
-            btnStatistics.Text = "📊 Статистика и аналитика";
+            btnStatistics.Text = "Статистика и аналитика";
             btnStatistics.UseVisualStyleBackColor = false;
             btnStatistics.Visible = false;
             btnStatistics.Click += BtnStatistics_Click;
