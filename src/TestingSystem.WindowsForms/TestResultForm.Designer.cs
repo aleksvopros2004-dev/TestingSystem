@@ -34,6 +34,9 @@
             lblTimeLabel = new Label();
             lblTimeSpent = new Label();
             lblGradeText = new Label();
+            panelRecommendations = new Panel();
+            lblRecommendationTitle = new Label();
+            pnlRecommendationList = new Panel();
             panelBottom = new Panel();
             btnOk = new Button();
             tableLayout.SuspendLayout();
@@ -41,6 +44,7 @@
             flowLayoutTop.SuspendLayout();
             panelCenter.SuspendLayout();
             tableLayoutCenter.SuspendLayout();
+            panelRecommendations.SuspendLayout();
             panelBottom.SuspendLayout();
             SuspendLayout();
             // 
@@ -50,15 +54,17 @@
             tableLayout.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
             tableLayout.Controls.Add(panelTop, 0, 0);
             tableLayout.Controls.Add(panelCenter, 0, 1);
-            tableLayout.Controls.Add(panelBottom, 0, 2);
+            tableLayout.Controls.Add(panelRecommendations, 0, 2);
+            tableLayout.Controls.Add(panelBottom, 0, 3);
             tableLayout.Dock = DockStyle.Fill;
             tableLayout.Location = new Point(0, 0);
             tableLayout.Name = "tableLayout";
-            tableLayout.RowCount = 3;
+            tableLayout.RowCount = 4;
             tableLayout.RowStyles.Add(new RowStyle(SizeType.Absolute, 85F));
             tableLayout.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
+            tableLayout.RowStyles.Add(new RowStyle(SizeType.Absolute, 0F));
             tableLayout.RowStyles.Add(new RowStyle(SizeType.Absolute, 70F));
-            tableLayout.Size = new Size(600, 480);
+            tableLayout.Size = new Size(700, 700);
             tableLayout.TabIndex = 0;
             // 
             // panelTop
@@ -66,10 +72,10 @@
             panelTop.BackColor = Color.FromArgb(76, 175, 80);
             panelTop.Controls.Add(flowLayoutTop);
             panelTop.Dock = DockStyle.Fill;
-            panelTop.Location = new Point(0, 0);
+            panelTop.Location = new Point(3, 3);
             panelTop.Name = "panelTop";
             panelTop.Padding = new Padding(20, 10, 20, 10);
-            panelTop.Size = new Size(600, 85);
+            panelTop.Size = new Size(694, 79);
             panelTop.TabIndex = 0;
             // 
             // flowLayoutTop
@@ -80,7 +86,7 @@
             flowLayoutTop.FlowDirection = FlowDirection.TopDown;
             flowLayoutTop.Location = new Point(20, 10);
             flowLayoutTop.Name = "flowLayoutTop";
-            flowLayoutTop.Size = new Size(560, 65);
+            flowLayoutTop.Size = new Size(654, 59);
             flowLayoutTop.TabIndex = 0;
             // 
             // lblTitle
@@ -90,7 +96,7 @@
             lblTitle.ForeColor = Color.White;
             lblTitle.Location = new Point(3, 0);
             lblTitle.Name = "lblTitle";
-            lblTitle.Size = new Size(100, 21);
+            lblTitle.Size = new Size(103, 21);
             lblTitle.TabIndex = 0;
             lblTitle.Text = "Результаты:";
             // 
@@ -101,7 +107,7 @@
             lblTestTitle.ForeColor = Color.White;
             lblTestTitle.Location = new Point(3, 21);
             lblTestTitle.Name = "lblTestTitle";
-            lblTestTitle.Size = new Size(135, 25);
+            lblTestTitle.Size = new Size(153, 25);
             lblTestTitle.TabIndex = 1;
             lblTestTitle.Text = "Название теста";
             // 
@@ -110,10 +116,10 @@
             panelCenter.BackColor = Color.White;
             panelCenter.Controls.Add(tableLayoutCenter);
             panelCenter.Dock = DockStyle.Fill;
-            panelCenter.Location = new Point(0, 85);
+            panelCenter.Location = new Point(3, 88);
             panelCenter.Name = "panelCenter";
             panelCenter.Padding = new Padding(30, 20, 30, 20);
-            panelCenter.Size = new Size(600, 325);
+            panelCenter.Size = new Size(694, 539);
             panelCenter.TabIndex = 1;
             // 
             // tableLayoutCenter
@@ -141,7 +147,7 @@
             tableLayoutCenter.RowStyles.Add(new RowStyle(SizeType.Absolute, 50F));
             tableLayoutCenter.RowStyles.Add(new RowStyle(SizeType.Absolute, 40F));
             tableLayoutCenter.RowStyles.Add(new RowStyle(SizeType.Absolute, 70F));
-            tableLayoutCenter.Size = new Size(540, 280);
+            tableLayoutCenter.Size = new Size(634, 499);
             tableLayoutCenter.TabIndex = 0;
             // 
             // lblResultLabel
@@ -150,7 +156,7 @@
             lblResultLabel.Font = new Font("Segoe UI", 11F, FontStyle.Bold);
             lblResultLabel.Location = new Point(3, 0);
             lblResultLabel.Name = "lblResultLabel";
-            lblResultLabel.Size = new Size(534, 40);
+            lblResultLabel.Size = new Size(628, 40);
             lblResultLabel.TabIndex = 0;
             lblResultLabel.Text = "Результат:";
             lblResultLabel.TextAlign = ContentAlignment.MiddleLeft;
@@ -169,7 +175,7 @@
             lblTotalQuestions.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
             lblTotalQuestions.Location = new Point(163, 40);
             lblTotalQuestions.Name = "lblTotalQuestions";
-            lblTotalQuestions.Size = new Size(374, 40);
+            lblTotalQuestions.Size = new Size(468, 40);
             lblTotalQuestions.TabIndex = 2;
             lblTotalQuestions.Text = "0";
             lblTotalQuestions.TextAlign = ContentAlignment.MiddleLeft;
@@ -188,7 +194,7 @@
             lblPointsValue.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
             lblPointsValue.Location = new Point(163, 80);
             lblPointsValue.Name = "lblPointsValue";
-            lblPointsValue.Size = new Size(374, 40);
+            lblPointsValue.Size = new Size(468, 40);
             lblPointsValue.TabIndex = 4;
             lblPointsValue.Text = "0 из 0";
             lblPointsValue.TextAlign = ContentAlignment.MiddleLeft;
@@ -207,7 +213,7 @@
             lblPercentage.Font = new Font("Segoe UI", 14F, FontStyle.Bold);
             lblPercentage.Location = new Point(163, 120);
             lblPercentage.Name = "lblPercentage";
-            lblPercentage.Size = new Size(374, 50);
+            lblPercentage.Size = new Size(468, 50);
             lblPercentage.TabIndex = 6;
             lblPercentage.Text = "0%";
             lblPercentage.TextAlign = ContentAlignment.MiddleLeft;
@@ -226,7 +232,7 @@
             lblTimeSpent.Font = new Font("Segoe UI", 10F);
             lblTimeSpent.Location = new Point(163, 170);
             lblTimeSpent.Name = "lblTimeSpent";
-            lblTimeSpent.Size = new Size(374, 40);
+            lblTimeSpent.Size = new Size(468, 40);
             lblTimeSpent.TabIndex = 8;
             lblTimeSpent.Text = "0 мин";
             lblTimeSpent.TextAlign = ContentAlignment.MiddleLeft;
@@ -237,43 +243,81 @@
             lblGradeText.Font = new Font("Segoe UI", 18F, FontStyle.Bold);
             lblGradeText.Location = new Point(3, 210);
             lblGradeText.Name = "lblGradeText";
-            lblGradeText.Size = new Size(534, 70);
+            lblGradeText.Size = new Size(628, 70);
             lblGradeText.TabIndex = 9;
             lblGradeText.Text = "Оценка";
             lblGradeText.TextAlign = ContentAlignment.MiddleLeft;
+            // 
+            // panelRecommendations
+            // 
+            panelRecommendations.BackColor = Color.White;
+            panelRecommendations.Controls.Add(lblRecommendationTitle);
+            panelRecommendations.Controls.Add(pnlRecommendationList);
+            panelRecommendations.Dock = DockStyle.Fill;
+            panelRecommendations.Location = new Point(3, 633);
+            panelRecommendations.Name = "panelRecommendations";
+            panelRecommendations.Padding = new Padding(10);
+            panelRecommendations.Size = new Size(694, 1);
+            panelRecommendations.TabIndex = 2;
+            panelRecommendations.Visible = false;
+            // 
+            // lblRecommendationTitle
+            // 
+            lblRecommendationTitle.Dock = DockStyle.Top;
+            lblRecommendationTitle.Font = new Font("Segoe UI", 11F, FontStyle.Bold);
+            lblRecommendationTitle.ForeColor = Color.FromArgb(255, 152, 0);
+            lblRecommendationTitle.Location = new Point(10, 10);
+            lblRecommendationTitle.Name = "lblRecommendationTitle";
+            lblRecommendationTitle.Size = new Size(674, 35);
+            lblRecommendationTitle.TabIndex = 0;
+            lblRecommendationTitle.Text = "Рекомендации по ошибкам (0):";
+            lblRecommendationTitle.TextAlign = ContentAlignment.MiddleLeft;
+            // 
+            // pnlRecommendationList
+            // 
+            pnlRecommendationList.AutoScroll = true;
+            pnlRecommendationList.BackColor = Color.FromArgb(252, 252, 252);
+            pnlRecommendationList.Dock = DockStyle.Fill;
+            pnlRecommendationList.Location = new Point(10, 10);
+            pnlRecommendationList.Name = "pnlRecommendationList";
+            pnlRecommendationList.Padding = new Padding(0, 5, 0, 10);
+            pnlRecommendationList.Size = new Size(674, 0);
+            pnlRecommendationList.TabIndex = 1;
             // 
             // panelBottom
             // 
             panelBottom.BackColor = Color.FromArgb(240, 240, 240);
             panelBottom.Controls.Add(btnOk);
             panelBottom.Dock = DockStyle.Fill;
-            panelBottom.Location = new Point(0, 410);
+            panelBottom.Location = new Point(3, 633);
             panelBottom.Name = "panelBottom";
-            panelBottom.Size = new Size(600, 70);
-            panelBottom.TabIndex = 2;
+            panelBottom.Size = new Size(694, 64);
+            panelBottom.TabIndex = 3;
             // 
             // btnOk
             // 
             btnOk.BackColor = Color.FromArgb(0, 120, 215);
             btnOk.FlatAppearance.BorderSize = 0;
             btnOk.FlatStyle = FlatStyle.Flat;
+            btnOk.Font = new Font("Segoe UI", 11F, FontStyle.Bold);
             btnOk.ForeColor = Color.White;
-            btnOk.Location = new Point(250, 18);
+            btnOk.Location = new Point(280, 15);
             btnOk.Name = "btnOk";
-            btnOk.Size = new Size(100, 35);
+            btnOk.Size = new Size(140, 40);
             btnOk.TabIndex = 0;
-            btnOk.Text = "OK";
+            btnOk.Text = "ОК";
             btnOk.UseVisualStyleBackColor = false;
             btnOk.Click += BtnOk_Click;
             // 
             // TestResultForm
             // 
             BackColor = Color.White;
-            ClientSize = new Size(600, 480);
+            ClientSize = new Size(700, 700);
             Controls.Add(tableLayout);
             Font = new Font("Segoe UI", 10F);
             FormBorderStyle = FormBorderStyle.FixedDialog;
             MaximizeBox = false;
+            MinimumSize = new Size(700, 700);
             Name = "TestResultForm";
             StartPosition = FormStartPosition.CenterParent;
             Text = "Результаты тестирования";
@@ -283,6 +327,7 @@
             flowLayoutTop.PerformLayout();
             panelCenter.ResumeLayout(false);
             tableLayoutCenter.ResumeLayout(false);
+            panelRecommendations.ResumeLayout(false);
             panelBottom.ResumeLayout(false);
             ResumeLayout(false);
         }
@@ -306,6 +351,11 @@
         private Label lblTimeLabel;
         private Label lblTimeSpent;
         private Label lblGradeText;
+
+        private Panel panelRecommendations;
+        private Label lblRecommendationTitle;
+        private Panel pnlRecommendationList;
+
         private Panel panelBottom;
         private Button btnOk;
     }

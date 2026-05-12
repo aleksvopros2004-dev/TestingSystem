@@ -20,25 +20,16 @@ namespace TestingSystem.WindowsForms
             _questionService = questionService;
             _imageService = imageService;
             _test = test;
-
             InitializeComponent();
-
             lblTitle.Text = $"Добавление вопроса к тесту: {test?.Title ?? "Неизвестный тест"}";
-
-            // Устанавливаем значение по умолчанию для баллов
             numPoints.Value = 1;
-
-            // Устанавливаем тип вопроса по умолчанию
             cmbType.SelectedIndex = 0;
-
             UpdateAnswerPanel();
-
             AddInitialAnswerOptions();
         }
 
         private void AddInitialAnswerOptions()
         {
-            // Добавляем начальные варианты ответов только если это не текстовый вопрос
             if (cmbType.SelectedIndex != 2)
             {
                 AddAnswerOption();
@@ -77,7 +68,6 @@ namespace TestingSystem.WindowsForms
         {
             var questionType = cmbType.SelectedIndex;
 
-            // Если текстовый ответ или нет панели, выходим
             if (questionType == 2 || pnlAnswers.Controls.Count == 0)
                 return;
 
@@ -107,7 +97,6 @@ namespace TestingSystem.WindowsForms
         private void LoadAnswerOptions()
         {
             pnlAnswers.Controls.Clear();
-
             var questionType = cmbType.SelectedIndex;
 
             if (questionType == 2)
@@ -124,6 +113,7 @@ namespace TestingSystem.WindowsForms
                 var yPos = 10 + (i * 35);
 
                 Control correctControl;
+
                 if (questionType == 0)
                 {
                     correctControl = new RadioButton
@@ -188,13 +178,13 @@ namespace TestingSystem.WindowsForms
         {
             lblOptionsCounter.Text = $"Вариантов: {_answerOptions.Count}/10";
 
-            if (_answerOptions.Count >= 8)
-            {
-                lblOptionsCounter.ForeColor = Color.Orange;
-            }
-            else if (_answerOptions.Count >= 10)
+            if (_answerOptions.Count >= 10)
             {
                 lblOptionsCounter.ForeColor = Color.Red;
+            }
+            else if (_answerOptions.Count >= 8)
+            {
+                lblOptionsCounter.ForeColor = Color.Orange;
             }
             else
             {
@@ -252,6 +242,7 @@ namespace TestingSystem.WindowsForms
             try
             {
                 var fileInfo = new FileInfo(filePath);
+
                 if (fileInfo.Length > 5 * 1024 * 1024)
                 {
                     MessageBox.Show("Размер изображения не должен превышать 5 MB", "Ошибка",
@@ -260,6 +251,7 @@ namespace TestingSystem.WindowsForms
                 }
 
                 _selectedImageData = _imageService.LoadImageFromFile(filePath);
+
                 if (_selectedImageData == null)
                 {
                     MessageBox.Show("Не удалось загрузить изображение", "Ошибка",
@@ -324,6 +316,7 @@ namespace TestingSystem.WindowsForms
             }
 
             var questions = await _questionService.GetQuestionsByTestAsync(_test.Id);
+
             if (questions.Count() >= 50)
             {
                 lblMessage.Text = "В тесте уже максимальное количество вопросов (50)";
@@ -357,9 +350,11 @@ namespace TestingSystem.WindowsForms
                 for (int i = 0; i < _answerOptions.Count; i++)
                 {
                     var txtOption = pnlAnswers.Controls.Find($"txtOption_{i}", true).FirstOrDefault() as TextBox;
+
                     if (txtOption != null && !string.IsNullOrWhiteSpace(txtOption.Text))
                     {
                         bool isCorrect = false;
+
                         if (questionType == "SingleChoice")
                         {
                             var rdo = pnlAnswers.Controls.Find($"rdoCorrect_{i}", true).FirstOrDefault() as RadioButton;
@@ -388,6 +383,7 @@ namespace TestingSystem.WindowsForms
                 }
 
                 var correctCount = answerOptions.Count(o => o.IsCorrect);
+
                 if (correctCount == 0)
                 {
                     lblMessage.Text = "Укажите хотя бы один правильный вариант";
@@ -416,7 +412,9 @@ namespace TestingSystem.WindowsForms
                 Points = (int)numPoints.Value,
                 AnswerOptions = answerOptions,
                 ImageData = _selectedImageData,
-                ImageContentType = _selectedImageContentType
+                ImageContentType = _selectedImageContentType,
+                // 👇 СОХРАНЯЕМ РЕКОМЕНДАЦИЮ
+                Recommendation = string.IsNullOrWhiteSpace(txtRecommendation.Text) ? null : txtRecommendation.Text.Trim()
             };
 
             btnSave.Enabled = false;
@@ -432,7 +430,9 @@ namespace TestingSystem.WindowsForms
                 {
                     lblMessage.Text = $"Вопрос успешно создан (ID: {questionId})!";
                     lblMessage.ForeColor = Color.Green;
+
                     await Task.Delay(1500);
+
                     QuestionCreated?.Invoke(this, EventArgs.Empty);
                     this.Close();
                 }

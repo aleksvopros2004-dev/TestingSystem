@@ -27,6 +27,9 @@ namespace TestingSystem.Core.Models
         [Column("image_content_type")]
         public string? ImageContentType { get; set; }
 
+        [Column("recommendation")]
+        public string? Recommendation { get; set; }
+
         public List<AnswerOption> AnswerOptions { get; set; } = new();
     }
 }

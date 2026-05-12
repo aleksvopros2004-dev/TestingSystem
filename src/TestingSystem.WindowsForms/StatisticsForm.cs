@@ -339,5 +339,10 @@ namespace TestingSystem.WindowsForms
                 detailsForm.ShowDialog();
             }
         }
+
+        private void ButtonClose_Click(object? sender, EventArgs e)
+        {
+            this.Close();
+        }
     }
 }

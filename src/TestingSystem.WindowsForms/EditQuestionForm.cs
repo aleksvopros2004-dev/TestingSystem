@@ -17,7 +17,7 @@ namespace TestingSystem.WindowsForms
         public event EventHandler? QuestionUpdated;
 
         public EditQuestionForm(IQuestionService questionService, IImageService imageService,
-                               Question question, User currentUser)
+            Question question, User currentUser)
         {
             _questionService = questionService;
             _imageService = imageService;
@@ -43,7 +43,6 @@ namespace TestingSystem.WindowsForms
 
             LoadQuestionData();
 
-            // Блокируем функционал для обычных пользователей
             if (_currentUser.Role == UserRole.User)
             {
                 this.Text = "Просмотр вопроса";
@@ -65,30 +64,13 @@ namespace TestingSystem.WindowsForms
             txtTypeDisplay.BackColor = SystemColors.Control;
             numPoints.Enabled = false;
             numPoints.BackColor = SystemColors.Control;
-
+            txtRecommendation.ReadOnly = true;
+            txtRecommendation.BackColor = SystemColors.Control;
             btnLoadImage.Visible = false;
             btnRemoveImage.Visible = false;
             btnSave.Visible = false;
             btnCancel.Text = "Закрыть";
             btnAddOption.Visible = false;
-
-            // Добавляем заголовок "Режим просмотра"
-            var lblViewMode = new Label
-            {
-                Text = "Режим просмотра",
-                Font = new Font("Segoe UI", 9F, FontStyle.Bold),
-                ForeColor = Color.Gray,
-                Location = new Point(620, 20),
-                Size = new Size(150, 25),
-                BackColor = Color.White
-            };
-            this.Controls.Add(lblViewMode);
-
-            if (_question.QuestionType != "TextAnswer")
-            {
-                pnlAnswers.Visible = true;
-                lblAnswers.Visible = true;
-            }
         }
 
         private void LoadQuestionData()
@@ -117,6 +99,9 @@ namespace TestingSystem.WindowsForms
             txtQuestion.Text = _question.QuestionText;
             txtOrder.Text = _question.OrderIndex.ToString();
             numPoints.Value = _question.Points;
+
+            // ЗАГРУЖАЕМ РЕКОМЕНДАЦИЮ
+            txtRecommendation.Text = _question.Recommendation ?? "";
 
             if (_selectedImageData != null && _selectedImageData.Length > 0)
             {
@@ -171,6 +156,7 @@ namespace TestingSystem.WindowsForms
                 var yPos = 10 + (i * 40);
 
                 Control correctControl;
+
                 if (_question.QuestionType == "SingleChoice")
                 {
                     correctControl = new RadioButton
@@ -268,6 +254,7 @@ namespace TestingSystem.WindowsForms
             for (int i = 0; i < _answerOptions.Count; i++)
             {
                 var txtOption = pnlAnswers.Controls.Find($"txtOption_{i}", true).FirstOrDefault() as TextBox;
+
                 if (txtOption != null)
                 {
                     _answerOptions[i].OptionText = txtOption.Text;
@@ -361,6 +348,7 @@ namespace TestingSystem.WindowsForms
                             };
                             _answerOptions.Add(newOption);
                         }
+
                         LoadAnswerOptions();
                     }
                 }
@@ -425,6 +413,7 @@ namespace TestingSystem.WindowsForms
             try
             {
                 var fileInfo = new FileInfo(filePath);
+
                 if (fileInfo.Length > 5 * 1024 * 1024)
                 {
                     MessageBox.Show("Размер изображения не должен превышать 5 MB", "Ошибка",
@@ -433,6 +422,7 @@ namespace TestingSystem.WindowsForms
                 }
 
                 _selectedImageData = _imageService.LoadImageFromFile(filePath);
+
                 if (_selectedImageData == null)
                 {
                     MessageBox.Show("Не удалось загрузить изображение", "Ошибка",
@@ -501,7 +491,6 @@ namespace TestingSystem.WindowsForms
             if (_question.QuestionType != "TextAnswer")
             {
                 SaveCurrentAnswerOptions();
-
                 _answerOptions.RemoveAll(o => string.IsNullOrWhiteSpace(o.OptionText));
 
                 if (_answerOptions.Count == 0)
@@ -513,6 +502,7 @@ namespace TestingSystem.WindowsForms
                 }
 
                 var correctCount = _answerOptions.Count(o => o.IsCorrect);
+
                 if (correctCount == 0)
                 {
                     lblMessage.Text = "Укажите хотя бы один правильный вариант";
@@ -535,6 +525,8 @@ namespace TestingSystem.WindowsForms
             _question.AnswerOptions = _answerOptions;
             _question.ImageData = _selectedImageData;
             _question.ImageContentType = _selectedImageContentType;
+            // СОХРАНЯЕМ РЕКОМЕНДАЦИЮ
+            _question.Recommendation = string.IsNullOrWhiteSpace(txtRecommendation.Text) ? null : txtRecommendation.Text.Trim();
 
             btnSave.Enabled = false;
             lblMessage.Text = "Сохранение...";
@@ -544,11 +536,14 @@ namespace TestingSystem.WindowsForms
             try
             {
                 var (success, message) = await _questionService.UpdateQuestionAsync(_question);
+
                 if (success)
                 {
-                    lblMessage.Text = "Вопрос успешно сохранен!";
+                    lblMessage.Text = "Вопрос успешно сохранён!";
                     lblMessage.ForeColor = Color.Green;
+
                     await Task.Delay(1000);
+
                     QuestionUpdated?.Invoke(this, EventArgs.Empty);
                     this.Close();
                 }
